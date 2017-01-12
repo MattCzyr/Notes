@@ -1,0 +1,16 @@
+[
+{
+  "modid": "notes",
+  "name": "Notes",
+  "description": "Clientside in-game notepad.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ChaosTheDude"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
