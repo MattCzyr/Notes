@@ -136,7 +136,7 @@ public class Scope {
 	@Nullable
 	public static String getWorldName() {
 		if (isLocal()) {
-			return mc.getIntegratedServer().getWorldName();
+			return mc.getIntegratedServer().getFolderName();
 		}
 
 		return null;
