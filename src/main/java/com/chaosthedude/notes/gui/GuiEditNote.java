@@ -7,14 +7,12 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 
 import com.chaosthedude.notes.Notes;
-import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
@@ -77,7 +75,7 @@ public class GuiEditNote extends GuiScreen {
 			if (button == saveButton) {
 				updateNote();
 				note.save();
-				mc.displayGuiScreen(new GuiDisplayNote(parentScreen, note, Notes.displayWidth));
+				mc.displayGuiScreen(new GuiDisplayNote(parentScreen, note));
 			} else if (button == insertBiomeButton) {
 				insertBiome();
 			} else if (button == insertChunkButton) {
@@ -119,7 +117,7 @@ public class GuiEditNote extends GuiScreen {
 		noteTitleField.mouseClicked(mouseX, mouseY, mouseButton);
 		noteTextField.mouseClicked(mouseX, mouseY, mouseButton);
 	}
-	
+
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
@@ -163,11 +161,11 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	private void setupTextFields() {
-		noteTitleField = new GuiNoteTitleField(9, fontRendererObj, (width + 110) / 2 - (Notes.displayWidth / 2), 40, Notes.displayWidth, 20);
+		noteTitleField = new GuiNoteTitleField(9, fontRendererObj, 130, 40, width - 140, 20);
 		noteTitleField.setText(note.getTitle());
 		noteTitleField.setFocused(true);
 
-		noteTextField = new GuiNoteTextField(fontRendererObj, (width + 110) / 2 - (Notes.displayWidth / 2), 85, Notes.displayWidth, 136, 5);
+		noteTextField = new GuiNoteTextField(fontRendererObj, 130, 85, width - 140, 136, 5);
 		noteTextField.setText(note.getFilteredText());
 	}
 

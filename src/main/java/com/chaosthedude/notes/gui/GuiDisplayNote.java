@@ -28,14 +28,12 @@ public class GuiDisplayNote extends GuiScreen {
 	private GuiNotesButton prevButton;
 	private GuiNotesButton nextButton;
 	private Note note;
-	private int displayWidth;
 	private int page;
 	private List<String> pages;
 
-	public GuiDisplayNote(GuiScreen parentScreen, Note note, int displayWidth) {
+	public GuiDisplayNote(GuiScreen parentScreen, Note note) {
 		this.parentScreen = parentScreen;
 		this.note = note;
-		this.displayWidth = displayWidth;
 
 		page = 0;
 		pages = new ArrayList<String>();
@@ -90,7 +88,7 @@ public class GuiDisplayNote extends GuiScreen {
 	}
 
 	public void displayNote() {
-		fontRendererObj.drawSplitString(pages.get(page), (width / 2 + 60) - (displayWidth / 2), 40, displayWidth, 0xFFFFFF);
+		fontRendererObj.drawSplitString(pages.get(page), 160, 40, width - 200, 0xFFFFFF);
 	}
 
 	private void setupButtons() {
@@ -106,10 +104,11 @@ public class GuiDisplayNote extends GuiScreen {
 
 	private void setupPages() {
 		if (note != null) {
+			final List<String> lines = ConfigHandler.wrapNote ? mc.fontRendererObj.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";
-			for (String line : StringUtils.wrapToWidth(note.getFilteredText(), displayWidth)) {
+			for (String line : lines) {
 				if (lineCount > 15) {
 					pages.add(page);
 					page = "";
@@ -143,7 +142,7 @@ public class GuiDisplayNote extends GuiScreen {
 			pinButton.displayString = I18n.format("notes.unpin");
 		}
 	}
-	
+
 	private void deleteNote() {
 		mc.displayGuiScreen(new GuiNotesYesNo(new GuiYesNoCallback() {
 			public void confirmClicked(boolean result, int id) {

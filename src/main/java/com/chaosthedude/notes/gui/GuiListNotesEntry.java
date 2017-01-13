@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreenWorking;
-import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
@@ -84,7 +83,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	public void loadNote() {
 		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		if (ConfigHandler.useInGameViewer) {
-			mc.displayGuiScreen(new GuiDisplayNote(guiNotes, note, Notes.displayWidth));
+			mc.displayGuiScreen(new GuiDisplayNote(guiNotes, note));
 		} else {
 			note.openExternal();
 		}
@@ -105,6 +104,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 
 	public void deleteNote() {
 		mc.displayGuiScreen(new GuiNotesYesNo(new GuiYesNoCallback() {
+			@Override
 			public void confirmClicked(boolean result, int id) {
 				if (result) {
 					GuiListNotesEntry.this.mc.displayGuiScreen(new GuiScreenWorking());
