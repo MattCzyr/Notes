@@ -59,10 +59,10 @@ public class RenderUtils {
 		final float green = (float) (color >> 8 & 255) / 255.0F;
 		final float blue = (float) (color & 255) / 255.0F;
 		final float alpha = (float) (color >> 24 & 255) / 255.0F;
-		
+
 		final Tessellator tessellator = Tessellator.getInstance();
 		final VertexBuffer buffer = tessellator.getBuffer();
-		
+
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -74,7 +74,7 @@ public class RenderUtils {
 		buffer.pos((double) right, (double) top, 0.0D).endVertex();
 		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
-		
+
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
 	}

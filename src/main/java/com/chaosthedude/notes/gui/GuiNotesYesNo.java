@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiOptionButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
@@ -82,7 +81,7 @@ public class GuiNotesYesNo extends GuiScreen {
 			}
 		}
 	}
-	
+
 	public void setButtonDelay(int ticksUntilEnableIn) {
 		ticksUntilEnable = ticksUntilEnableIn;
 

@@ -2,8 +2,6 @@ package com.chaosthedude.notes.note;
 
 import java.io.File;
 
-import javax.annotation.Nullable;
-
 import com.chaosthedude.notes.util.FileUtils;
 
 import net.minecraft.client.Minecraft;
@@ -87,7 +85,6 @@ public class Scope {
 		return false;
 	}
 
-	@Nullable
 	public static Scope getCurrentScope() {
 		if (isLocal()) {
 			return LOCAL;
@@ -98,12 +95,10 @@ public class Scope {
 		return null;
 	}
 
-	@Nullable
 	public static Scope getCurrentScopeOrGlobal(boolean global) {
 		return global ? GLOBAL : getCurrentScope();
 	}
 
-	@Nullable
 	public static Scope getScopeFromParentFile(File parentFile) {
 		if (parentFile.equals(GLOBAL.getRootSaveDirectory())) {
 			return GLOBAL;
@@ -124,7 +119,6 @@ public class Scope {
 		return mc.getCurrentServerData() != null;
 	}
 
-	@Nullable
 	public static String getServerIP() {
 		if (isRemote()) {
 			return mc.getCurrentServerData().serverIP;
@@ -133,7 +127,6 @@ public class Scope {
 		return null;
 	}
 
-	@Nullable
 	public static String getWorldName() {
 		if (isLocal()) {
 			return mc.getIntegratedServer().getFolderName();

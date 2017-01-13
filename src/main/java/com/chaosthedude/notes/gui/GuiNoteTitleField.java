@@ -371,12 +371,12 @@ public class GuiNoteTitleField extends Gui {
 
 			final int color = isEnabled ? enabledColor : disabledColor;
 			final int renderCursorPos = cursorPosition - lineScrollOffset;
-			int renderSelectionPos = selectionEnd - lineScrollOffset;
 			final String trimmed = fontRenderer.trimStringToWidth(text.substring(lineScrollOffset), getWidth());
 			final boolean cursorIsVisible = renderCursorPos >= 0 && renderCursorPos <= trimmed.length();
 			final boolean shouldDisplayCursor = isFocused && cursorCounter / 6 % 2 == 0 && cursorIsVisible;
 			final int x = enableBackgroundDrawing ? xPosition + 4 : xPosition;
 			final int y = enableBackgroundDrawing ? yPosition + (height - 8) / 2 : yPosition;
+			int renderSelectionPos = selectionEnd - lineScrollOffset;
 			int whatIsThisMojang = x;
 
 			if (renderSelectionPos > trimmed.length()) {

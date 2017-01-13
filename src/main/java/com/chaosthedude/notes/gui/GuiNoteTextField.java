@@ -64,10 +64,6 @@ public class GuiNoteTextField extends Gui {
 		selectionPos = -1;
 	}
 
-	public void updateScreen() {
-		cursorCounter++;
-	}
-
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		if (GuiScreen.isKeyComboCtrlC(keyCode)) {
 			GuiScreen.setClipboardString(getSelectedText());
@@ -128,7 +124,7 @@ public class GuiNoteTextField extends Gui {
 					}
 					selectionPos = -1;
 				}
-				
+
 				if (moveLeft) {
 					moveLeft();
 				}
@@ -146,7 +142,7 @@ public class GuiNoteTextField extends Gui {
 					}
 					selectionPos = -1;
 				}
-				
+
 				if (moveRight) {
 					moveRight();
 				}
@@ -159,6 +155,69 @@ public class GuiNoteTextField extends Gui {
 		}
 
 		updateVisibleLines();
+	}
+
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
+
+		renderVisibleText();
+		renderCursor();
+		renderScrollBar();
+	}
+
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+		if (canLoseFocus) {
+			setFocused(isWithinBounds);
+		}
+
+		if (isFocused && isWithinBounds) {
+			if (mouseButton == 0) {
+				final int relativeMouseX = mouseX - xPosition - margin;
+				final int relativeMouseY = mouseY - yPosition - margin;
+				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
+
+				setCursorPos(countCharacters(y) + x);
+			}
+		}
+	}
+
+	public void mouseReleased(int mouseX, int mouseY, int state) {
+		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+		if (canLoseFocus) {
+			setFocused(isWithinBounds);
+		}
+
+		if (isFocused && isWithinBounds) {
+			if (state == 0) {
+				final int relativeMouseX = mouseX - xPosition - margin;
+				final int relativeMouseY = mouseY - yPosition - margin;
+				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
+
+				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+				if (pos != cursorPos) {
+					selectionPos = cursorPos;
+					setCursorPos(pos);
+				} else {
+					selectionPos = -1;
+				}
+			}
+		}
+	}
+
+	public void handleMouseInput() {
+		final int scroll = Mouse.getEventDWheel();
+		if (scroll < 0) {
+			incrementVisibleLines();
+		} else if (scroll > 0) {
+			decrementVisibleLines();
+		}
+	}
+
+	public void updateScreen() {
+		cursorCounter++;
 	}
 
 	public List<String> toLines() {
@@ -211,65 +270,6 @@ public class GuiNoteTextField extends Gui {
 		return y >= topVisibleLine && y <= bottomVisibleLine;
 	}
 
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
-
-		renderVisibleText();
-		renderCursor();
-		renderScrollBar();
-	}
-
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
-		if (canLoseFocus) {
-			setFocused(isWithinBounds);
-		}
-
-		if (isFocused && isWithinBounds) {
-			if (mouseButton == 0) {
-				final int relativeMouseX = mouseX - xPosition - margin;
-				final int relativeMouseY = mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
-
-				setCursorPos(countCharacters(y) + x);
-			}
-		}
-	}
-	
-	public void mouseReleased(int mouseX, int mouseY, int state) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
-		if (canLoseFocus) {
-			setFocused(isWithinBounds);
-		}
-
-		if (isFocused && isWithinBounds) {
-			if (state == 0) {
-				final int relativeMouseX = mouseX - xPosition - margin;
-				final int relativeMouseY = mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
-
-				final int pos = countCharacters(y) + x;
-				if (pos != cursorPos) {
-					selectionPos = cursorPos;
-					cursorPos = pos;
-				} else {
-					selectionPos = -1;
-				}
-			}
-		}
-	}
-
-	public void handleMouseInput() {
-		final int scroll = Mouse.getEventDWheel();
-		if (scroll < 0) {
-			incrementVisibleLines();
-		} else if (scroll > 0) {
-			decrementVisibleLines();
-		}
-	}
-
 	public int getRenderSafeCursorY() {
 		return getCursorY() - topVisibleLine;
 	}
@@ -289,20 +289,6 @@ public class GuiNoteTextField extends Gui {
 
 	public boolean isWithinBounds(int mouseX, int mouseY) {
 		return mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
-	}
-
-	public void incrementVisibleLines() {
-		if (bottomVisibleLine < getFinalLineIndex()) {
-			topVisibleLine++;
-			bottomVisibleLine++;
-		}
-	}
-
-	public void decrementVisibleLines() {
-		if (topVisibleLine > 0) {
-			topVisibleLine--;
-			bottomVisibleLine--;
-		}
 	}
 
 	public boolean atBeginningOfLine() {
@@ -420,6 +406,20 @@ public class GuiNoteTextField extends Gui {
 		}
 
 		selectionPos = -1;
+	}
+
+	private void incrementVisibleLines() {
+		if (bottomVisibleLine < getFinalLineIndex()) {
+			topVisibleLine++;
+			bottomVisibleLine++;
+		}
+	}
+
+	private void decrementVisibleLines() {
+		if (topVisibleLine > 0) {
+			topVisibleLine--;
+			bottomVisibleLine--;
+		}
 	}
 
 	private int countCharacters(int maxLineIndex) {
@@ -576,7 +576,7 @@ public class GuiNoteTextField extends Gui {
 
 		return false;
 	}
-	
+
 	private int getSelectionStart() {
 		if (selectionPos > -1) {
 			if (selectionPos > cursorPos) {
@@ -600,7 +600,7 @@ public class GuiNoteTextField extends Gui {
 
 		return -1;
 	}
-	
+
 	private String getSelectedText() {
 		return text.substring(getSelectionStart(), getSelectionEnd());
 	}
@@ -672,10 +672,14 @@ public class GuiNoteTextField extends Gui {
 				end = line.length();
 			}
 
-			final String selection = absoluteLine.substring(start, end);
-			final int startX = xPosition + margin + fontRenderer.getStringWidth(absoluteLine.substring(0, start));
-			final int endX = startX + fontRenderer.getStringWidth(selection);
-			drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.FONT_HEIGHT);
+			if (start >= end) {
+				selectionPos = -1;
+			} else {
+				final String selection = absoluteLine.substring(start, end);
+				final int startX = xPosition + margin + fontRenderer.getStringWidth(absoluteLine.substring(0, start));
+				final int endX = startX + fontRenderer.getStringWidth(selection);
+				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.FONT_HEIGHT);
+			}
 		}
 	}
 

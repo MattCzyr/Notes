@@ -2,8 +2,6 @@ package com.chaosthedude.notes.gui;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.lwjgl.input.Mouse;
 
 import com.chaosthedude.notes.note.Note;
@@ -72,27 +70,6 @@ public class GuiListNotes extends GuiListExtended {
 		}
 	}
 
-	@Nullable
-	public GuiListNotesEntry getSelectedNote() {
-		return selectedIndex >= 0 && selectedIndex < getSize() ? getListEntry(selectedIndex) : null;
-	}
-
-	public void refreshList() {
-		entries.clear();
-		for (Note note : Note.getCurrentNotes()) {
-			entries.add(new GuiListNotesEntry(this, note));
-		}
-	}
-
-	public void selectNote(int index) {
-		selectedIndex = index;
-		guiNotes.selectNote(getSelectedNote());
-	}
-
-	public GuiSelectNote getGuiNotes() {
-		return guiNotes;
-	}
-
 	@Override
 	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
 		if (visible) {
@@ -141,6 +118,26 @@ public class GuiListNotes extends GuiListExtended {
 
 			drawSlot(i, insideLeft, k, l, parMouseX, parMouseY);
 		}
+	}
+
+	public GuiListNotesEntry getSelectedNote() {
+		return selectedIndex >= 0 && selectedIndex < getSize() ? getListEntry(selectedIndex) : null;
+	}
+
+	public void refreshList() {
+		entries.clear();
+		for (Note note : Note.getCurrentNotes()) {
+			entries.add(new GuiListNotesEntry(this, note));
+		}
+	}
+
+	public void selectNote(int index) {
+		selectedIndex = index;
+		guiNotes.selectNote(getSelectedNote());
+	}
+
+	public GuiSelectNote getGuiNotes() {
+		return guiNotes;
 	}
 
 }
