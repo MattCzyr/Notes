@@ -23,7 +23,6 @@ public class Notes {
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
-	//public static final int displayWidth = 240;
 	public static Note pinnedNote;
 
 	@EventHandler
