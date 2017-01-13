@@ -19,6 +19,7 @@ public class ConfigHandler {
 	public static boolean useInGameViewer = true;
 	public static double pinnedWidthScale = 0.2;
 	public static double pinnedHeightScale = 1.0;
+	public static boolean wrapNote = true;
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -46,6 +47,9 @@ public class ConfigHandler {
 
 		comment = "The maximum percentage of the screen's display height that a pinned note can take up.";
 		pinnedHeightScale = loadDouble("notes.pinnedHeightScale", comment, pinnedHeightScale);
+
+		comment = "Whether or not displayed notes will be word wrapped.";
+		wrapNote = loadBool("notes.wrapNote", comment, wrapNote);
 
 		if (config.hasChanged()) {
 			config.save();
