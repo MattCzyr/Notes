@@ -67,6 +67,11 @@ public class GuiNoteTextField extends Gui {
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		if (GuiScreen.isKeyComboCtrlC(keyCode)) {
 			GuiScreen.setClipboardString(getSelectedText());
+		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
+			if (getSelectionDifference() != 0) {
+				GuiScreen.setClipboardString(getSelectedText());
+				deleteSelectedText();
+			}
 		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
 			insert(GuiScreen.getClipboardString());
 		} else if (isKeyComboCtrlBack(keyCode)) {
