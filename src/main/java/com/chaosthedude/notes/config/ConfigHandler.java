@@ -14,7 +14,7 @@ public class ConfigHandler {
 
 	public static Configuration config;
 
-	public static String dateFormat = "M/d/yy";
+	public static String dateFormat = "M/d/yy h:mm a";
 	public static boolean useInGameEditor = true;
 	public static boolean useInGameViewer = true;
 	public static double pinnedWidthScale = 0.2;
@@ -33,7 +33,7 @@ public class ConfigHandler {
 	public static void init() {
 		String comment;
 
-		comment = "The date format used in last modified strings.";
+		comment = "The date format used in timestamps.";
 		dateFormat = loadString("notes.dateFormat", comment, dateFormat);
 
 		comment = "If false, the system's default text editor will be used to edit notes.";
