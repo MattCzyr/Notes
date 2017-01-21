@@ -1,12 +1,10 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSelectNote extends GuiScreen {
@@ -32,13 +30,7 @@ public class GuiSelectNote extends GuiScreen {
 	}
 
 	@Override
-	public void handleMouseInput() throws IOException {
-		super.handleMouseInput();
-		selectionList.handleMouseInput();
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			final GuiListNotesEntry notesEntry = selectionList.getSelectedNote();
 			if (button == deleteButton) {
@@ -80,15 +72,9 @@ public class GuiSelectNote extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		selectionList.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		super.mouseReleased(mouseX, mouseY, state);
-		selectionList.mouseReleased(mouseX, mouseY, state);
 	}
 
 	public void selectNote(GuiListNotesEntry entry) {
@@ -116,6 +102,11 @@ public class GuiSelectNote extends GuiScreen {
 		editButton.enabled = false;
 		copyButton.enabled = false;
 		pinButton.enabled = false;
+	}
+
+	private <T extends GuiButton> T addButton(T button) {
+		buttonList.add(button);
+		return (T) button;
 	}
 
 }

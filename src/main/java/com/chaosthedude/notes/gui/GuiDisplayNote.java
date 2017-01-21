@@ -9,13 +9,13 @@ import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.StringUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiDisplayNote extends GuiScreen {
@@ -53,7 +53,7 @@ public class GuiDisplayNote extends GuiScreen {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			if (button == editButton) {
 				mc.displayGuiScreen(new GuiEditNote(parentScreen, note));
@@ -104,7 +104,7 @@ public class GuiDisplayNote extends GuiScreen {
 
 	private void setupPages() {
 		if (note != null) {
-			final List<String> lines = ConfigHandler.wrapNote ? mc.fontRendererObj.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
+			final List<String> lines = ConfigHandler.wrapNote ? mc.fontRenderer.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";
@@ -154,6 +154,11 @@ public class GuiDisplayNote extends GuiScreen {
 				GuiDisplayNote.this.mc.displayGuiScreen(parentScreen);
 			}
 		}, "Delete this note?", note.getTitle(), 0));
+	}
+
+	private <T extends GuiButton> T addButton(T button) {
+		buttonList.add(button);
+		return (T) button;
 	}
 
 }

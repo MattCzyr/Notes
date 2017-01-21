@@ -8,12 +8,12 @@ import com.chaosthedude.notes.event.RenderTickHandler;
 import com.chaosthedude.notes.key.KeybindHandler;
 import com.chaosthedude.notes.note.Note;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.11,1.11.2]")
+@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.7.10]")
 
 public class Notes {
 
@@ -27,8 +27,8 @@ public class Notes {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new KeybindHandler());
-		MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
+		FMLCommonHandler.instance().bus().register(new KeybindHandler());
+		FMLCommonHandler.instance().bus().register(new RenderTickHandler());
 		ConfigHandler.loadConfig(event.getSuggestedConfigurationFile());
 	}
 

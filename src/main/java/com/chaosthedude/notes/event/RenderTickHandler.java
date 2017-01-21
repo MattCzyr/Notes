@@ -4,13 +4,13 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.RenderUtils;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
+import net.minecraft.util.MathHelper;
 
 public class RenderTickHandler {
 
@@ -22,10 +22,10 @@ public class RenderTickHandler {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
 
-				final ScaledResolution res = new ScaledResolution(mc);
+				final ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 				final String text = Notes.pinnedNote.getFilteredText();
-				final int maxWidth = MathHelper.floor(res.getScaledWidth() * ConfigHandler.pinnedWidthScale);
-				final int maxHeight = MathHelper.floor(res.getScaledHeight() * ConfigHandler.pinnedHeightScale);
+				final int maxWidth = MathHelper.floor_double(res.getScaledWidth() * ConfigHandler.pinnedWidthScale);
+				final int maxHeight = MathHelper.floor_double(res.getScaledHeight() * ConfigHandler.pinnedHeightScale);
 				final int renderWidth = RenderUtils.getSplitStringWidth(text, maxWidth);
 				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxWidth);
 				final int width = res.getScaledWidth() - renderWidth;

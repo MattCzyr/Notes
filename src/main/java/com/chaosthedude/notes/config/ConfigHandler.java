@@ -4,11 +4,11 @@ import java.io.File;
 
 import com.chaosthedude.notes.Notes;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConfigHandler {
 
@@ -58,14 +58,14 @@ public class ConfigHandler {
 
 	public static String loadString(String name, String comment, String def) {
 		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
+		prop.comment = comment;
 
 		return prop.getString();
 	}
 
 	public static int loadInt(String name, String comment, int def) {
 		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
+		prop.comment = comment;
 		int val = prop.getInt(def);
 		if (val <= 0) {
 			val = def;
@@ -77,7 +77,7 @@ public class ConfigHandler {
 
 	public static double loadDouble(String name, String comment, double def) {
 		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
+		prop.comment = comment;
 		double val = prop.getDouble(def);
 		if (val <= 0) {
 			val = def;
@@ -89,14 +89,14 @@ public class ConfigHandler {
 
 	public static boolean loadBool(String name, String comment, boolean def) {
 		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
+		prop.comment = comment;
 		return prop.getBoolean(def);
 	}
 
 	public static class ChangeListener {
 		@SubscribeEvent
 		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-			if (eventArgs.getModID().equals(Notes.MODID)) {
+			if (eventArgs.modID.equals(Notes.MODID)) {
 				init();
 			}
 		}

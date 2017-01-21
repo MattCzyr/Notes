@@ -7,19 +7,19 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNoCallback;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
-public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
+public class GuiListNotesEntry implements GuiNotesListExtended.IGuiListEntry {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
 	private final Minecraft mc;
@@ -36,12 +36,11 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-		mc.fontRendererObj.drawString(note.getTitle(), x + 1, y + 1, 0xffffff);
-		mc.fontRendererObj.drawString(note.getScope().format(), x + 4 + mc.fontRendererObj.getStringWidth(note.getTitle()), y + 1, 0x808080);
-		mc.fontRendererObj.drawString(note.getPreview(MathHelper.floor(listWidth * 0.9)), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRendererObj.drawString(note.getLastModifiedString(), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, Tessellator tessellator, int mouseX, int mouseY, boolean isSelected) {
+		mc.fontRenderer.drawString(note.getTitle(), x + 1, y + 1, 0xffffff);
+		mc.fontRenderer.drawString(note.getScope().format(), x + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), y + 1, 0x808080);
+		mc.fontRenderer.drawString(note.getPreview(MathHelper.floor_double(listWidth * 0.9)), x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(note.getLastModifiedString(), x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 	}
 
 	@Override
@@ -63,10 +62,6 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
 	}
 
-	@Override
-	public void setSelected(int par1, int par2, int par3) {
-	}
-
 	public void editNote() {
 		if (ConfigHandler.useInGameEditor) {
 			mc.displayGuiScreen(new GuiEditNote(guiNotes, note));
@@ -81,7 +76,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	public void loadNote() {
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		if (ConfigHandler.useInGameViewer) {
 			mc.displayGuiScreen(new GuiDisplayNote(guiNotes, note));
 		} else {

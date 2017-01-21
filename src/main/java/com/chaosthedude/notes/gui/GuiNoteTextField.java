@@ -6,23 +6,22 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
+import com.sun.prism.impl.VertexBuffer;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.MathHelper;
 
 @SideOnly(Side.CLIENT)
 public class GuiNoteTextField extends Gui {
@@ -59,20 +58,15 @@ public class GuiNoteTextField extends Gui {
 		this.margin = margin;
 
 		text = "";
-		maxVisibleLines = MathHelper.floor((height - (margin * 2)) / fontRenderer.FONT_HEIGHT) - 1;
+		maxVisibleLines = MathHelper.floor_double((height - (margin * 2)) / fontRenderer.FONT_HEIGHT) - 1;
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
 
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (GuiScreen.isKeyComboCtrlC(keyCode)) {
+	protected void keyTyped(char typedChar, int keyCode) {
+		if (isKeyComboCtrlC(keyCode)) {
 			GuiScreen.setClipboardString(getSelectedText());
-		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
-			if (getSelectionDifference() != 0) {
-				GuiScreen.setClipboardString(getSelectedText());
-				deleteSelectedText();
-			}
-		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
+		} else if (isKeyComboCtrlV(keyCode)) {
 			insert(GuiScreen.getClipboardString());
 		} else if (isKeyComboCtrlBack(keyCode)) {
 			deletePrevWord();
@@ -180,7 +174,7 @@ public class GuiNoteTextField extends Gui {
 			if (mouseButton == 0) {
 				final int relativeMouseX = mouseX - xPosition - margin;
 				final int relativeMouseY = mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
+				final int y = MathHelper.clamp_int((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
 
 				setCursorPos(countCharacters(y) + x);
@@ -198,10 +192,10 @@ public class GuiNoteTextField extends Gui {
 			if (state == 0) {
 				final int relativeMouseX = mouseX - xPosition - margin;
 				final int relativeMouseY = mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
+				final int y = MathHelper.clamp_int((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
 
-				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+				final int pos = MathHelper.clamp_int(countCharacters(y) + x, 0, text.length());
 				if (pos != cursorPos) {
 					selectionPos = cursorPos;
 					setCursorPos(pos);
@@ -285,7 +279,7 @@ public class GuiNoteTextField extends Gui {
 
 	public int getCursorWidth(int pos) {
 		final String line = getCurrentLine();
-		return fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+		return fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp_int(getCursorX(), 0, line.length())));
 	}
 
 	public int getCursorWidth() {
@@ -343,7 +337,7 @@ public class GuiNoteTextField extends Gui {
 	}
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
-		return keyCode == Keyboard.KEY_BACK && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !GuiScreen.isAltKeyDown();
+		return keyCode == Keyboard.KEY_BACK && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
 	}
 
 	public void insert(String newText) {
@@ -524,7 +518,7 @@ public class GuiNoteTextField extends Gui {
 	}
 
 	private void setCursorPos(int pos) {
-		cursorPos = MathHelper.clamp(pos, 0, text.length());
+		cursorPos = MathHelper.clamp_int(pos, 0, text.length());
 		if (getCursorY() > bottomVisibleLine) {
 			incrementVisibleLines();
 		} else if (getCursorY() < topVisibleLine) {
@@ -611,43 +605,41 @@ public class GuiNoteTextField extends Gui {
 	}
 
 	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+		int i1;
+
 		if (startX < endX) {
-			final int temp = startX;
+			i1 = startX;
 			startX = endX;
-			endX = temp;
+			endX = i1;
 		}
 
 		if (startY < endY) {
-			final int temp = startY;
+			i1 = startY;
 			startY = endY;
-			endY = temp;
+			endY = i1;
 		}
 
-		if (endX > xPosition + width) {
-			endX = xPosition + width;
+		if (endX > this.xPosition + this.width) {
+			endX = this.xPosition + this.width;
 		}
 
-		if (startX > xPosition + width) {
-			startX = xPosition + width;
+		if (startX > this.xPosition + this.width) {
+			startX = this.xPosition + this.width;
 		}
 
-		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer buffer = tessellator.getBuffer();
-
-		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
-
-		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.pos(startX, endY, 0.0D).endVertex();
-		buffer.pos(endX, endY, 0.0D).endVertex();
-		buffer.pos(endX, startY, 0.0D).endVertex();
-		buffer.pos(startX, startY, 0.0D).endVertex();
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glLogicOp(GL11.GL_OR_REVERSE);
+		tessellator.startDrawingQuads();
+		tessellator.addVertex((double) startX, (double) endY, 0.0D);
+		tessellator.addVertex((double) endX, (double) endY, 0.0D);
+		tessellator.addVertex((double) endX, (double) startY, 0.0D);
+		tessellator.addVertex((double) startX, (double) startY, 0.0D);
 		tessellator.draw();
-
-		GlStateManager.disableColorLogic();
-		GlStateManager.enableTexture2D();
+		GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	private void renderSelectionBox(int y, int renderY, String line) {
@@ -704,7 +696,7 @@ public class GuiNoteTextField extends Gui {
 		final boolean shouldDisplayCursor = isFocused && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = xPosition + margin + fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorX = xPosition + margin + fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp_int(getCursorX(), 0, line.length())));
 			final int renderCursorY = yPosition + margin + (getRenderSafeCursorY() * fontRenderer.FONT_HEIGHT);
 
 			drawRect(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.FONT_HEIGHT + 1, -3092272);
@@ -715,8 +707,8 @@ public class GuiNoteTextField extends Gui {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
 			final int effectiveHeight = height - (margin / 2);
-			final int scrollBarHeight = MathHelper.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = yPosition + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			final int scrollBarHeight = MathHelper.floor_double(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
+			int scrollBarTop = yPosition + (margin / 4) + MathHelper.floor_double(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
 			final int diff = (scrollBarTop + scrollBarHeight) - (yPosition + height);
 			if (diff > 0) {
@@ -725,6 +717,26 @@ public class GuiNoteTextField extends Gui {
 
 			drawRect(xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
+	}
+
+	public static boolean isAltKeyDown() {
+		return Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
+	}
+
+	public static boolean isKeyComboCtrlX(int keyID) {
+		return keyID == 45 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlV(int keyID) {
+		return keyID == 47 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlC(int keyID) {
+		return keyID == 46 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlA(int keyID) {
+		return keyID == 30 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
 	}
 
 }

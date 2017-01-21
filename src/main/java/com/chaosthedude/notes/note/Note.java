@@ -28,7 +28,7 @@ public class Note {
 
 	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.dateFormat);
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	private String title;
 	private String rawText;
@@ -148,7 +148,7 @@ public class Note {
 
 	public String getSaveName() {
 		String saveDirName = title.trim();
-		for (char c : ChatAllowedCharacters.ILLEGAL_FILE_CHARACTERS) {
+		for (char c : ChatAllowedCharacters.allowedCharacters) {
 			saveDirName = saveDirName.replace(c, '_');
 		}
 

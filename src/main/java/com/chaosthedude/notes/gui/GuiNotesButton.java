@@ -14,18 +14,18 @@ public class GuiNotesButton extends GuiButton {
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (visible) {
-			hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
+			boolean hovered = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
 			final float state = getHoverState(hovered);
 			final float f = state / 2 * 0.9F + 0.1F;
 			final int color = (int) (255.0F * f);
 
 			RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, color / 2 << 24);
-			drawCenteredString(mc.fontRendererObj, displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffff);
+			drawCenteredString(mc.fontRenderer, displayString, xPosition + width / 2, yPosition + (height - 8) / 2, 0xffffff);
 		}
 	}
 
 	@Override
-	protected int getHoverState(boolean mouseOver) {
+	public int getHoverState(boolean mouseOver) {
 		int state = 2;
 		if (!enabled) {
 			state = 5;

@@ -1,24 +1,26 @@
 package com.chaosthedude.notes.gui;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiListNotes extends GuiListExtended {
+public class GuiListNotes extends GuiNotesListExtended {
 
+	private Minecraft mc = Minecraft.getMinecraft();
 	private final GuiSelectNote guiNotes;
 	private final List<GuiListNotesEntry> entries = Lists.<GuiListNotesEntry> newArrayList();
 	private int selectedIndex = -1;
@@ -55,68 +57,24 @@ public class GuiListNotes extends GuiListExtended {
 	}
 
 	@Override
-	public void handleMouseInput() {
-		int i2 = Mouse.getEventDWheel();
-		if (i2 != 0) {
-			if (i2 > 0) {
-				i2 = -1;
-			} else if (i2 < 0) {
-				i2 = 1;
-			}
-
-			amountScrolled += (float) (i2 * slotHeight);
-		} else {
-			super.handleMouseInput();
-		}
-	}
-
-	@Override
-	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
-		if (visible) {
-			mouseX = parMouseX;
-			mouseY = parMouseY;
-			drawBackground();
-			int x = getScrollBarX();
-			int j = x + 6;
-			bindAmountScrolled();
-			GlStateManager.disableLighting();
-			GlStateManager.disableFog();
-			final Tessellator tessellator = Tessellator.getInstance();
-			final VertexBuffer buffer = tessellator.getBuffer();
-			drawContainerBackground(tessellator);
-			final int insideLeft = left + width / 2 - getListWidth() / 2 + 2;
-			final int insideTop = top + 4 - (int) amountScrolled;
-			if (hasListHeader) {
-				drawListHeader(insideLeft, insideTop, tessellator);
-			}
-
-			drawSelectionBox(insideLeft, insideTop, parMouseX, parMouseY);
-		}
-	}
-
-	@Override
 	protected void drawContainerBackground(Tessellator tessellator) {
 		guiNotes.drawDefaultBackground();
 	}
 
 	@Override
 	protected void drawSelectionBox(int insideLeft, int insideTop, int parMouseX, int parMouseY) {
-		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer buffer = tessellator.getBuffer();
-
-		for (int i = 0; i < getSize(); i++) {
-			int k = insideTop + i * slotHeight + headerPadding;
+		final int size = getSize();
+		final Tessellator tessellator = Tessellator.instance;
+		for (int j = 0; j < size; j++) {
+			int k = insideTop + j * slotHeight + headerPadding;
 			int l = slotHeight - 4;
+			if (k <= bottom && k + l >= top) {
+				if (isSelected(j)) {
+					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getListWidth() + 4, k + slotHeight, 255 / 2 << 24);
+				}
 
-			if (k > bottom || k + l < top) {
-				updateItemPos(i, insideLeft, k);
+				drawSlot(j, insideLeft, k, l, tessellator, parMouseX, parMouseY);
 			}
-
-			if (showSelectionBox && isSelected(i)) {
-				RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getListWidth() + 4, k + slotHeight, 255 / 2 << 24);
-			}
-
-			drawSlot(i, insideLeft, k, l, parMouseX, parMouseY);
 		}
 	}
 

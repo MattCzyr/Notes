@@ -6,17 +6,15 @@ import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 
-import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiEditNote extends GuiScreen {
@@ -70,7 +68,7 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			if (button == saveButton) {
 				updateNote();
@@ -98,7 +96,7 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == Keyboard.KEY_ESCAPE) {
 			mc.displayGuiScreen(parentScreen);
 		} else if (noteTitleField.isFocused()) {
@@ -111,7 +109,7 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 
 		noteTitleField.mouseClicked(mouseX, mouseY, mouseButton);
@@ -119,15 +117,17 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		super.mouseReleased(mouseX, mouseY, state);
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int state) {
+		super.mouseMovedOrUp(mouseX, mouseY, state);
 
-		noteTitleField.mouseReleased(mouseX, mouseY, state);
-		noteTextField.mouseReleased(mouseX, mouseY, state);
+		if (state >= 0) {
+			noteTitleField.mouseReleased(mouseX, mouseY, state);
+			noteTextField.mouseReleased(mouseX, mouseY, state);
+		}
 	}
 
 	@Override
-	public void handleMouseInput() throws IOException {
+	public void handleMouseInput() {
 		super.handleMouseInput();
 		noteTextField.handleMouseInput();
 	}
@@ -176,15 +176,20 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(mc.world.getBiome(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))));
+		noteTextField.insert(StringUtils.fixBiomeName(mc.theWorld.getBiomeGenForCoords(mc.thePlayer.chunkCoordX, mc.thePlayer.chunkCoordZ)));
 	}
 
 	private void insertChunk() {
-		noteTextField.insert((int) mc.player.chunkCoordX + ", " + (int) mc.player.chunkCoordY + ", " + (int) mc.player.chunkCoordZ);
+		noteTextField.insert((int) mc.thePlayer.chunkCoordX + ", " + (int) mc.thePlayer.chunkCoordY + ", " + (int) mc.thePlayer.chunkCoordZ);
 	}
 
 	private void insertCoords() {
-		noteTextField.insert((int) mc.player.posX + ", " + (int) mc.player.posY + ", " + (int) mc.player.posZ);
+		noteTextField.insert((int) mc.thePlayer.posX + ", " + (int) mc.thePlayer.posY + ", " + (int) mc.thePlayer.posZ);
+	}
+
+	private <T extends GuiButton> T addButton(T button) {
+		buttonList.add(button);
+		return (T) button;
 	}
 
 }

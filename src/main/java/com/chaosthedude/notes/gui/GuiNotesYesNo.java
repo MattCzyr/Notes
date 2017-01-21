@@ -1,16 +1,15 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiNotesYesNo extends GuiScreen {
@@ -53,7 +52,7 @@ public class GuiNotesYesNo extends GuiScreen {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		parentScreen.confirmClicked(button.id == 0, parentButtonClickedID);
 	}
 
@@ -76,8 +75,8 @@ public class GuiNotesYesNo extends GuiScreen {
 		super.updateScreen();
 
 		if (--ticksUntilEnable == 0) {
-			for (GuiButton button : buttonList) {
-				button.enabled = true;
+			for (Object button : buttonList) {
+				((GuiButton) button).enabled = true;
 			}
 		}
 	}
@@ -85,8 +84,8 @@ public class GuiNotesYesNo extends GuiScreen {
 	public void setButtonDelay(int ticksUntilEnableIn) {
 		ticksUntilEnable = ticksUntilEnableIn;
 
-		for (GuiButton button : buttonList) {
-			button.enabled = false;
+		for (Object button : buttonList) {
+			((GuiButton) button).enabled = false;
 		}
 	}
 

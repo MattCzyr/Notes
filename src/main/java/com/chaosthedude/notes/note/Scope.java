@@ -116,12 +116,12 @@ public class Scope {
 	}
 
 	public static boolean isRemote() {
-		return mc.getCurrentServerData() != null;
+		return mc.func_147104_D() != null;
 	}
 
 	public static String getServerIP() {
 		if (isRemote()) {
-			return mc.getCurrentServerData().serverIP;
+			return mc.func_147104_D().serverIP;
 		}
 
 		return null;

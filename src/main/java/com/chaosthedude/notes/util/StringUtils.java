@@ -5,13 +5,14 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public final class StringUtils {
 
 	public static final char[] FILTER_CHARS = new char[] { '\r', '\f' };
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static String insertStringAt(String insert, String insertTo, int pos) {
 		return insertTo.substring(0, pos) + insert + insertTo.substring(pos, insertTo.length());
@@ -73,6 +74,15 @@ public final class StringUtils {
 
 		return filtered;
 	}
+	
+	public static String filterChatAllowedCharacters(String s) {
+		String filtered = s;
+		for (char c : ChatAllowedCharacters.allowedCharacters) {
+			filtered = filtered.replace(String.valueOf(c), "");
+		}
+
+		return filtered;
+	}
 
 	public static String trimStringNewline(String text) {
 		while (text != null && text.endsWith("\n")) {
@@ -82,8 +92,8 @@ public final class StringUtils {
 		return text;
 	}
 
-	public static String fixBiomeName(Biome biome) {
-		final String original = biome.getBiomeName();
+	public static String fixBiomeName(BiomeGenBase biome) {
+		final String original = biome.biomeName;
 		String fixed = "";
 		char pre = ' ';
 		for (int i = 0; i < original.length(); i++) {

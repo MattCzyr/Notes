@@ -1,21 +1,20 @@
 package com.chaosthedude.notes.gui;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import com.chaosthedude.notes.util.RenderUtils;
+import com.chaosthedude.notes.util.StringUtils;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.sun.prism.impl.VertexBuffer;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.MathHelper;
 
 public class GuiNoteTitleField extends Gui {
 
@@ -38,8 +37,6 @@ public class GuiNoteTitleField extends Gui {
 	private int enabledColor = 14737632;
 	private int disabledColor = 7368816;
 	private boolean visible = true;
-	private GuiPageButtonList.GuiResponder guiResponder;
-	private Predicate<String> validator = Predicates.<String> alwaysTrue();
 
 	public GuiNoteTitleField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
 		this.id = id;
@@ -50,24 +47,18 @@ public class GuiNoteTitleField extends Gui {
 		this.height = height;
 	}
 
-	public void setGuiResponder(GuiPageButtonList.GuiResponder guiResponder) {
-		this.guiResponder = guiResponder;
-	}
-
 	public void updateCursorCounter() {
 		cursorCounter++;
 	}
 
 	public void setText(String newText) {
-		if (validator.apply(newText)) {
-			if (newText.length() > maxStringLength) {
-				text = newText.substring(0, maxStringLength);
-			} else {
-				text = newText;
-			}
-
-			setCursorPositionEnd();
+		if (newText.length() > maxStringLength) {
+			text = newText.substring(0, maxStringLength);
+		} else {
+			text = newText;
 		}
+
+		setCursorPositionEnd();
 	}
 
 	public String getText() {
@@ -80,12 +71,8 @@ public class GuiNoteTitleField extends Gui {
 		return text.substring(start, end);
 	}
 
-	public void setValidator(Predicate<String> validator) {
-		this.validator = validator;
-	}
-
 	public void writeText(String textToWrite) {
-		final String filtered = ChatAllowedCharacters.filterAllowedCharacters(textToWrite);
+		final String filtered = StringUtils.filterChatAllowedCharacters(textToWrite);
 		String s = "";
 		int i = cursorPosition < selectionEnd ? cursorPosition : selectionEnd;
 		int j = cursorPosition < selectionEnd ? selectionEnd : cursorPosition;
@@ -109,17 +96,8 @@ public class GuiNoteTitleField extends Gui {
 			s = s + text.substring(j);
 		}
 
-		if (validator.apply(s)) {
-			text = s;
-			moveCursorBy(i - selectionEnd + l);
-			setResponderEntryValue(id, text);
-		}
-	}
-
-	public void setResponderEntryValue(int id, String text) {
-		if (guiResponder != null) {
-			guiResponder.setEntryValue(id, text);
-		}
+		text = s;
+		moveCursorBy(i - selectionEnd + l);
 	}
 
 	public void deleteWords(int num) {
@@ -150,14 +128,10 @@ public class GuiNoteTitleField extends Gui {
 					s = s + text.substring(end);
 				}
 
-				if (validator.apply(s)) {
-					text = s;
+				text = s;
 
-					if (flag) {
-						moveCursorBy(num);
-					}
-
-					setResponderEntryValue(id, text);
+				if (flag) {
+					moveCursorBy(num);
 				}
 			}
 		}
@@ -212,7 +186,7 @@ public class GuiNoteTitleField extends Gui {
 
 	public void setCursorPosition(int pos) {
 		cursorPosition = pos;
-		cursorPosition = MathHelper.clamp(cursorPosition, 0, text.length());
+		cursorPosition = MathHelper.clamp_int(cursorPosition, 0, text.length());
 		setSelectionPos(cursorPosition);
 	}
 
@@ -227,20 +201,20 @@ public class GuiNoteTitleField extends Gui {
 	public boolean textboxKeyTyped(char typedChar, int keyCode) {
 		if (!isFocused) {
 			return false;
-		} else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
+		} else if (isKeyComboCtrlA(keyCode)) {
 			setCursorPositionEnd();
 			setSelectionPos(0);
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
+		} else if (isKeyComboCtrlC(keyCode)) {
 			GuiScreen.setClipboardString(getSelectedText());
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
+		} else if (isKeyComboCtrlV(keyCode)) {
 			if (isEnabled) {
 				writeText(GuiScreen.getClipboardString());
 			}
 
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
+		} else if (isKeyComboCtrlX(keyCode)) {
 			GuiScreen.setClipboardString(getSelectedText());
 			if (this.isEnabled) {
 				writeText("");
@@ -385,7 +359,7 @@ public class GuiNoteTitleField extends Gui {
 
 			if (!trimmed.isEmpty()) {
 				final String s1 = cursorIsVisible ? trimmed.substring(0, renderCursorPos) : trimmed;
-				whatIsThisMojang = fontRenderer.drawStringWithShadow(s1, (float) x, (float) y, color);
+				whatIsThisMojang = fontRenderer.drawString(s1, x, y, color, true);
 			}
 
 			final boolean cursorIsAtEnd = cursorPosition < text.length() || text.length() >= getMaxStringLength();
@@ -399,7 +373,7 @@ public class GuiNoteTitleField extends Gui {
 			}
 
 			if (!trimmed.isEmpty() && cursorIsVisible && renderCursorPos < trimmed.length()) {
-				whatIsThisMojang = fontRenderer.drawStringWithShadow(trimmed.substring(renderCursorPos), (float) whatIsThisMojang, (float) y, color);
+				whatIsThisMojang = fontRenderer.drawString(trimmed.substring(renderCursorPos), whatIsThisMojang, y, color, true);
 			}
 
 			if (shouldDisplayCursor) {
@@ -418,43 +392,41 @@ public class GuiNoteTitleField extends Gui {
 	}
 
 	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+		int i1;
+
 		if (startX < endX) {
-			int i = startX;
+			i1 = startX;
 			startX = endX;
-			endX = i;
+			endX = i1;
 		}
 
 		if (startY < endY) {
-			int j = startY;
+			i1 = startY;
 			startY = endY;
-			endY = j;
+			endY = i1;
 		}
 
-		if (endX > xPosition + width) {
-			endX = xPosition + width;
+		if (endX > this.xPosition + this.width) {
+			endX = this.xPosition + this.width;
 		}
 
-		if (startX > xPosition + width) {
-			startX = xPosition + width;
+		if (startX > this.xPosition + this.width) {
+			startX = this.xPosition + this.width;
 		}
 
-		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer buffer = tessellator.getBuffer();
-
-		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
-
-		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.pos(startX, endY, 0.0D).endVertex();
-		buffer.pos(endX, endY, 0.0D).endVertex();
-		buffer.pos(endX, startY, 0.0D).endVertex();
-		buffer.pos(startX, startY, 0.0D).endVertex();
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glLogicOp(GL11.GL_OR_REVERSE);
+		tessellator.startDrawingQuads();
+		tessellator.addVertex((double) startX, (double) endY, 0.0D);
+		tessellator.addVertex((double) endX, (double) endY, 0.0D);
+		tessellator.addVertex((double) endX, (double) startY, 0.0D);
+		tessellator.addVertex((double) startX, (double) startY, 0.0D);
 		tessellator.draw();
-
-		GlStateManager.disableColorLogic();
-		GlStateManager.enableTexture2D();
+		GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void setMaxStringLength(int length) {
@@ -545,7 +517,7 @@ public class GuiNoteTitleField extends Gui {
 				lineScrollOffset -= lineScrollOffset - position;
 			}
 
-			lineScrollOffset = MathHelper.clamp(lineScrollOffset, 0, length);
+			lineScrollOffset = MathHelper.clamp_int(lineScrollOffset, 0, length);
 		}
 	}
 
@@ -560,4 +532,25 @@ public class GuiNoteTitleField extends Gui {
 	public void setVisible(boolean isVisible) {
 		visible = isVisible;
 	}
+
+	public static boolean isAltKeyDown() {
+		return Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
+	}
+
+	public static boolean isKeyComboCtrlX(int keyID) {
+		return keyID == 45 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlV(int keyID) {
+		return keyID == 47 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlC(int keyID) {
+		return keyID == 46 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
+	public static boolean isKeyComboCtrlA(int keyID) {
+		return keyID == 30 && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !isAltKeyDown();
+	}
+
 }
