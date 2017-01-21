@@ -32,13 +32,7 @@ public final class StringUtils {
 			}
 		}
 
-		if (!temp.isEmpty()) {
-			strings.add(temp);
-		}
-
-		if (strings.isEmpty()) {
-			strings.add("");
-		}
+		strings.add(temp);
 
 		return strings;
 	}
