@@ -92,7 +92,7 @@ public class Scope {
 			return REMOTE;
 		}
 
-		return null;
+		return GLOBAL;
 	}
 
 	public static Scope getCurrentScopeOrGlobal(boolean global) {
@@ -100,15 +100,17 @@ public class Scope {
 	}
 
 	public static Scope getScopeFromParentFile(File parentFile) {
-		if (parentFile.equals(GLOBAL.getRootSaveDirectory())) {
-			return GLOBAL;
-		} else if (parentFile.getParentFile().equals(LOCAL.getRootSaveDirectory())) {
+		if (LOCAL.getRootSaveDirectory().equals(parentFile.getParentFile())) {
 			return LOCAL;
-		} else if (parentFile.getParentFile().equals(REMOTE.getRootSaveDirectory())) {
+		} else if (REMOTE.getRootSaveDirectory().equals(parentFile.getParentFile())) {
 			return REMOTE;
 		}
 
-		return null;
+		return GLOBAL;
+	}
+
+	public static boolean currentScopeIsValid() {
+		return getCurrentScope() != GLOBAL;
 	}
 
 	public static boolean isLocal() {

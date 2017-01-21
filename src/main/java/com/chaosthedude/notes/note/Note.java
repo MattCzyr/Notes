@@ -262,9 +262,11 @@ public class Note {
 
 	public static List<Note> getCurrentNotes() {
 		final List<Note> notes = new ArrayList<Note>();
-		for (final File file : Scope.getCurrentScope().getCurrentSaveDirectory().listFiles()) {
-			if (FileUtils.isNote(file)) {
-				notes.add(new Note(file));
+		if (Scope.currentScopeIsValid()) {
+			for (final File file : Scope.getCurrentScope().getCurrentSaveDirectory().listFiles()) {
+				if (FileUtils.isNote(file)) {
+					notes.add(new Note(file));
+				}
 			}
 		}
 
