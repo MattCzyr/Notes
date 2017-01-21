@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.11,1.11.2]")
+@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.11]")
 
 public class Notes {
 
