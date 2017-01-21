@@ -199,6 +199,10 @@ public class Note {
 	}
 
 	public void delete() {
+		if (isPinned()) {
+			Notes.pinnedNote = null;
+		}
+
 		saveFile.delete();
 	}
 
@@ -246,6 +250,10 @@ public class Note {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+
+	public boolean isPinned() {
+		return equals(Notes.pinnedNote);
 	}
 
 	public boolean isValidScope() {
