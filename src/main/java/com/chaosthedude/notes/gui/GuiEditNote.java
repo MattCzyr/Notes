@@ -176,15 +176,15 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(mc.world.getBiome(new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ))));
+		noteTextField.insert(StringUtils.fixBiomeName(mc.theWorld.getBiome(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ))));
 	}
 
 	private void insertChunk() {
-		noteTextField.insert((int) mc.player.chunkCoordX + ", " + (int) mc.player.chunkCoordY + ", " + (int) mc.player.chunkCoordZ);
+		noteTextField.insert((int) mc.thePlayer.chunkCoordX + ", " + (int) mc.thePlayer.chunkCoordY + ", " + (int) mc.thePlayer.chunkCoordZ);
 	}
 
 	private void insertCoords() {
-		noteTextField.insert((int) mc.player.posX + ", " + (int) mc.player.posY + ", " + (int) mc.player.posZ);
+		noteTextField.insert((int) mc.thePlayer.posX + ", " + (int) mc.thePlayer.posY + ", " + (int) mc.thePlayer.posZ);
 	}
 
 }

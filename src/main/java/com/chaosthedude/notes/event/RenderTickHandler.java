@@ -24,8 +24,8 @@ public class RenderTickHandler {
 
 				final ScaledResolution res = new ScaledResolution(mc);
 				final String text = Notes.pinnedNote.getFilteredText();
-				final int maxWidth = MathHelper.floor(res.getScaledWidth() * ConfigHandler.pinnedWidthScale);
-				final int maxHeight = MathHelper.floor(res.getScaledHeight() * ConfigHandler.pinnedHeightScale);
+				final int maxWidth = MathHelper.floor_double(res.getScaledWidth() * ConfigHandler.pinnedWidthScale);
+				final int maxHeight = MathHelper.floor_double(res.getScaledHeight() * ConfigHandler.pinnedHeightScale);
 				final int renderWidth = RenderUtils.getSplitStringWidth(text, maxWidth);
 				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxWidth);
 				final int width = res.getScaledWidth() - renderWidth;

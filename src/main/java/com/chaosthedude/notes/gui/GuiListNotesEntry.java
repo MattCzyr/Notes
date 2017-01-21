@@ -39,7 +39,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
 		mc.fontRendererObj.drawString(note.getTitle(), x + 1, y + 1, 0xffffff);
 		mc.fontRendererObj.drawString(note.getScope().format(), x + 4 + mc.fontRendererObj.getStringWidth(note.getTitle()), y + 1, 0x808080);
-		mc.fontRendererObj.drawString(note.getPreview(MathHelper.floor(listWidth * 0.9)), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRendererObj.drawString(note.getPreview(MathHelper.floor_double(listWidth * 0.9)), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
 		mc.fontRendererObj.drawString(note.getLastModifiedString(), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

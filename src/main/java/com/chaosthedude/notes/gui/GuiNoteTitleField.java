@@ -212,7 +212,7 @@ public class GuiNoteTitleField extends Gui {
 
 	public void setCursorPosition(int pos) {
 		cursorPosition = pos;
-		cursorPosition = MathHelper.clamp(cursorPosition, 0, text.length());
+		cursorPosition = MathHelper.clamp_int(cursorPosition, 0, text.length());
 		setSelectionPos(cursorPosition);
 	}
 
@@ -545,7 +545,7 @@ public class GuiNoteTitleField extends Gui {
 				lineScrollOffset -= lineScrollOffset - position;
 			}
 
-			lineScrollOffset = MathHelper.clamp(lineScrollOffset, 0, length);
+			lineScrollOffset = MathHelper.clamp_int(lineScrollOffset, 0, length);
 		}
 	}
 
