@@ -3,6 +3,7 @@ package com.chaosthedude.notes.note;
 import java.io.File;
 
 import com.chaosthedude.notes.util.FileUtils;
+import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -123,7 +124,7 @@ public class Scope {
 
 	public static String getServerIP() {
 		if (isRemote()) {
-			return mc.getCurrentServerData().serverIP;
+			return StringUtils.filterFileName(mc.getCurrentServerData().serverIP);
 		}
 
 		return null;
@@ -131,7 +132,7 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			return mc.getIntegratedServer().getFolderName();
+			return StringUtils.filterFileName(mc.getIntegratedServer().getFolderName());
 		}
 
 		return null;
