@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.world.biome.Biome;
 
 public final class StringUtils {
@@ -69,6 +70,15 @@ public final class StringUtils {
 		String filtered = s.replace(String.valueOf('\t'), "    ");
 		for (char c : FILTER_CHARS) {
 			filtered = filtered.replace(String.valueOf(c), "");
+		}
+
+		return filtered;
+	}
+
+	public static String filterFileName(String s) {
+		String filtered = s;
+		for (char c : ChatAllowedCharacters.ILLEGAL_FILE_CHARACTERS) {
+			filtered = filtered.replace(String.valueOf(c), "~");
 		}
 
 		return filtered;
