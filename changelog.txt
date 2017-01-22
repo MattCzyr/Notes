@@ -1,0 +1,25 @@
+-------------------------------------------------
+ VERSION 1.0.1 - 1.11.2, 1.10.2, 1.7.10
+-------------------------------------------------
+ 1.11.2, 1.10.2, 1.7.10:
+    FIXES:
+	- Fixed NPE that occured when opening the Notes GUI on some multiplayer servers
+	- Fixed pinned note not being unpinned upon deletion
+	- Fixed notes being loaded if the left side of its list entry is clicked
+
+
+-------------------------------------------------
+ VERSION 1.0.0 - 1.11.2, 1.11, 1.10.2, 1.7.10
+-------------------------------------------------
+ 1.11.2:
+    UPDATES:
+	- First release for MC 1.11.2 (Forge #2213)
+ 1.11:
+    UPDATES:
+	- First release for MC 1.11 (Forge #2199)
+ 1.10.2:
+    UPDATES:
+	- First release for MC 1.10.2 (Forge #2202)
+ 1.7.10:
+    UPDATES:
+	- First release for MC 1.7.10 (Forge #1614)
