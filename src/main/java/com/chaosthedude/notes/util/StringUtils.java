@@ -84,6 +84,15 @@ public final class StringUtils {
 		return filtered;
 	}
 
+	public static String filterFileName(String s) {
+		String filtered = s;
+		for (char c : ChatAllowedCharacters.allowedCharacters) {
+			filtered = filtered.replace(String.valueOf(c), "~");
+		}
+
+		return filtered;
+	}
+
 	public static String trimStringNewline(String text) {
 		while (text != null && text.endsWith("\n")) {
 			text = text.substring(0, text.length() - 1);
