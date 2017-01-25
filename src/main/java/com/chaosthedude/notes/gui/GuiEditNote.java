@@ -99,6 +99,9 @@ public class GuiEditNote extends GuiScreen {
 	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == Keyboard.KEY_ESCAPE) {
 			mc.displayGuiScreen(parentScreen);
+		} else if (keyCode == Keyboard.KEY_TAB && noteTitleField.isFocused()) {
+			noteTitleField.setFocused(false);
+			noteTextField.setFocused(true);
 		} else if (noteTitleField.isFocused()) {
 			noteTitleField.textboxKeyTyped(typedChar, keyCode);
 		} else if (noteTextField.isFocused()) {
