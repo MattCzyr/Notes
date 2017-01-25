@@ -59,9 +59,7 @@ public final class StringUtils {
 			}
 		}
 
-		if (!temp.isEmpty()) {
-			strings.add(new WrappedString(temp, wrapped));
-		}
+		strings.add(new WrappedString(temp, wrapped));
 
 		return strings;
 	}
