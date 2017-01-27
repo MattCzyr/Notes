@@ -4,6 +4,7 @@
  1.11.2, 1.10.2, 1.7.10:
     FEATURES:
 	- Added the ability to tab from title field to text field
+	- Added a config field to set the HUD position of a pinned note
     FIXES:
 	- Fixed IndexOutOfBoundsException when ending a selection on an empty line
 
