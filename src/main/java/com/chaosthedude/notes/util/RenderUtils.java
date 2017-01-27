@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.sun.prism.impl.VertexBuffer;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 
@@ -78,6 +77,26 @@ public class RenderUtils {
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
+	}
+
+	public static int getRenderWidth(String position, int width, ScaledResolution res) {
+		final String positionLower = position.toLowerCase();
+		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("bottom_left")) {
+			return 10;
+		}
+
+		return res.getScaledWidth() - width;
+	}
+
+	public static int getRenderHeight(String position, int height, ScaledResolution res) {
+		final String positionLower = position.toLowerCase();
+		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
+			return 5;
+		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
+			return res.getScaledHeight() - height - 5;
+		}
+
+		return (res.getScaledHeight() / 2) - (height / 2);
 	}
 
 }

@@ -17,6 +17,7 @@ public class ConfigHandler {
 	public static String dateFormat = "M/d/yy h:mm a";
 	public static boolean useInGameEditor = true;
 	public static boolean useInGameViewer = true;
+	public static String pinnedNotePosition = "center_right";
 	public static double pinnedWidthScale = 0.2;
 	public static double pinnedHeightScale = 1.0;
 	public static boolean wrapNote = true;
@@ -41,6 +42,9 @@ public class ConfigHandler {
 
 		comment = "If false, the system's default text viewer will be used to open notes.";
 		useInGameViewer = loadBool("notes.inGameViewer", comment, useInGameViewer);
+
+		comment = "The HUD position of a pinned note. Values: top_left, top_right, center_left, center_right, bottom_left, bottom_right";
+		pinnedNotePosition = loadString("notes.pinnedNotePosition", comment, pinnedNotePosition);
 
 		comment = "The maximum width of a pinned note relative to the screen's width.";
 		pinnedWidthScale = loadDouble("notes.pinnedWidthScale", comment, pinnedWidthScale);
