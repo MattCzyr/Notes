@@ -85,7 +85,7 @@ public class RenderUtils {
 
 	public static int getRenderWidth(String position, int width, ScaledResolution res) {
 		final String positionLower = position.toLowerCase();
-		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("top_left")) {
+		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("bottom_left")) {
 			return 10;
 		}
 
@@ -97,7 +97,7 @@ public class RenderUtils {
 		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
-			return res.getScaledHeight() - height;
+			return res.getScaledHeight() - height - 5;
 		}
 
 		return (res.getScaledHeight() / 2) - (height / 2);
