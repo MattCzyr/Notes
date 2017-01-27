@@ -31,11 +31,14 @@ public class RenderTickHandler {
 				final int width = res.getScaledWidth() - renderWidth;
 				final int height = (res.getScaledHeight() / 2) - (renderHeight / 2);
 
-				final float f = mc.gameSettings.chatOpacity * 0.9F + 0.1F;
-				final int color = (int) (255.0F * f);
+				final int fixedRenderWidth = RenderUtils.getRenderWidth(ConfigHandler.pinnedNotePosition, renderWidth, res);
+				final int fixedRenderHeight = RenderUtils.getRenderHeight(ConfigHandler.pinnedNotePosition, renderHeight, res);
 
-				RenderUtils.drawRect(width - 10, height - 5, res.getScaledWidth(), height + renderHeight + 5, color / 2 << 24);
-				RenderUtils.drawSplitStringOnHUD(text, width - 5, height, maxWidth);
+				final float opacity = mc.gameSettings.chatOpacity * 0.9F + 0.1F;
+				final int color = (int) (255.0F * opacity);
+
+				RenderUtils.drawRect(fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color / 2 << 24);
+				RenderUtils.drawSplitStringOnHUD(text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth);
 			}
 		}
 	}

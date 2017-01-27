@@ -2,12 +2,16 @@ package com.chaosthedude.notes.util;
 
 import java.util.List;
 
+import com.chaosthedude.notes.config.ConfigHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
 
 public class RenderUtils {
 
@@ -77,6 +81,26 @@ public class RenderUtils {
 
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
+	}
+
+	public static int getRenderWidth(String position, int width, ScaledResolution res) {
+		final String positionLower = position.toLowerCase();
+		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("top_left")) {
+			return 10;
+		}
+
+		return res.getScaledWidth() - width;
+	}
+
+	public static int getRenderHeight(String position, int height, ScaledResolution res) {
+		final String positionLower = position.toLowerCase();
+		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
+			return 5;
+		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
+			return res.getScaledHeight() - height;
+		}
+
+		return (res.getScaledHeight() / 2) - (height / 2);
 	}
 
 }
