@@ -1,0 +1,39 @@
+# Notes - Language File
+# GERMANY - GERMAN
+
+# GUI - TITLES
+notes.newNote=Neue Notiz
+notes.editNote=Notiz bearbeiten
+notes.selectNote=Notiz auswählen
+
+# GUI - BUTTONS
+notes.biome=Biom
+notes.chunk=Chunk
+notes.coordinates=Koordinaten
+notes.copy=Kopieren
+notes.delete=Löschen
+notes.edit=Bearbeiten
+notes.global=Global
+notes.insert=Einfügen
+notes.new=Neu
+notes.off=Aus
+notes.on=Ein
+notes.pin=Anheften
+notes.save=Speichern
+notes.select=Auswählen
+notes.unpin=Entfernen
+
+# SCOPE
+notes.scope.local=Lokal
+notes.scope.global=Global
+notes.scope.remote=Remote
+
+# CONTROLS - CATEGORIES
+key.category.notes=Notizen
+
+# CONTROLS - KEYBINDS
+key.openNotes=Notizen öffnen
+
+# STRINGS
+notes.lastModified=Zuletzt bearbeitet
+notes.saveAs=Wird gespeichert als %s
