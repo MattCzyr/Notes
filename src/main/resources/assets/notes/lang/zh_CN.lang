@@ -35,5 +35,6 @@ key.category.notes=Notes
 key.openNotes=打开便笺
 
 # STRINGS
+notes.confirmDelete=删除此记事？
 notes.lastModified=上次修改时间
 notes.saveAs=标题将会被保存为%s

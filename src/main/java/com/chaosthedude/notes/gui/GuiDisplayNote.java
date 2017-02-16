@@ -153,7 +153,7 @@ public class GuiDisplayNote extends GuiScreen {
 
 				GuiDisplayNote.this.mc.displayGuiScreen(parentScreen);
 			}
-		}, "Delete this note?", note.getTitle(), 0));
+		}, I18n.format("notes.confirmDelete"), note.getTitle(), 0));
 	}
 
 }

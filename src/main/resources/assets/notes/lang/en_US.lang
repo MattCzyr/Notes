@@ -35,5 +35,6 @@ key.category.notes=Notes
 key.openNotes=Open Notes
 
 # STRINGS
+notes.confirmDelete=Delete this note?
 notes.lastModified=Last Modified
 notes.saveAs=Will be saved as %s
