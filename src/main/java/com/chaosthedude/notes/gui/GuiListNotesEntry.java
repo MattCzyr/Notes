@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -106,7 +107,7 @@ public class GuiListNotesEntry implements GuiNotesListExtended.IGuiListEntry {
 
 				GuiListNotesEntry.this.mc.displayGuiScreen(GuiListNotesEntry.this.guiNotes);
 			}
-		}, "Delete this note?", note.getTitle(), 0));
+		}, I18n.format("notes.confirmDelete"), note.getTitle(), 0));
 	}
 
 }
