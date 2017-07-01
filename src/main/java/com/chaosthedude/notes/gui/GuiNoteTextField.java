@@ -601,7 +601,11 @@ public class GuiNoteTextField extends Gui {
 	}
 
 	private String getSelectedText() {
-		return text.substring(getSelectionStart(), getSelectionEnd());
+		if (getSelectionStart() >= 0 && getSelectionEnd() >= 0) {
+			return text.substring(getSelectionStart(), getSelectionEnd());
+		}
+
+		return "";
 	}
 
 	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
