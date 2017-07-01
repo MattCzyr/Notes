@@ -81,14 +81,14 @@ public class GuiDisplayNote extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		drawCenteredString(fontRendererObj, note.getTitle(), width / 2 + 60, 15, -1);
+		drawCenteredString(fontRenderer, note.getTitle(), width / 2 + 60, 15, -1);
 		displayNote();
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
 	public void displayNote() {
-		fontRendererObj.drawSplitString(pages.get(page), 160, 40, width - 200, 0xFFFFFF);
+		fontRenderer.drawSplitString(pages.get(page), 160, 40, width - 200, 0xFFFFFF);
 	}
 
 	private void setupButtons() {
@@ -104,7 +104,7 @@ public class GuiDisplayNote extends GuiScreen {
 
 	private void setupPages() {
 		if (note != null) {
-			final List<String> lines = ConfigHandler.wrapNote ? mc.fontRendererObj.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
+			final List<String> lines = ConfigHandler.wrapNote ? fontRenderer.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";

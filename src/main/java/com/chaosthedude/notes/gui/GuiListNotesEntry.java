@@ -36,11 +36,11 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-		mc.fontRendererObj.drawString(note.getTitle(), x + 1, y + 1, 0xffffff);
-		mc.fontRendererObj.drawString(note.getScope().format(), x + 4 + mc.fontRendererObj.getStringWidth(note.getTitle()), y + 1, 0x808080);
-		mc.fontRendererObj.drawString(note.getPreview(MathHelper.floor(listWidth * 0.9)), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRendererObj.drawString(note.getLastModifiedString(), x + 1, y + mc.fontRendererObj.FONT_HEIGHT + 14, 0x808080);
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
+		mc.fontRenderer.drawString(note.getTitle(), x + 1, y + 1, 0xffffff);
+		mc.fontRenderer.drawString(note.getScope().format(), x + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), y + 1, 0x808080);
+		mc.fontRenderer.drawString(note.getPreview(MathHelper.floor(listWidth * 0.9)), x + 1, y + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(note.getLastModifiedString(), x + 1, y + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
@@ -61,7 +61,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 	}
 
 	@Override
-	public void setSelected(int par1, int par2, int par3) {
+	public void updatePosition(int par1, int par2, int par3, float par4) {
 	}
 
 	public void editNote() {

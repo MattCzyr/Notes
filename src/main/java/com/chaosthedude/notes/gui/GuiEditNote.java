@@ -143,12 +143,12 @@ public class GuiEditNote extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		drawCenteredString(fontRendererObj, guiTitle, width / 2 + 60, 15, 0xffffff);
+		drawCenteredString(fontRenderer, guiTitle, width / 2 + 60, 15, 0xffffff);
 
 		noteTitleField.drawTextBox();
 		noteTextField.drawScreen(mouseX, mouseY, partialTicks);
 
-		drawCenteredString(fontRendererObj, I18n.format("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		drawCenteredString(fontRenderer, I18n.format("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -169,11 +169,11 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	private void setupTextFields() {
-		noteTitleField = new GuiNoteTitleField(9, fontRendererObj, 130, 40, width - 140, 20);
+		noteTitleField = new GuiNoteTitleField(9, fontRenderer, 130, 40, width - 140, 20);
 		noteTitleField.setText(note.getTitle());
 		noteTitleField.setFocused(true);
 
-		noteTextField = new GuiNoteTextField(fontRendererObj, 130, 85, width - 140, 136, 5);
+		noteTextField = new GuiNoteTextField(fontRenderer, 130, 85, width - 140, 136, 5);
 		noteTextField.setText(note.getFilteredText());
 	}
 

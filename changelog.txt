@@ -1,4 +1,16 @@
 -------------------------------------------------
+ VERSION 1.1.0 - 1.12, 1.11.2, 1.10.2, 1.7.10
+-------------------------------------------------
+ 1.12:
+	UPDATES:
+	- Updated to MC 1.12 (Forge #2387)
+ 1.11.2, 1.10.2, 1.7.10:
+    FIXES:
+	- Fixed FileNotFoundException after editing a pinned note
+	- Fixed StringIndexOutOfBoundsException when attempting to copy an empty selection
+
+
+-------------------------------------------------
  VERSION 1.1.0 - 1.11.2, 1.10.2, 1.7.10
 -------------------------------------------------
  1.11.2, 1.10.2, 1.7.10:

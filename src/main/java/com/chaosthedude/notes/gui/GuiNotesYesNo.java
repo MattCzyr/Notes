@@ -49,7 +49,7 @@ public class GuiNotesYesNo extends GuiScreen {
 		buttonList.add(new GuiNotesButton(1, width / 2 + 5, height / 6 + 96, 150, 20, cancelButtonText));
 
 		listLines.clear();
-		listLines.addAll(fontRendererObj.listFormattedStringToWidth(messageLine2, width - 50));
+		listLines.addAll(fontRenderer.listFormattedStringToWidth(messageLine2, width - 50));
 	}
 
 	@Override
@@ -60,12 +60,12 @@ public class GuiNotesYesNo extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		drawCenteredString(fontRendererObj, messageLine1, width / 2, 70, 16777215);
+		drawCenteredString(fontRenderer, messageLine1, width / 2, 70, 16777215);
 		int i = 90;
 
 		for (String s : listLines) {
-			drawCenteredString(fontRendererObj, s, width / 2, i, 16777215);
-			i += fontRendererObj.FONT_HEIGHT;
+			drawCenteredString(fontRenderer, s, width / 2, i, 16777215);
+			i += fontRenderer.FONT_HEIGHT;
 		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);

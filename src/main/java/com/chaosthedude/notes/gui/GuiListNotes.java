@@ -10,9 +10,9 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -82,7 +82,7 @@ public class GuiListNotes extends GuiListExtended {
 			GlStateManager.disableLighting();
 			GlStateManager.disableFog();
 			final Tessellator tessellator = Tessellator.getInstance();
-			final VertexBuffer buffer = tessellator.getBuffer();
+			final BufferBuilder buffer = tessellator.getBuffer();
 			drawContainerBackground(tessellator);
 			final int insideLeft = left + width / 2 - getListWidth() / 2 + 2;
 			final int insideTop = top + 4 - (int) amountScrolled;
@@ -90,7 +90,7 @@ public class GuiListNotes extends GuiListExtended {
 				drawListHeader(insideLeft, insideTop, tessellator);
 			}
 
-			drawSelectionBox(insideLeft, insideTop, parMouseX, parMouseY);
+			drawSelectionBox(insideLeft, insideTop, parMouseX, parMouseY, partialTicks);
 		}
 	}
 
@@ -100,23 +100,23 @@ public class GuiListNotes extends GuiListExtended {
 	}
 
 	@Override
-	protected void drawSelectionBox(int insideLeft, int insideTop, int parMouseX, int parMouseY) {
+	protected void drawSelectionBox(int insideLeft, int insideTop, int mouseX, int mouseY, float partialTicks) {
 		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer buffer = tessellator.getBuffer();
+		final BufferBuilder buffer = tessellator.getBuffer();
 
 		for (int i = 0; i < getSize(); i++) {
 			int k = insideTop + i * slotHeight + headerPadding;
 			int l = slotHeight - 4;
 
 			if (k > bottom || k + l < top) {
-				updateItemPos(i, insideLeft, k);
+				updateItemPos(i, insideLeft, k, partialTicks);
 			}
 
 			if (showSelectionBox && isSelected(i)) {
 				RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getListWidth() + 4, k + slotHeight, 255 / 2 << 24);
 			}
 
-			drawSlot(i, insideLeft, k, l, parMouseX, parMouseY);
+			drawSlot(i, insideLeft, k, l, mouseX, mouseY, partialTicks);
 		}
 	}
 

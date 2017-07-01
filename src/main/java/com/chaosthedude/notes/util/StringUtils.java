@@ -12,7 +12,7 @@ public final class StringUtils {
 
 	public static final char[] FILTER_CHARS = new char[] { '\r', '\f' };
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static String insertStringAt(String insert, String insertTo, int pos) {
 		return insertTo.substring(0, pos) + insert + insertTo.substring(pos, insertTo.length());

@@ -2,21 +2,18 @@ package com.chaosthedude.notes.util;
 
 import java.util.List;
 
-import com.chaosthedude.notes.config.ConfigHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
 
 public class RenderUtils {
 
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawSplitStringOnHUD(String str, int x, int y, int wrapWidth) {
 		renderSplitString(str, x, y, wrapWidth, true);
@@ -65,7 +62,7 @@ public class RenderUtils {
 		final float alpha = (float) (color >> 24 & 255) / 255.0F;
 
 		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer buffer = tessellator.getBuffer();
+		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();

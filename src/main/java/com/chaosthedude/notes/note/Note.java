@@ -28,7 +28,7 @@ public class Note {
 
 	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.dateFormat);
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRendererObj;
+	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	private String title;
 	private String rawText;

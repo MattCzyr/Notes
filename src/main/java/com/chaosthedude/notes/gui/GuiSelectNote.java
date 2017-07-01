@@ -68,7 +68,7 @@ public class GuiSelectNote extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		selectionList.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(fontRendererObj, I18n.format("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
+		drawCenteredString(fontRenderer, I18n.format("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
