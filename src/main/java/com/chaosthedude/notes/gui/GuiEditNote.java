@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import org.lwjgl.input.Keyboard;
 
+import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
@@ -32,6 +33,7 @@ public class GuiEditNote extends GuiScreen {
 	private Note note;
 	private String guiTitle;
 	private Scope scope;
+	private boolean pinned;
 
 	public GuiEditNote(GuiScreen parentScreen, @Nullable Note note) {
 		this.parentScreen = parentScreen;
@@ -44,6 +46,7 @@ public class GuiEditNote extends GuiScreen {
 		}
 
 		scope = Scope.getCurrentScope();
+		pinned = this.note.isPinned();
 	}
 
 	@Override
@@ -74,6 +77,9 @@ public class GuiEditNote extends GuiScreen {
 				updateNote();
 				note.save();
 				mc.displayGuiScreen(new GuiDisplayNote(parentScreen, note));
+				if (pinned) {
+					Notes.pinnedNote = note;
+				}
 			} else if (button == insertBiomeButton) {
 				insertBiome();
 			} else if (button == insertChunkButton) {
