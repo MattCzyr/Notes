@@ -1,0 +1,40 @@
+# Notes - Language File
+# FRANCE - FRENCH
+
+# GUI - TITLES
+notes.newNote=Nouvelle note
+notes.editNote=Editer
+notes.selectNote=Sélectionner
+
+# GUI - BUTTONS
+notes.biome=Biome
+notes.chunk=Chunk
+notes.coordinates=Coordonnées
+notes.copy=Copier
+notes.delete=Supprimer
+notes.edit=Editer
+notes.global=Global
+notes.insert=Insérer
+notes.new=Nouveau
+notes.off=Non
+notes.on=Oui
+notes.pin=Epingler
+notes.save=Sauvegarder
+notes.select=Sélectionner
+notes.unpin=Détacher
+
+# SCOPE
+notes.scope.local=Local
+notes.scope.global=Global
+notes.scope.remote=Remote
+
+# CONTROLS - CATEGORIES
+key.category.notes=Notes
+
+# CONTROLS - KEYBINDS
+key.openNotes=Ouvrir Notes
+
+# STRINGS
+notes.confirmDelete=Supprimer cette note?
+notes.lastModified=Dernière modification
+notes.saveAs=Sauvegardé sous %s
