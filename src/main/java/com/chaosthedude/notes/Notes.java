@@ -13,8 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.12]")
-
+@Mod(modid = Notes.MODID, name = Notes.NAME, version = Notes.VERSION, acceptedMinecraftVersions = "[1.12]", clientSideOnly = true)
 public class Notes {
 
 	public static final String MODID = "notes";
