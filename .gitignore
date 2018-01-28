@@ -55,3 +55,6 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+/src/main/main.iml
+/.idea/
+/out/
