@@ -18,6 +18,11 @@ ehthumbs.db
 /eclipse
 /bin
 
+# IntelliJ
+out/
+.idea/
+*.iml
+
 # Folder config file
 Desktop.ini
 
@@ -55,6 +60,3 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-/src/main/main.iml
-/.idea/
-/out/
