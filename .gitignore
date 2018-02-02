@@ -18,6 +18,11 @@ ehthumbs.db
 /eclipse
 /bin
 
+# IntelliJ
+out/
+.idea/
+*.iml
+
 # Folder config file
 Desktop.ini
 

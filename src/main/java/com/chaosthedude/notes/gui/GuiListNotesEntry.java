@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -111,7 +112,7 @@ public class GuiListNotesEntry implements GuiListExtended.IGuiListEntry {
 
 				GuiListNotesEntry.this.mc.displayGuiScreen(GuiListNotesEntry.this.guiNotes);
 			}
-		}, "Delete this note?", note.getTitle(), 0));
+		}, I18n.format("notes.confirmDelete"), note.getTitle(), 0));
 	}
 
 }
