@@ -1,26 +1,20 @@
 package com.chaosthedude.notes.gui;
 
-import java.util.List;
-
-import org.lwjgl.input.Mouse;
-
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.RenderUtils;
-import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class GuiListNotes extends GuiListExtended {
+@OnlyIn(Dist.CLIENT)
+public class GuiListNotes extends GuiListExtended<GuiListNotesEntry> {
 
 	private final GuiSelectNote guiNotes;
-	private final List<GuiListNotesEntry> entries = Lists.<GuiListNotesEntry> newArrayList();
 	private int selectedIndex = -1;
 
 	public GuiListNotes(GuiSelectNote guiNotes, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
@@ -44,17 +38,7 @@ public class GuiListNotes extends GuiListExtended {
 		return slotIndex == selectedIndex;
 	}
 
-	@Override
-	public GuiListNotesEntry getListEntry(int index) {
-		return (GuiListNotesEntry) entries.get(index);
-	}
-
-	@Override
-	protected int getSize() {
-		return entries.size();
-	}
-
-	@Override
+	/*@Override
 	public void handleMouseInput() {
 		int i2 = Mouse.getEventDWheel();
 		if (i2 != 0) {
@@ -68,13 +52,11 @@ public class GuiListNotes extends GuiListExtended {
 		} else {
 			super.handleMouseInput();
 		}
-	}
+	}*/
 
 	@Override
 	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
 		if (visible) {
-			mouseX = parMouseX;
-			mouseY = parMouseY;
 			drawBackground();
 			int x = getScrollBarX();
 			int j = x + 6;
@@ -119,15 +101,20 @@ public class GuiListNotes extends GuiListExtended {
 			drawSlot(i, insideLeft, k, l, mouseX, mouseY, partialTicks);
 		}
 	}
+	
+	public GuiListNotesEntry getListEntry(int index) {
+		return getChildren().get(index);
+	} 
 
 	public GuiListNotesEntry getSelectedNote() {
 		return selectedIndex >= 0 && selectedIndex < getSize() ? getListEntry(selectedIndex) : null;
 	}
 
 	public void refreshList() {
-		entries.clear();
+		clearEntries();
 		for (Note note : Note.getCurrentNotes()) {
-			entries.add(new GuiListNotesEntry(this, note));
+			System.out.println("adding note");
+			addEntry(new GuiListNotesEntry(this, note));
 		}
 	}
 

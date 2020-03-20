@@ -1,109 +1,52 @@
 package com.chaosthedude.notes.config;
 
-import java.io.File;
-
-import com.chaosthedude.notes.Notes;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
+	
+	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-	public static Configuration config;
-
-	public static String dateFormat = "M/d/yy h:mm a";
-	public static boolean useInGameEditor = true;
-	public static boolean useInGameViewer = true;
-	public static String pinnedNotePosition = "center_right";
-	public static double pinnedWidthScale = 0.2;
-	public static double pinnedHeightScale = 1.0;
-	public static boolean wrapNote = true;
-
-	public static void loadConfig(File configFile) {
-		config = new Configuration(configFile);
-
-		config.load();
-		init();
-
-		MinecraftForge.EVENT_BUS.register(new ChangeListener());
-	}
-
-	public static void init() {
-		String comment;
-
-		comment = "The date format used in timestamps.";
-		dateFormat = loadString("notes.dateFormat", comment, dateFormat);
-
-		comment = "If false, the system's default text editor will be used to edit notes.";
-		useInGameEditor = loadBool("notes.inGameEditor", comment, useInGameEditor);
-
-		comment = "If false, the system's default text viewer will be used to open notes.";
-		useInGameViewer = loadBool("notes.inGameViewer", comment, useInGameViewer);
-
-		comment = "The HUD position of a pinned note. Values: top_left, top_right, center_left, center_right, bottom_left, bottom_right";
-		pinnedNotePosition = loadString("notes.pinnedNotePosition", comment, pinnedNotePosition);
-
-		comment = "The maximum width of a pinned note relative to the screen's width.";
-		pinnedWidthScale = loadDouble("notes.pinnedWidthScale", comment, pinnedWidthScale);
-
-		comment = "The maximum percentage of the screen's display height that a pinned note can take up.";
-		pinnedHeightScale = loadDouble("notes.pinnedHeightScale", comment, pinnedHeightScale);
-
-		comment = "Whether or not displayed notes will be word wrapped.";
-		wrapNote = loadBool("notes.wrapNote", comment, wrapNote);
-
-		if (config.hasChanged()) {
-			config.save();
-		}
-	}
-
-	public static String loadString(String name, String comment, String def) {
-		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
-
-		return prop.getString();
-	}
-
-	public static int loadInt(String name, String comment, int def) {
-		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
-		int val = prop.getInt(def);
-		if (val <= 0) {
-			val = def;
-			prop.set(def);
+	public static final Client CLIENT = new Client(CLIENT_BUILDER);
+	
+	public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
+	
+	public static class Client {
+		public final ForgeConfigSpec.ConfigValue<String> dateFormat;
+		public final ForgeConfigSpec.BooleanValue useInGameEditor;
+		public final ForgeConfigSpec.BooleanValue useInGameViewer;
+		public final ForgeConfigSpec.ConfigValue<String> pinnedNotePosition;
+		public final ForgeConfigSpec.DoubleValue pinnedWidthScale;
+		public final ForgeConfigSpec.DoubleValue pinnedHeightScale;
+		public final ForgeConfigSpec.BooleanValue wrapNote;
+		
+		Client(ForgeConfigSpec.Builder builder) {
+			String desc;
+			builder.push("Client");
+			
+			desc = "The date format used in timestamps.";
+			dateFormat = builder.comment(desc).define("dateFormat", "M/d/yy h:mm a");
+	
+			desc = "Determines whether the in-game editor or the system's default text editor will be used to edit notes. If the system editor is not available, the in-game editor will be used.";
+			useInGameEditor = builder.comment(desc).define("useInGameEditor", true);
+	
+			desc = "Determines whether the in-game viewer or the system's default text viewer will be used to view notes. If the system viewer is not available, the in-game viewer will be used.";
+			useInGameViewer = builder.comment(desc).define("useInGameViewer", true);
+	
+			desc = "The HUD position of a pinned note. Values: top_left, top_right, center_left, center_right, bottom_left, bottom_right";
+			pinnedNotePosition = builder.comment(desc).define("pinnedNotePosition", "center_right");
+	
+			desc = "The maximum width of a pinned note relative to the screen's width.";
+			pinnedWidthScale = builder.comment(desc).defineInRange("pinnedWidthScale", 0.2, 0.05, 1.0);
+	
+			desc = "The maximum percentage of the screen's display height that a pinned note can take up.";
+			pinnedHeightScale = builder.comment(desc).defineInRange("pinnedHeightScale", 1.0, 0.05, 1.0);
+	
+			desc = "Determines whether displayed notes will be word wrapped.";
+			wrapNote = builder.comment(desc).define("wrapNote", true);
+			
+			builder.pop();
 		}
 
-		return val;
-	}
-
-	public static double loadDouble(String name, String comment, double def) {
-		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
-		double val = prop.getDouble(def);
-		if (val <= 0) {
-			val = def;
-			prop.set(def);
-		}
-
-		return val;
-	}
-
-	public static boolean loadBool(String name, String comment, boolean def) {
-		final Property prop = config.get(Configuration.CATEGORY_GENERAL, name, def);
-		prop.setComment(comment);
-		return prop.getBoolean(def);
-	}
-
-	public static class ChangeListener {
-		@SubscribeEvent
-		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-			if (eventArgs.getModID().equals(Notes.MODID)) {
-				init();
-			}
-		}
 	}
 
 }

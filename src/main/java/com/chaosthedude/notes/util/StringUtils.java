@@ -5,13 +5,14 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.world.biome.Biome;
 
 public final class StringUtils {
 
 	public static final char[] FILTER_CHARS = new char[] { '\r', '\f' };
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static String insertStringAt(String insert, String insertTo, int pos) {
@@ -75,7 +76,7 @@ public final class StringUtils {
 
 	public static String filterFileName(String s) {
 		String filtered = s;
-		for (char c : ChatAllowedCharacters.ILLEGAL_FILE_CHARACTERS) {
+		for (char c : SharedConstants.ILLEGAL_FILE_CHARACTERS) {
 			filtered = filtered.replace(String.valueOf(c), "~");
 		}
 
@@ -92,7 +93,7 @@ public final class StringUtils {
 	}
 
 	public static String fixBiomeName(Biome biome) {
-		final String original = biome.getBiomeName();
+		final String original = I18n.format(biome.getTranslationKey());
 		String fixed = "";
 		char pre = ' ';
 		for (int i = 0; i < original.length(); i++) {

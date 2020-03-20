@@ -1,13 +1,25 @@
 -------------------------------------------------
- VERSION 1.1.0 - 1.12, 1.11.2, 1.10.2, 1.7.10
+ VERSION 1.1.2 - 1.13.2
+-------------------------------------------------
+ 1.13.2:
+    UPDATES:
+    - Updated to MC 1.13.2 (Forge 25.0.219)
+    FEATURES:
+    - Added a "pinned" indicator next to the pinned note in the note selection GUI
+    FIXES:
+    - Fixed a HeadlessException when trying to open a note in the system text editor or viewer on an unsupported system
+
+
+-------------------------------------------------
+ VERSION 1.1.1 - 1.12, 1.11.2, 1.10.2, 1.7.10
 -------------------------------------------------
  1.12:
-	UPDATES:
-	- Updated to MC 1.12 (Forge #2387)
+    UPDATES:
+    - Updated to MC 1.12 (Forge #2387)
  1.11.2, 1.10.2, 1.7.10:
     FIXES:
-	- Fixed FileNotFoundException after editing a pinned note
-	- Fixed StringIndexOutOfBoundsException when attempting to copy an empty selection
+    - Fixed FileNotFoundException after editing a pinned note
+    - Fixed StringIndexOutOfBoundsException when attempting to copy an empty selection
 
 
 -------------------------------------------------
@@ -15,10 +27,10 @@
 -------------------------------------------------
  1.11.2, 1.10.2, 1.7.10:
     FEATURES:
-	- Added the ability to tab from title field to text field
-	- Added a config field to set the HUD position of a pinned note
+    - Added the ability to tab from title field to text field
+    - Added a config field to set the HUD position of a pinned note
     FIXES:
-	- Fixed IndexOutOfBoundsException when ending a selection on an empty line
+    - Fixed IndexOutOfBoundsException when ending a selection on an empty line
 
 
 -------------------------------------------------
@@ -26,9 +38,9 @@
 -------------------------------------------------
  1.11.2, 1.10.2, 1.7.10:
     FIXES:
-	- Fixed NPE that occured when opening the Notes GUI on some multiplayer servers
-	- Fixed pinned note not being unpinned upon deletion
-	- Fixed notes being loaded if the left side of its list entry is clicked
+    - Fixed NPE that occurred when opening the Notes GUI on some multiplayer servers
+    - Fixed pinned note not being unpinned upon deletion
+    - Fixed notes being loaded if the left side of its list entry is clicked
 
 
 -------------------------------------------------
@@ -36,13 +48,13 @@
 -------------------------------------------------
  1.11.2:
     UPDATES:
-	- First release for MC 1.11.2 (Forge #2213)
+    - First release for MC 1.11.2 (Forge #2213)
  1.11:
     UPDATES:
-	- First release for MC 1.11 (Forge #2199)
+    - First release for MC 1.11 (Forge #2199)
  1.10.2:
     UPDATES:
-	- First release for MC 1.10.2 (Forge #2202)
+    - First release for MC 1.10.2 (Forge #2202)
  1.7.10:
     UPDATES:
-	- First release for MC 1.7.10 (Forge #1614)
+    - First release for MC 1.7.10 (Forge #1614)

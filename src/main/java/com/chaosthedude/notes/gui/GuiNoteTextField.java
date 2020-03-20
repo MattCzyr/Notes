@@ -1,11 +1,9 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
@@ -15,19 +13,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class GuiNoteTextField extends Gui {
+@OnlyIn(Dist.CLIENT)
+public class GuiNoteTextField extends Gui implements IGuiEventListener {
 
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	private int margin;
 	private String text;
@@ -64,59 +63,60 @@ public class GuiNoteTextField extends Gui {
 		selectionPos = -1;
 	}
 
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	@Override
+	public boolean keyPressed(int keyCode, int par2, int par3) {
 		if (GuiScreen.isKeyComboCtrlC(keyCode)) {
-			GuiScreen.setClipboardString(getSelectedText());
+			mc.keyboardListener.setClipboardString(getSelectedText());
 		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
 			if (getSelectionDifference() != 0) {
-				GuiScreen.setClipboardString(getSelectedText());
+				mc.keyboardListener.setClipboardString(getSelectedText());
 				deleteSelectedText();
 			}
 		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
-			insert(GuiScreen.getClipboardString());
+			insert(mc.keyboardListener.getClipboardString());
 		} else if (isKeyComboCtrlBack(keyCode)) {
 			deletePrevWord();
 		} else {
-			switch (keyCode) {
-			case Keyboard.KEY_BACK:
+			if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deletePrev();
 				}
-				return;
-			case Keyboard.KEY_DELETE:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_DELETE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deleteNext();
 				}
-				return;
-			case Keyboard.KEY_TAB:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_TAB) {
 				insert("    ");
-			case Keyboard.KEY_NUMPADENTER:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_KP_ENTER) {
 				insertNewLine();
-				return;
-			case Keyboard.KEY_RETURN:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_ENTER) {
 				insertNewLine();
-				return;
-			case Keyboard.KEY_HOME:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_HOME) {
 				updateSelectionPos();
 				setCursorPos(0);
-				return;
-			case Keyboard.KEY_END:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_END) {
 				updateSelectionPos();
 				setCursorPos(text.length());
-				return;
-			case Keyboard.KEY_UP:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_UP) {
 				updateSelectionPos();
 				moveUp();
-				return;
-			case Keyboard.KEY_DOWN:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_DOWN) {
 				updateSelectionPos();
 				moveDown();
-				return;
-			case Keyboard.KEY_LEFT:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_LEFT) {
 				boolean moveLeft = true;
 				if (GuiScreen.isShiftKeyDown()) {
 					if (selectionPos < 0) {
@@ -133,8 +133,8 @@ public class GuiNoteTextField extends Gui {
 				if (moveLeft) {
 					moveLeft();
 				}
-				return;
-			case Keyboard.KEY_RIGHT:
+				return true;
+			} else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
 				boolean moveRight = true;
 				if (GuiScreen.isShiftKeyDown()) {
 					if (selectionPos < 0) {
@@ -151,16 +151,26 @@ public class GuiNoteTextField extends Gui {
 				if (moveRight) {
 					moveRight();
 				}
-				return;
-			default:
-				if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-					insert(Character.toString(typedChar));
-				}
+				return true;
 			}
 		}
-
-		updateVisibleLines();
+		return false;
 	}
+	
+	@Override
+	public boolean charTyped(char typedChar, int p_charTyped_2_) {
+	      if (isFocused()) {
+	         if (SharedConstants.isAllowedCharacter(typedChar)) {
+	            if (this.isEnabled) {
+	               insert(Character.toString(typedChar));
+	               updateVisibleLines();
+	            }
+
+	            return true;
+	         }
+	      }
+	      return false;
+	   }
 
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
@@ -170,7 +180,7 @@ public class GuiNoteTextField extends Gui {
 		renderScrollBar();
 	}
 
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
@@ -178,17 +188,20 @@ public class GuiNoteTextField extends Gui {
 
 		if (isFocused && isWithinBounds) {
 			if (mouseButton == 0) {
-				final int relativeMouseX = mouseX - xPosition - margin;
-				final int relativeMouseY = mouseY - yPosition - margin;
+				final int relativeMouseX = (int) mouseX - xPosition - margin;
+				final int relativeMouseY = (int) mouseY - yPosition - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
 
 				setCursorPos(countCharacters(y) + x);
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void mouseReleased(int mouseX, int mouseY, int state) {
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int state) {
 		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
@@ -196,8 +209,8 @@ public class GuiNoteTextField extends Gui {
 
 		if (isFocused && isWithinBounds) {
 			if (state == 0) {
-				final int relativeMouseX = mouseX - xPosition - margin;
-				final int relativeMouseY = mouseY - yPosition - margin;
+				final int relativeMouseX = (int) mouseX - xPosition - margin;
+				final int relativeMouseY = (int) mouseY - yPosition - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
 
@@ -208,20 +221,25 @@ public class GuiNoteTextField extends Gui {
 				} else {
 					selectionPos = -1;
 				}
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void handleMouseInput() {
-		final int scroll = Mouse.getEventDWheel();
-		if (scroll < 0) {
+	@Override
+	public boolean mouseScrolled(double amount) {
+		if (amount < 0) {
 			incrementVisibleLines();
-		} else if (scroll > 0) {
+			return true;
+		} else if (amount > 0) {
 			decrementVisibleLines();
+			return true;
 		}
+		return false;
 	}
 
-	public void updateScreen() {
+	public void tick() {
 		cursorCounter++;
 	}
 
@@ -292,7 +310,7 @@ public class GuiNoteTextField extends Gui {
 		return getCursorWidth(cursorPos);
 	}
 
-	public boolean isWithinBounds(int mouseX, int mouseY) {
+	public boolean isWithinBounds(double mouseX, double mouseY) {
 		return mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
 	}
 
@@ -343,7 +361,7 @@ public class GuiNoteTextField extends Gui {
 	}
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
-		return keyCode == Keyboard.KEY_BACK && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !GuiScreen.isAltKeyDown();
+		return keyCode == GLFW.GLFW_KEY_BACKSPACE && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !GuiScreen.isAltKeyDown();
 	}
 
 	public void insert(String newText) {
@@ -638,10 +656,10 @@ public class GuiNoteTextField extends Gui {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 
-		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
+		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos(startX, endY, 0.0D).endVertex();

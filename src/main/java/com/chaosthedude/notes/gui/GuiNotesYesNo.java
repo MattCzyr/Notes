@@ -1,6 +1,5 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -9,10 +8,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiNotesYesNo extends GuiScreen {
 
 	protected GuiYesNoCallback parentScreen;
@@ -45,20 +44,25 @@ public class GuiNotesYesNo extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		buttonList.add(new GuiNotesButton(0, width / 2 - 155, height / 6 + 96, 150, 20, confirmButtonText));
-		buttonList.add(new GuiNotesButton(1, width / 2 + 5, height / 6 + 96, 150, 20, cancelButtonText));
+		addButton(new GuiNotesButton(0, width / 2 - 155, height / 6 + 96, 150, 20, confirmButtonText) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				parentScreen.confirmResult(true, parentButtonClickedID);
+			}
+		});
+		addButton(new GuiNotesButton(1, width / 2 + 5, height / 6 + 96, 150, 20, cancelButtonText) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				parentScreen.confirmResult(false, parentButtonClickedID);
+			}
+		});
 
 		listLines.clear();
 		listLines.addAll(fontRenderer.listFormattedStringToWidth(messageLine2, width - 50));
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		parentScreen.confirmClicked(button.id == 0, parentButtonClickedID);
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
 		drawCenteredString(fontRenderer, messageLine1, width / 2, 70, 16777215);
 		int i = 90;
@@ -68,15 +72,14 @@ public class GuiNotesYesNo extends GuiScreen {
 			i += fontRenderer.FONT_HEIGHT;
 		}
 
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		super.render(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public void updateScreen() {
-		super.updateScreen();
-
+	public void tick() {
+		super.tick();
 		if (--ticksUntilEnable == 0) {
-			for (GuiButton button : buttonList) {
+			for (GuiButton button : buttons) {
 				button.enabled = true;
 			}
 		}
@@ -85,7 +88,7 @@ public class GuiNotesYesNo extends GuiScreen {
 	public void setButtonDelay(int ticksUntilEnableIn) {
 		ticksUntilEnable = ticksUntilEnableIn;
 
-		for (GuiButton button : buttonList) {
+		for (GuiButton button : buttons) {
 			button.enabled = false;
 		}
 	}

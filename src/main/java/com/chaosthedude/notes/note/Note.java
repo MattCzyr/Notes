@@ -22,12 +22,12 @@ import com.chaosthedude.notes.util.StringUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.SharedConstants;
 
 public class Note {
 
-	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.dateFormat);
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.CLIENT.dateFormat.get());
+	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	private String title;
@@ -117,6 +117,10 @@ public class Note {
 				preview = preview.substring(0, preview.indexOf(String.valueOf(c)));
 			}
 		}
+		
+		if (preview.indexOf('\n') >= 0) {
+			preview = preview.substring(0, preview.indexOf('\n'));
+		}
 
 		if (addEllipsis) {
 			preview += "...";
@@ -148,7 +152,7 @@ public class Note {
 
 	public String getSaveName() {
 		String saveDirName = title.trim();
-		for (char c : ChatAllowedCharacters.ILLEGAL_FILE_CHARACTERS) {
+		for (char c : SharedConstants.ILLEGAL_FILE_CHARACTERS) {
 			saveDirName = saveDirName.replace(c, '_');
 		}
 
@@ -185,12 +189,16 @@ public class Note {
 		}
 	}
 
-	public void openExternal() {
-		try {
-			Desktop.getDesktop().edit(getSaveFile());
-		} catch (IOException e) {
-			e.printStackTrace();
+	public boolean tryOpenExternal() {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().edit(getSaveFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
 		}
+		return false;
 	}
 
 	public void copy() {

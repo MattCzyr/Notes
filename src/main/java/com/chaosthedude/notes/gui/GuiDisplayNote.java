@@ -1,6 +1,5 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,15 +8,14 @@ import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.StringUtils;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenWorking;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiDisplayNote extends GuiScreen {
 
 	private final GuiScreen parentScreen;
@@ -47,44 +45,18 @@ public class GuiDisplayNote extends GuiScreen {
 	}
 
 	@Override
-	public void updateScreen() {
+	public void tick() {
 		prevButton.enabled = page > 0;
 		nextButton.enabled = page < pages.size() - 1;
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.enabled) {
-			if (button == editButton) {
-				mc.displayGuiScreen(new GuiEditNote(parentScreen, note));
-			} else if (button == deleteButton) {
-				deleteNote();
-			} else if (button == pinButton) {
-				togglePin();
-				if (isPinned()) {
-					mc.displayGuiScreen(null);
-				}
-			} else if (button == doneButton) {
-				mc.displayGuiScreen(parentScreen);
-			} else if (button == prevButton) {
-				if (page > 0) {
-					page--;
-				}
-			} else if (button == nextButton) {
-				if (page < pages.size() - 1) {
-					page++;
-				}
-			}
-		}
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
 		drawCenteredString(fontRenderer, note.getTitle(), width / 2 + 60, 15, -1);
 		displayNote();
 
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		super.render(mouseX, mouseY, partialTicks);
 	}
 
 	public void displayNote() {
@@ -92,19 +64,55 @@ public class GuiDisplayNote extends GuiScreen {
 	}
 
 	private void setupButtons() {
-		buttonList.clear();
-		editButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.edit")));
-		deleteButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.delete")));
-		pinButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin")));
-		doneButton = addButton(new GuiNotesButton(3, 10, height - 30, 110, 20, I18n.format("gui.done")));
+		editButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.edit")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				mc.displayGuiScreen(new GuiEditNote(GuiDisplayNote.this.parentScreen, note));
+			}
+		});
+		deleteButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.delete")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				deleteNote();
+			}
+		});
+		pinButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				togglePin();
+				if (isPinned()) {
+					mc.displayGuiScreen(null);
+				}
+			}
+		});
+		doneButton = addButton(new GuiNotesButton(3, 10, height - 30, 110, 20, I18n.format("gui.done")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				mc.displayGuiScreen(parentScreen);
+			}
+		});
 
-		prevButton = addButton(new GuiNotesButton(4, 130, height - 30, 20, 20, I18n.format("<")));
-		nextButton = addButton(new GuiNotesButton(5, width - 30, height - 30, 20, 20, I18n.format(">")));
+		prevButton = addButton(new GuiNotesButton(4, 130, height - 30, 20, 20, I18n.format("<")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				if (page > 0) {
+					page--;
+				}
+			}
+		});
+		nextButton = addButton(new GuiNotesButton(5, width - 30, height - 30, 20, 20, I18n.format(">")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				if (page < pages.size() - 1) {
+					page++;
+				}
+			}
+		});
 	}
 
 	private void setupPages() {
 		if (note != null) {
-			final List<String> lines = ConfigHandler.wrapNote ? fontRenderer.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
+			final List<String> lines = ConfigHandler.CLIENT.wrapNote.get() ? fontRenderer.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";
@@ -145,7 +153,8 @@ public class GuiDisplayNote extends GuiScreen {
 
 	private void deleteNote() {
 		mc.displayGuiScreen(new GuiNotesYesNo(new GuiYesNoCallback() {
-			public void confirmClicked(boolean result, int id) {
+			@Override
+			public void confirmResult(boolean result, int id) {
 				if (result) {
 					GuiDisplayNote.this.mc.displayGuiScreen(new GuiScreenWorking());
 					note.delete();

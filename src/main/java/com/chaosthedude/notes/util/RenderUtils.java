@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -12,25 +11,25 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class RenderUtils {
 
-	private static final Minecraft mc = Minecraft.getMinecraft();
-	private static final FontRenderer fontRenderer = mc.fontRenderer;
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final FontRenderer font = mc.fontRenderer;
 
 	public static void drawSplitStringOnHUD(String str, int x, int y, int wrapWidth) {
-		renderSplitString(str, x, y, wrapWidth, true);
+		renderSplitString(str, x, y, wrapWidth);
 	}
 
-	public static void renderSplitString(String string, int x, int y, int wrapWidth, boolean addShadow) {
-		for (String s : fontRenderer.listFormattedStringToWidth(string, wrapWidth)) {
-			fontRenderer.drawString(s, x, y, 0xffffff, addShadow);
-			y += fontRenderer.FONT_HEIGHT;
+	public static void renderSplitString(String string, int x, int y, int wrapWidth) {
+		for (String s : font.listFormattedStringToWidth(string, wrapWidth)) {
+			font.drawStringWithShadow(s, x, y, 0xffffff);
+			y += font.FONT_HEIGHT;
 		}
 	}
 
 	public static int getSplitStringWidth(String string, int wrapWidth) {
-		final List<String> lines = fontRenderer.listFormattedStringToWidth(string, wrapWidth);
+		final List<String> lines = font.listFormattedStringToWidth(string, wrapWidth);
 		int width = 0;
 		for (String line : lines) {
-			final int stringWidth = fontRenderer.getStringWidth(line);
+			final int stringWidth = font.getStringWidth(line);
 			if (stringWidth > width) {
 				width = stringWidth;
 			}
@@ -40,7 +39,7 @@ public class RenderUtils {
 	}
 
 	public static int getSplitStringHeight(String string, int wrapWidth) {
-		return fontRenderer.FONT_HEIGHT * fontRenderer.listFormattedStringToWidth(string, wrapWidth).size();
+		return font.FONT_HEIGHT * font.listFormattedStringToWidth(string, wrapWidth).size();
 	}
 
 	public static void drawRect(int left, int top, int right, int bottom, int color) {
@@ -66,8 +65,8 @@ public class RenderUtils {
 
 		GlStateManager.enableBlend();
 		GlStateManager.disableTexture2D();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color(red, green, blue, alpha);
+		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.color4f(red, green, blue, alpha);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
@@ -80,24 +79,24 @@ public class RenderUtils {
 		GlStateManager.disableBlend();
 	}
 
-	public static int getRenderWidth(String position, int width, ScaledResolution res) {
+	public static int getRenderWidth(String position, int width) {
 		final String positionLower = position.toLowerCase();
 		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("bottom_left")) {
 			return 10;
 		}
 
-		return res.getScaledWidth() - width;
+		return mc.mainWindow.getScaledWidth() - width;
 	}
 
-	public static int getRenderHeight(String position, int height, ScaledResolution res) {
+	public static int getRenderHeight(String position, int height) {
 		final String positionLower = position.toLowerCase();
 		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
-			return res.getScaledHeight() - height - 5;
+			return mc.mainWindow.getScaledHeight() - height - 5;
 		}
 
-		return (res.getScaledHeight() / 2) - (height / 2);
+		return (mc.mainWindow.getScaledHeight() / 2) - (height / 2);
 	}
 
 }

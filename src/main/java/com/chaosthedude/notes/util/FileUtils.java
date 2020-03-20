@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 
 public class FileUtils {
 
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static File getRootSaveDirectory() {
-		final File saveDir = new File(mc.mcDataDir, "notes");
+		final File saveDir = new File(mc.gameDir, "notes");
 		if (!saveDir.exists()) {
 			saveDir.mkdirs();
 		}

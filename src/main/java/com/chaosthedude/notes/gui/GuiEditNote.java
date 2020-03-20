@@ -1,24 +1,21 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.glfw.GLFW;
 
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiEditNote extends GuiScreen {
 
 	private final GuiScreen parentScreen;
@@ -52,44 +49,77 @@ public class GuiEditNote extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		Keyboard.enableRepeatEvents(true);
+		mc.keyboardListener.enableRepeatEvents(true);
 
 		setupTextFields();
 		setupButtons();
 	}
 
 	@Override
-	public void updateScreen() {
-		noteTitleField.updateCursorCounter();
-		noteTextField.updateScreen();
+	public void tick() {
+		noteTitleField.tick();
+		noteTextField.tick();
 
 		insertBiomeButton.enabled = insertChunkButton.enabled = insertCoordsButton.enabled = noteTextField.isFocused();
 	}
 
 	@Override
 	public void onGuiClosed() {
-		Keyboard.enableRepeatEvents(false);
+		mc.keyboardListener.enableRepeatEvents(false);
+	}
+	
+	@Override
+	public boolean keyPressed(int keyCode, int par2, int par3) {
+		super.keyPressed(keyCode, par2, par3);
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			mc.displayGuiScreen(parentScreen);
+			return true;
+		} else if (keyCode == GLFW.GLFW_KEY_TAB && noteTitleField.isFocused()) {
+			noteTitleField.setFocused(false);
+			noteTextField.setFocused(true);
+			return true;
+		}/* else if (noteTitleField.isFocused()) {
+			noteTitleField.keyPressed(keyCode, par2, par3);
+			return true;
+		} else if (noteTextField.isFocused()) {
+			noteTextField.keyTyped(keyCode, par2, par3);
+			return true;
+		}*/
+		
+		updateNote();
+		return false;
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.enabled) {
-			if (button == saveButton) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		drawDefaultBackground();
+		drawCenteredString(fontRenderer, guiTitle, width / 2 + 60, 15, 0xffffff);
+
+		noteTitleField.drawTextBox();
+		noteTextField.drawScreen(mouseX, mouseY, partialTicks);
+
+		drawCenteredString(fontRenderer, I18n.format("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+
+		super.render(mouseX, mouseY, partialTicks);
+	}
+
+	private void setupButtons() {
+		//buttonList.clear();
+
+		saveButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.save")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
 				updateNote();
 				note.save();
 				mc.displayGuiScreen(new GuiDisplayNote(parentScreen, note));
 				if (pinned) {
 					Notes.pinnedNote = note;
 				}
-			} else if (button == insertBiomeButton) {
-				insertBiome();
-			} else if (button == insertChunkButton) {
-				insertChunk();
-			} else if (button == insertCoordsButton) {
-				insertCoords();
-			} else if (button == cancelButton) {
-				mc.displayGuiScreen(parentScreen);
-			} else if (button == globalButton) {
+			}
+		});
+		globalButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.format("notes.on") : I18n.format("notes.off"))) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
 				if (scope == Scope.GLOBAL) {
 					scope = Scope.getCurrentScope();
 				} else {
@@ -99,69 +129,31 @@ public class GuiEditNote extends GuiScreen {
 				globalButton.displayString = I18n.format("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.format("notes.on") : ": " + I18n.format("notes.off"));
 				updateNote();
 			}
-		}
-	}
-
-	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode == Keyboard.KEY_ESCAPE) {
-			mc.displayGuiScreen(parentScreen);
-		} else if (keyCode == Keyboard.KEY_TAB && noteTitleField.isFocused()) {
-			noteTitleField.setFocused(false);
-			noteTextField.setFocused(true);
-		} else if (noteTitleField.isFocused()) {
-			noteTitleField.textboxKeyTyped(typedChar, keyCode);
-		} else if (noteTextField.isFocused()) {
-			noteTextField.keyTyped(typedChar, keyCode);
-		}
-
-		updateNote();
-	}
-
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		super.mouseClicked(mouseX, mouseY, mouseButton);
-
-		noteTitleField.mouseClicked(mouseX, mouseY, mouseButton);
-		noteTextField.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		super.mouseReleased(mouseX, mouseY, state);
-
-		noteTitleField.mouseReleased(mouseX, mouseY, state);
-		noteTextField.mouseReleased(mouseX, mouseY, state);
-	}
-
-	@Override
-	public void handleMouseInput() throws IOException {
-		super.handleMouseInput();
-		noteTextField.handleMouseInput();
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		drawCenteredString(fontRenderer, guiTitle, width / 2 + 60, 15, 0xffffff);
-
-		noteTitleField.drawTextBox();
-		noteTextField.drawScreen(mouseX, mouseY, partialTicks);
-
-		drawCenteredString(fontRenderer, I18n.format("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-
-		super.drawScreen(mouseX, mouseY, partialTicks);
-	}
-
-	private void setupButtons() {
-		buttonList.clear();
-
-		saveButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.save")));
-		globalButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.format("notes.on") : I18n.format("notes.off"))));
-		insertBiomeButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, I18n.format("notes.biome")));
-		insertChunkButton = addButton(new GuiNotesButton(3, 10, 115, 110, 20, I18n.format("notes.chunk")));
-		insertCoordsButton = addButton(new GuiNotesButton(4, 10, 140, 110, 20, I18n.format("notes.coordinates")));
-		cancelButton = addButton(new GuiNotesButton(5, 10, height - 30, 110, 20, I18n.format("gui.cancel")));
+		});
+		insertBiomeButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, I18n.format("notes.biome")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				insertBiome();
+			}
+		});
+		insertChunkButton = addButton(new GuiNotesButton(3, 10, 115, 110, 20, I18n.format("notes.chunk")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				insertChunk();
+			}
+		});
+		insertCoordsButton = addButton(new GuiNotesButton(4, 10, 140, 110, 20, I18n.format("notes.coordinates")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				insertCoords();
+			}
+		});
+		cancelButton = addButton(new GuiNotesButton(5, 10, height - 30, 110, 20, I18n.format("gui.cancel")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				mc.displayGuiScreen(parentScreen);
+			}
+		});
 
 		insertBiomeButton.enabled = false;
 		insertChunkButton.enabled = false;
@@ -172,9 +164,11 @@ public class GuiEditNote extends GuiScreen {
 		noteTitleField = new GuiNoteTitleField(9, fontRenderer, 130, 40, width - 140, 20);
 		noteTitleField.setText(note.getTitle());
 		noteTitleField.setFocused(true);
+		children.add(noteTitleField);
 
 		noteTextField = new GuiNoteTextField(fontRenderer, 130, 85, width - 140, 136, 5);
 		noteTextField.setText(note.getFilteredText());
+		children.add(noteTextField);
 	}
 
 	private void updateNote() {

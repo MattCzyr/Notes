@@ -1,14 +1,11 @@
 package com.chaosthedude.notes.gui;
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiSelectNote extends GuiScreen {
 
 	private GuiScreen prevScreen;
@@ -27,59 +24,32 @@ public class GuiSelectNote extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		selectionList = new GuiListNotes(this, mc, width + 110, height, 40, height - 64, 36);
 		setupButtons();
+		selectionList = new GuiListNotes(this, mc, width + 110, height, 40, height - 64, 36);
+		children.add(selectionList);
+	}
+	
+	@Override
+	public boolean mouseScrolled(double amount) {
+		super.mouseScrolled(amount);
+		return selectionList.mouseScrolled(amount);
 	}
 
 	@Override
-	public void handleMouseInput() throws IOException {
-		super.handleMouseInput();
-		selectionList.handleMouseInput();
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.enabled) {
-			final GuiListNotesEntry notesEntry = selectionList.getSelectedNote();
-			if (button == deleteButton) {
-				if (notesEntry != null) {
-					notesEntry.deleteNote();
-				}
-			} else if (button == selectButton) {
-				if (notesEntry != null) {
-					notesEntry.loadNote();
-				}
-			} else if (button == newButton) {
-				mc.displayGuiScreen(new GuiEditNote(this, null));
-			} else if (button == editButton) {
-				if (notesEntry != null) {
-					notesEntry.editNote();
-				}
-			} else if (button == copyButton) {
-				notesEntry.copyNote();
-			} else if (button == pinButton) {
-				notesEntry.togglePin();
-			} else if (button == cancelButton) {
-				mc.displayGuiScreen(prevScreen);
-			}
-		}
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		selectionList.drawScreen(mouseX, mouseY, partialTicks);
 		drawCenteredString(fontRenderer, I18n.format("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		super.render(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public void updateScreen() {
+	public void tick() {
 		if (selectionList.getSelectedNote() != null) {
 			pinButton.displayString = selectionList.getSelectedNote().isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin");
 		}
 	}
 
-	@Override
+	/*@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		selectionList.mouseClicked(mouseX, mouseY, mouseButton);
@@ -89,7 +59,7 @@ public class GuiSelectNote extends GuiScreen {
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
 		selectionList.mouseReleased(mouseX, mouseY, state);
-	}
+	}*/
 
 	public void selectNote(GuiListNotesEntry entry) {
 		final boolean enable = entry != null;
@@ -101,15 +71,59 @@ public class GuiSelectNote extends GuiScreen {
 	}
 
 	private void setupButtons() {
-		buttonList.clear();
-
-		newButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.new")));
-		selectButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.select")));
-		editButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, I18n.format("notes.edit")));
-		copyButton = addButton(new GuiNotesButton(3, 10, 115, 110, 20, I18n.format("notes.copy")));
-		deleteButton = addButton(new GuiNotesButton(4, 10, 140, 110, 20, I18n.format("notes.delete")));
-		pinButton = addButton(new GuiNotesButton(5, 10, 165, 110, 20, I18n.format("notes.pin")));
-		cancelButton = addButton(new GuiNotesButton(6, 10, height - 30, 110, 20, I18n.format("gui.cancel")));
+		newButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.new")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				mc.displayGuiScreen(new GuiEditNote(GuiSelectNote.this, null));
+			}
+		});
+		selectButton = addButton(new GuiNotesButton(1, 10, 65, 110, 20, I18n.format("notes.select")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiListNotesEntry notesEntry = GuiSelectNote.this.selectionList.getSelectedNote();
+				if (notesEntry != null) {
+					notesEntry.loadNote();
+				}
+			}
+		});
+		editButton = addButton(new GuiNotesButton(2, 10, 90, 110, 20, I18n.format("notes.edit")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiListNotesEntry notesEntry = GuiSelectNote.this.selectionList.getSelectedNote();
+				if (notesEntry != null) {
+					notesEntry.editNote();
+				}
+			}
+		});
+		copyButton = addButton(new GuiNotesButton(3, 10, 115, 110, 20, I18n.format("notes.copy")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiListNotesEntry notesEntry = GuiSelectNote.this.selectionList.getSelectedNote();
+				notesEntry.copyNote();
+			}
+		});
+		deleteButton = addButton(new GuiNotesButton(4, 10, 140, 110, 20, I18n.format("notes.delete")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiListNotesEntry notesEntry = GuiSelectNote.this.selectionList.getSelectedNote();
+				if (notesEntry != null) {
+					notesEntry.deleteNote();
+				}
+			}
+		});
+		pinButton = addButton(new GuiNotesButton(5, 10, 165, 110, 20, I18n.format("notes.pin")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiListNotesEntry notesEntry = GuiSelectNote.this.selectionList.getSelectedNote();
+				notesEntry.togglePin();
+			}
+		});
+		cancelButton = addButton(new GuiNotesButton(6, 10, height - 30, 110, 20, I18n.format("gui.cancel")) {
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				mc.displayGuiScreen(prevScreen);
+			}
+		});
 
 		selectButton.enabled = false;
 		deleteButton.enabled = false;

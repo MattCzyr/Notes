@@ -10,7 +10,7 @@ import net.minecraft.client.resources.I18n;
 
 public class Scope {
 
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static final Scope GLOBAL = new Scope("notes.scope.global", "global") {
 		@Override

@@ -1,23 +1,26 @@
 package com.chaosthedude.notes.gui;
 
-import org.lwjgl.input.Keyboard;
+import java.util.function.BiConsumer;
+
+import org.lwjgl.glfw.GLFW;
 
 import com.chaosthedude.notes.util.RenderUtils;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.MathHelper;
 
-public class GuiNoteTitleField extends Gui {
+public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 
 	private final int id;
 	private final FontRenderer fontRenderer;
@@ -38,7 +41,7 @@ public class GuiNoteTitleField extends Gui {
 	private int enabledColor = 14737632;
 	private int disabledColor = 7368816;
 	private boolean visible = true;
-	private GuiPageButtonList.GuiResponder guiResponder;
+	private BiConsumer<Integer, String> guiResponder;
 	private Predicate<String> validator = Predicates.<String> alwaysTrue();
 
 	public GuiNoteTitleField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
@@ -50,11 +53,11 @@ public class GuiNoteTitleField extends Gui {
 		this.height = height;
 	}
 
-	public void setGuiResponder(GuiPageButtonList.GuiResponder guiResponder) {
-		this.guiResponder = guiResponder;
-	}
+	public void setTextAcceptHandler(BiConsumer<Integer, String> handler) {
+	      this.guiResponder = handler;
+	   }
 
-	public void updateCursorCounter() {
+	public void tick() {
 		cursorCounter++;
 	}
 
@@ -85,7 +88,7 @@ public class GuiNoteTitleField extends Gui {
 	}
 
 	public void writeText(String textToWrite) {
-		final String filtered = ChatAllowedCharacters.filterAllowedCharacters(textToWrite);
+		final String filtered = SharedConstants.filterAllowedCharacters(textToWrite);
 		String s = "";
 		int i = cursorPosition < selectionEnd ? cursorPosition : selectionEnd;
 		int j = cursorPosition < selectionEnd ? selectionEnd : cursorPosition;
@@ -118,7 +121,7 @@ public class GuiNoteTitleField extends Gui {
 
 	public void setResponderEntryValue(int id, String text) {
 		if (guiResponder != null) {
-			guiResponder.setEntryValue(id, text);
+			guiResponder.accept(id, text);
 		}
 	}
 
@@ -224,7 +227,8 @@ public class GuiNoteTitleField extends Gui {
 		setCursorPosition(text.length());
 	}
 
-	public boolean textboxKeyTyped(char typedChar, int keyCode) {
+	@Override
+	public boolean keyPressed(int keyCode, int par2, int par3) {
 		if (!isFocused) {
 			return false;
 		} else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
@@ -232,16 +236,16 @@ public class GuiNoteTitleField extends Gui {
 			setSelectionPos(0);
 			return true;
 		} else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
-			GuiScreen.setClipboardString(getSelectedText());
+			Minecraft.getInstance().keyboardListener.setClipboardString(getSelectedText());
 			return true;
 		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
 			if (isEnabled) {
-				writeText(GuiScreen.getClipboardString());
+				writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
 			}
 
 			return true;
 		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
-			GuiScreen.setClipboardString(getSelectedText());
+			Minecraft.getInstance().keyboardListener.setClipboardString(getSelectedText());
 			if (this.isEnabled) {
 				writeText("");
 			}
@@ -249,7 +253,7 @@ public class GuiNoteTitleField extends Gui {
 			return true;
 		} else {
 			switch (keyCode) {
-			case Keyboard.KEY_BACK:
+			case GLFW.GLFW_KEY_BACKSPACE:
 				if (GuiScreen.isCtrlKeyDown()) {
 					if (isEnabled) {
 						deleteWords(-1);
@@ -259,7 +263,7 @@ public class GuiNoteTitleField extends Gui {
 				}
 
 				return true;
-			case Keyboard.KEY_LEFT:
+			case GLFW.GLFW_KEY_LEFT:
 				if (GuiScreen.isShiftKeyDown()) {
 					if (GuiScreen.isCtrlKeyDown()) {
 						setSelectionPos(getNthWordFromPos(-1, getSelectionEnd()));
@@ -273,7 +277,7 @@ public class GuiNoteTitleField extends Gui {
 				}
 
 				return true;
-			case Keyboard.KEY_RIGHT:
+			case GLFW.GLFW_KEY_RIGHT:
 				if (GuiScreen.isShiftKeyDown()) {
 					if (GuiScreen.isCtrlKeyDown()) {
 						setSelectionPos(getNthWordFromPos(1, getSelectionEnd()));
@@ -287,8 +291,8 @@ public class GuiNoteTitleField extends Gui {
 				}
 
 				return true;
-			case Keyboard.KEY_DOWN:
-			case Keyboard.KEY_END:
+			case GLFW.GLFW_KEY_DOWN:
+			case GLFW.GLFW_KEY_END:
 				if (GuiScreen.isShiftKeyDown()) {
 					setSelectionPos(text.length());
 				} else {
@@ -296,8 +300,8 @@ public class GuiNoteTitleField extends Gui {
 				}
 
 				return true;
-			case Keyboard.KEY_UP:
-			case Keyboard.KEY_HOME:
+			case GLFW.GLFW_KEY_UP:
+			case GLFW.GLFW_KEY_HOME:
 				if (GuiScreen.isShiftKeyDown()) {
 					setSelectionPos(0);
 				} else {
@@ -305,7 +309,7 @@ public class GuiNoteTitleField extends Gui {
 				}
 
 				return true;
-			case Keyboard.KEY_DELETE:
+			case GLFW.GLFW_KEY_DELETE:
 				if (GuiScreen.isCtrlKeyDown()) {
 					if (isEnabled) {
 						deleteWords(1);
@@ -316,51 +320,67 @@ public class GuiNoteTitleField extends Gui {
 
 				return true;
 			default:
-				if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-					if (isEnabled) {
-						writeText(Character.toString(typedChar));
-					}
-
-					return true;
-				} else {
-					return false;
+				return false;
+			}
+		}
+	}
+	
+	@Override
+	public boolean charTyped(char typedChar, int keyCode) {
+		if (getVisible() && isFocused()) {
+			if (SharedConstants.isAllowedCharacter(typedChar)) {
+				if (isEnabled) {
+					writeText(Character.toString(typedChar));
 				}
+	
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		final boolean isWithinBounds = mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
-		if (canLoseFocus) {
-			setFocused(isWithinBounds);
-		}
-
-		if (isFocused && isWithinBounds && mouseButton == 0) {
-			int i = mouseX - xPosition;
-			if (enableBackgroundDrawing) {
-				i -= 4;
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		if (getVisible()) {
+			final boolean isWithinBounds = mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
+			if (canLoseFocus) {
+				setFocused(isWithinBounds);
 			}
-
-			final String trimmed = fontRenderer.trimStringToWidth(text.substring(lineScrollOffset), getWidth());
-			setCursorPosition(fontRenderer.trimStringToWidth(trimmed, i).length() + lineScrollOffset);
+	
+			if (isFocused && isWithinBounds && mouseButton == 0) {
+				int i = (int) mouseX - xPosition;
+				if (enableBackgroundDrawing) {
+					i -= 4;
+				}
+	
+				final String trimmed = fontRenderer.trimStringToWidth(text.substring(lineScrollOffset), getWidth());
+				setCursorPosition(fontRenderer.trimStringToWidth(trimmed, i).length() + lineScrollOffset);
+				return true;
+			}
 		}
+		return false;
 	}
 
-	public void mouseReleased(int mouseX, int mouseY, int state) {
-		final boolean isWithinBounds = mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
-		if (canLoseFocus) {
-			setFocused(isWithinBounds);
-		}
-
-		if (isFocused && isWithinBounds && state == 0) {
-			int i = mouseX - xPosition;
-			if (enableBackgroundDrawing) {
-				i -= 4;
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int state) {
+		if (getVisible()) {
+			final boolean isWithinBounds = mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
+			if (canLoseFocus) {
+				setFocused(isWithinBounds);
 			}
-
-			final String trimmed = fontRenderer.trimStringToWidth(text.substring(lineScrollOffset), getWidth());
-			setSelectionPos(fontRenderer.trimStringToWidth(trimmed, i).length() + lineScrollOffset);
+	
+			if (isFocused && isWithinBounds && state == 0) {
+				int i = (int) mouseX - xPosition;
+				if (enableBackgroundDrawing) {
+					i -= 4;
+				}
+	
+				final String trimmed = fontRenderer.trimStringToWidth(text.substring(lineScrollOffset), getWidth());
+				setSelectionPos(fontRenderer.trimStringToWidth(trimmed, i).length() + lineScrollOffset);
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public void drawTextBox() {
@@ -441,10 +461,10 @@ public class GuiNoteTitleField extends Gui {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 
-		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
+		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos(startX, endY, 0.0D).endVertex();
