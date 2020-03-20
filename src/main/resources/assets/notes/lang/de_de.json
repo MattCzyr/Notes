@@ -1,0 +1,43 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "GERMANY - GERMAN",
+
+    "_comment": "GUI - TITLES",
+    "notes.newNote": "Neue Notiz",
+    "notes.editNote": "Notiz bearbeiten",
+    "notes.selectNote": "Notiz auswählen",
+
+    "_comment": "GUI - BUTTONS",
+    "notes.biome": "Biom",
+    "notes.chunk": "Chunk",
+    "notes.coordinates": "Koordinaten",
+    "notes.copy": "Kopieren",
+    "notes.delete": "Löschen",
+    "notes.edit": "Bearbeiten",
+    "notes.global": "Global",
+    "notes.insert": "Einfügen",
+    "notes.new": "Neu",
+    "notes.off": "Aus",
+    "notes.on": "Ein",
+    "notes.pin": "Anheften",
+    "notes.pinned": "Gepinnt",
+    "notes.save": "Speichern",
+    "notes.select": "Auswählen",
+    "notes.unpin": "Entfernen",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Lokal",
+    "notes.scope.global": "Global",
+    "notes.scope.remote": "Remote",
+
+    "_comment": "CONTROLS - CATEGORIES",
+    "key.category.notes": "Notizen",
+
+    "_comment": "CONTROLS - KEYBINDS",
+    "key.openNotes": "Notizen öffnen",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Diesen Eintrag löschen?",
+    "notes.lastModified": "Zuletzt bearbeitet",
+    "notes.saveAs": "Wird gespeichert als %s"
+}

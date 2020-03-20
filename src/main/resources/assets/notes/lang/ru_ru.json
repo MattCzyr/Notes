@@ -1,0 +1,43 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "RUSSIA - RUSSIAN",
+
+    "_comment": "GUI - TITLES",
+    "notes.newNote": "Новая заметка",
+    "notes.editNote": "Изменить заметку",
+    "notes.selectNote": "Выбрать заметку",
+
+    "_comment": "GUI - BUTTONS",
+    "notes.biome": "Биом",
+    "notes.chunk": "Чанк",
+    "notes.coordinates": "Координаты",
+    "notes.copy": "Копировать",
+    "notes.delete": "Удалить",
+    "notes.edit": "Изменить",
+    "notes.global": "Глобально",
+    "notes.insert": "Вставить",
+    "notes.new": "Новая",
+    "notes.off": "Выключить",
+    "notes.on": "Включить",
+    "notes.pin": "Закрепить",
+    "notes.pinned": "Закрепленные",
+    "notes.save": "Сохранить",
+    "notes.select": "Выбрать",
+    "notes.unpin": "Открепить",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Локально",
+    "notes.scope.global": "Глобально",
+    "notes.scope.remote": "Удаленно",
+
+    "_comment": "CONTROLS - CATEGORIES",
+    "key.category.notes": "Заметки",
+
+    "_comment": "CONTROLS - KEYBINDS",
+    "key.openNotes": "Открыть заметки",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Удалить эту заметку?",
+    "notes.lastModified": "Последнее изменение",
+    "notes.saveAs": "Будет сохранено как %s"
+}
