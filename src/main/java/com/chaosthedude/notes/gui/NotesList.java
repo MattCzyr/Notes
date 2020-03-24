@@ -11,11 +11,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiListNotes extends ExtendedList<GuiListNotesEntry> {
+public class NotesList extends ExtendedList<NotesListEntry> {
 
-	private final GuiSelectNote guiNotes;
+	private final SelectNoteScreen guiNotes;
 
-	public GuiListNotes(GuiSelectNote guiNotes, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
+	public NotesList(SelectNoteScreen guiNotes, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
 		this.guiNotes = guiNotes;
 		refreshList();
@@ -52,7 +52,7 @@ public class GuiListNotes extends ExtendedList<GuiListNotesEntry> {
 			int l = getRowBottom(j);
 			if (l >= y0 && k <= y1) {
 				int j1 = this.itemHeight - 4;
-				GuiListNotesEntry e = this.getEntry(j);
+				NotesListEntry e = this.getEntry(j);
 				int k1 = getRowWidth();
 				if (renderSelection && isSelectedItem(j)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
@@ -78,16 +78,16 @@ public class GuiListNotes extends ExtendedList<GuiListNotesEntry> {
 	public void refreshList() {
 		clearEntries();
 		for (Note note : Note.getCurrentNotes()) {
-			addEntry(new GuiListNotesEntry(this, note));
+			addEntry(new NotesListEntry(this, note));
 		}
 	}
 
-	public void selectNote(GuiListNotesEntry entry) {
+	public void selectNote(NotesListEntry entry) {
 		setSelected(entry);
 		guiNotes.selectNote(entry);
 	}
 
-	public GuiSelectNote getGuiNotes() {
+	public SelectNoteScreen getGuiNotes() {
 		return guiNotes;
 	}
 

@@ -24,7 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiNoteTextField extends Screen implements IGuiEventListener {
+public class NotesTextField extends Screen implements IGuiEventListener {
 
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -49,7 +49,7 @@ public class GuiNoteTextField extends Screen implements IGuiEventListener {
 	private int disabledColor = 7368816;
 	private boolean visible = true;
 
-	public GuiNoteTextField(FontRenderer fontRenderer, int x, int y, int width, int height, int margin) {
+	public NotesTextField(FontRenderer fontRenderer, int x, int y, int width, int height, int margin) {
 		super(new StringTextComponent(""));
 		this.fontRenderer = fontRenderer;
 		this.xPosition = x;

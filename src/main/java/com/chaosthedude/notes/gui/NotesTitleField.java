@@ -20,7 +20,7 @@ import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 
-public class GuiNoteTitleField extends Screen implements IGuiEventListener {
+public class NotesTitleField extends Screen implements IGuiEventListener {
 
 	private final int id;
 	private final FontRenderer fontRenderer;
@@ -44,7 +44,7 @@ public class GuiNoteTitleField extends Screen implements IGuiEventListener {
 	private BiConsumer<Integer, String> guiResponder;
 	private Predicate<String> validator = Predicates.<String> alwaysTrue();
 
-	public GuiNoteTitleField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
+	public NotesTitleField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
 		super(new StringTextComponent(""));
 		this.id = id;
 		this.fontRenderer = fontRenderer;

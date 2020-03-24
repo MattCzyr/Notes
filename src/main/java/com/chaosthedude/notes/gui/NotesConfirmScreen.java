@@ -14,10 +14,10 @@ public class NotesConfirmScreen extends ConfirmScreen {
 	protected void init() {
 		super.init();
 		buttons.clear();
-		addButton(new GuiNotesButton(this.width / 2 - 155, height / 6 + 96, 150, 20, confirmButtonText, (p_213002_1_) -> {
+		addButton(new NotesButton(this.width / 2 - 155, height / 6 + 96, 150, 20, confirmButtonText, (p_213002_1_) -> {
 			field_213003_c.accept(true);
 		}));
-		addButton(new GuiNotesButton(this.width / 2 - 155 + 160, height / 6 + 96, 150, 20, cancelButtonText, (p_213001_1_) -> {
+		addButton(new NotesButton(this.width / 2 - 155 + 160, height / 6 + 96, 150, 20, cancelButtonText, (p_213001_1_) -> {
 			field_213003_c.accept(false);
 		}));
 	}

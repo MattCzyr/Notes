@@ -16,20 +16,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDisplayNote extends Screen {
+public class DisplayNoteScreen extends Screen {
 
 	private final Screen parentScreen;
-	private GuiNotesButton doneButton;
-	private GuiNotesButton pinButton;
-	private GuiNotesButton editButton;
-	private GuiNotesButton deleteButton;
-	private GuiNotesButton prevButton;
-	private GuiNotesButton nextButton;
+	private NotesButton doneButton;
+	private NotesButton pinButton;
+	private NotesButton editButton;
+	private NotesButton deleteButton;
+	private NotesButton prevButton;
+	private NotesButton nextButton;
 	private Note note;
 	private int page;
 	private List<String> pages;
 
-	public GuiDisplayNote(Screen parentScreen, Note note) {
+	public DisplayNoteScreen(Screen parentScreen, Note note) {
 		super(new StringTextComponent(note.getTitle()));
 		this.parentScreen = parentScreen;
 		this.note = note;
@@ -65,28 +65,28 @@ public class GuiDisplayNote extends Screen {
 	}
 
 	private void setupButtons() {
-		editButton = addButton(new GuiNotesButton(10, 40, 110, 20, I18n.format("notes.edit"), (onPress) -> {
-			minecraft.displayGuiScreen(new GuiEditNote(GuiDisplayNote.this.parentScreen, note));
+		editButton = addButton(new NotesButton(10, 40, 110, 20, I18n.format("notes.edit"), (onPress) -> {
+			minecraft.displayGuiScreen(new EditNoteScreen(DisplayNoteScreen.this.parentScreen, note));
 		}));
-		deleteButton = addButton(new GuiNotesButton(10, 65, 110, 20, I18n.format("notes.delete"), (onPress) -> {
+		deleteButton = addButton(new NotesButton(10, 65, 110, 20, I18n.format("notes.delete"), (onPress) -> {
 			deleteNote();
 		}));
-		pinButton = addButton(new GuiNotesButton(10, 90, 110, 20, isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin"), (onPress) -> {
+		pinButton = addButton(new NotesButton(10, 90, 110, 20, isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin"), (onPress) -> {
 			togglePin();
 			if (isPinned()) {
 				minecraft.displayGuiScreen(null);
 			}
 		}));
-		doneButton = addButton(new GuiNotesButton(10, height - 30, 110, 20, I18n.format("gui.done"), (onPress) -> {
+		doneButton = addButton(new NotesButton(10, height - 30, 110, 20, I18n.format("gui.done"), (onPress) -> {
 			minecraft.displayGuiScreen(parentScreen);
 		}));
 
-		prevButton = addButton(new GuiNotesButton(130, height - 30, 20, 20, I18n.format("<"), (onPress) -> {
+		prevButton = addButton(new NotesButton(130, height - 30, 20, 20, I18n.format("<"), (onPress) -> {
 			if (page > 0) {
 				page--;
 			}
 		}));
-		nextButton = addButton(new GuiNotesButton(width - 30, height - 30, 20, 20, I18n.format(">"), (onPress) -> {
+		nextButton = addButton(new NotesButton(width - 30, height - 30, 20, 20, I18n.format(">"), (onPress) -> {
 			if (page < pages.size() - 1) {
 				page++;
 			}
@@ -140,7 +140,7 @@ public class GuiDisplayNote extends Screen {
 				note.delete();
 			}
 
-			GuiDisplayNote.this.minecraft.displayGuiScreen(parentScreen);
+			DisplayNoteScreen.this.minecraft.displayGuiScreen(parentScreen);
 		}, new StringTextComponent(I18n.format("notes.confirmDelete")), new StringTextComponent(note.getTitle())));
 	}
 

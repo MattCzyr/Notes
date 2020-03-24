@@ -17,23 +17,23 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiEditNote extends Screen {
+public class EditNoteScreen extends Screen {
 
 	private final Screen parentScreen;
-	private GuiNotesButton saveButton;
-	private GuiNotesButton globalButton;
-	private GuiNotesButton insertBiomeButton;
-	private GuiNotesButton insertChunkButton;
-	private GuiNotesButton insertCoordsButton;
-	private GuiNotesButton cancelButton;
-	private GuiNoteTitleField noteTitleField;
-	private GuiNoteTextField noteTextField;
+	private NotesButton saveButton;
+	private NotesButton globalButton;
+	private NotesButton insertBiomeButton;
+	private NotesButton insertChunkButton;
+	private NotesButton insertCoordsButton;
+	private NotesButton cancelButton;
+	private NotesTitleField noteTitleField;
+	private NotesTextField noteTextField;
 	private String saveDirName;
 	private Note note;
 	private Scope scope;
 	private boolean pinned;
 
-	public GuiEditNote(Screen parentScreen, @Nullable Note note) {
+	public EditNoteScreen(Screen parentScreen, @Nullable Note note) {
 		super(new StringTextComponent(note != null ? I18n.format("notes.editNote") : I18n.format("notes.newNote")));
 		this.parentScreen = parentScreen;
 		if (note != null) {
@@ -103,15 +103,15 @@ public class GuiEditNote extends Screen {
 	}
 
 	private void setupButtons() {
-		saveButton = addButton(new GuiNotesButton(10, 40, 110, 20, I18n.format("notes.save"), (onPress) -> {
+		saveButton = addButton(new NotesButton(10, 40, 110, 20, I18n.format("notes.save"), (onPress) -> {
 			updateNote();
 			note.save();
-			minecraft.displayGuiScreen(new GuiDisplayNote(parentScreen, note));
+			minecraft.displayGuiScreen(new DisplayNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
 			}
 		}));
-		globalButton = addButton(new GuiNotesButton(10, 65, 110, 20, I18n.format("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.format("notes.on") : I18n.format("notes.off")), (onPress) -> {
+		globalButton = addButton(new NotesButton(10, 65, 110, 20, I18n.format("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.format("notes.on") : I18n.format("notes.off")), (onPress) -> {
 			if (scope == Scope.GLOBAL) {
 				scope = Scope.getCurrentScope();
 			} else {
@@ -121,16 +121,16 @@ public class GuiEditNote extends Screen {
 			globalButton.setMessage(I18n.format("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.format("notes.on") : ": " + I18n.format("notes.off")));
 			updateNote();
 		}));
-		insertBiomeButton = addButton(new GuiNotesButton(10, 90, 110, 20, I18n.format("notes.biome"), (onPress) -> {
+		insertBiomeButton = addButton(new NotesButton(10, 90, 110, 20, I18n.format("notes.biome"), (onPress) -> {
 			insertBiome();
 		}));
-		insertChunkButton = addButton(new GuiNotesButton(10, 115, 110, 20, I18n.format("notes.chunk"), (onPress) -> {
+		insertChunkButton = addButton(new NotesButton(10, 115, 110, 20, I18n.format("notes.chunk"), (onPress) -> {
 			insertChunk();
 		}));
-		insertCoordsButton = addButton(new GuiNotesButton(10, 140, 110, 20, I18n.format("notes.coordinates"), (onPress) -> {
+		insertCoordsButton = addButton(new NotesButton(10, 140, 110, 20, I18n.format("notes.coordinates"), (onPress) -> {
 			insertCoords();
 		}));
-		cancelButton = addButton(new GuiNotesButton(10, height - 30, 110, 20, I18n.format("gui.cancel"), (onPress) -> {
+		cancelButton = addButton(new NotesButton(10, height - 30, 110, 20, I18n.format("gui.cancel"), (onPress) -> {
 			minecraft.displayGuiScreen(parentScreen);
 		}));
 
@@ -140,12 +140,12 @@ public class GuiEditNote extends Screen {
 	}
 
 	private void setupTextFields() {
-		noteTitleField = new GuiNoteTitleField(9, font, 130, 40, width - 140, 20);
+		noteTitleField = new NotesTitleField(9, font, 130, 40, width - 140, 20);
 		noteTitleField.setText(note.getTitle());
 		noteTitleField.setFocused(true);
 		children.add(noteTitleField);
 
-		noteTextField = new GuiNoteTextField(font, 130, 85, width - 140, 136, 5);
+		noteTextField = new NotesTextField(font, 130, 85, width - 140, 136, 5);
 		noteTextField.setText(note.getFilteredText());
 		children.add(noteTextField);
 	}

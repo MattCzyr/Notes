@@ -5,9 +5,9 @@ import com.chaosthedude.notes.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 
-public class GuiNotesButton extends Button {
+public class NotesButton extends Button {
 	
-	public GuiNotesButton(int x, int y, int width, int height, String text, IPressable onPress) {
+	public NotesButton(int x, int y, int width, int height, String text, IPressable onPress) {
 		super(x, y, width, height, text, onPress);
 	}
 

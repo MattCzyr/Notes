@@ -20,16 +20,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiListNotesEntry extends AbstractListEntry<GuiListNotesEntry> {
+public class NotesListEntry extends AbstractListEntry<NotesListEntry> {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
 	private final Minecraft mc;
-	private final GuiSelectNote guiNotes;
+	private final SelectNoteScreen guiNotes;
 	private final Note note;
-	private final GuiListNotes notesList;
+	private final NotesList notesList;
 	private long lastClickTime;
 
-	public GuiListNotesEntry(GuiListNotes notesList, Note note) {
+	public NotesListEntry(NotesList notesList, Note note) {
 		this.notesList = notesList;
 		this.note = note;
 		guiNotes = notesList.getGuiNotes();
@@ -65,7 +65,7 @@ public class GuiListNotesEntry extends AbstractListEntry<GuiListNotesEntry> {
 
 	public void editNote() {
 		if (ConfigHandler.CLIENT.useInGameEditor.get() || !note.tryOpenExternal()) {
-			mc.displayGuiScreen(new GuiEditNote(guiNotes, note));
+			mc.displayGuiScreen(new EditNoteScreen(guiNotes, note));
 		}
 	}
 
@@ -77,7 +77,7 @@ public class GuiListNotesEntry extends AbstractListEntry<GuiListNotesEntry> {
 	public void loadNote() {
 		mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		if (ConfigHandler.CLIENT.useInGameViewer.get() || !note.tryOpenExternal()) {
-			mc.displayGuiScreen(new GuiDisplayNote(guiNotes, note));
+			mc.displayGuiScreen(new DisplayNoteScreen(guiNotes, note));
 		}
 	}
 
@@ -104,7 +104,7 @@ public class GuiListNotesEntry extends AbstractListEntry<GuiListNotesEntry> {
 				note.delete();
 			}
 
-			GuiListNotesEntry.this.mc.displayGuiScreen(GuiListNotesEntry.this.guiNotes);
+			NotesListEntry.this.mc.displayGuiScreen(NotesListEntry.this.guiNotes);
 		}, new StringTextComponent(I18n.format("notes.confirmDelete")), new StringTextComponent(note.getTitle())));
 	}
 

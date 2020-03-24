@@ -2,7 +2,7 @@ package com.chaosthedude.notes.key;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.chaosthedude.notes.gui.GuiSelectNote;
+import com.chaosthedude.notes.gui.SelectNoteScreen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -23,7 +23,7 @@ public class KeybindHandler {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		if (openNotes.isPressed()) {
-			mc.displayGuiScreen(new GuiSelectNote(mc.currentScreen));
+			mc.displayGuiScreen(new SelectNoteScreen(mc.currentScreen));
 		}
 	}
 
