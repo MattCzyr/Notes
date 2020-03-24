@@ -3,6 +3,7 @@ package com.chaosthedude.notes.util;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -64,10 +65,10 @@ public class RenderUtils {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 
-		GlStateManager.enableBlend();
-		GlStateManager.disableTexture();
-		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color4f(red, green, blue, alpha);
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		RenderSystem.color4f(red, green, blue, alpha);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
@@ -76,8 +77,8 @@ public class RenderUtils {
 		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.enableTexture();
-		GlStateManager.disableBlend();
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 	public static int getRenderWidth(String position, int width) {
@@ -86,7 +87,7 @@ public class RenderUtils {
 			return 10;
 		}
 
-		return mc.mainWindow.getScaledWidth() - width;
+		return mc.getMainWindow().getScaledWidth() - width;
 	}
 
 	public static int getRenderHeight(String position, int height) {
@@ -94,10 +95,10 @@ public class RenderUtils {
 		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
-			return mc.mainWindow.getScaledHeight() - height - 5;
+			return mc.getMainWindow().getScaledHeight() - height - 5;
 		}
 
-		return (mc.mainWindow.getScaledHeight() / 2) - (height / 2);
+		return (mc.getMainWindow().getScaledHeight() / 2) - (height / 2);
 	}
 
 }

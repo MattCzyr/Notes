@@ -22,12 +22,12 @@ public class RenderTickHandler {
 				Notes.pinnedNote.update();
 
 				final String text = Notes.pinnedNote.getFilteredText();
-				final int maxWidth = MathHelper.floor(mc.mainWindow.getScaledWidth() * ConfigHandler.CLIENT.pinnedWidthScale.get());
-				final int maxHeight = MathHelper.floor(mc.mainWindow.getScaledHeight() * ConfigHandler.CLIENT.pinnedHeightScale.get());
+				final int maxWidth = MathHelper.floor(mc.getMainWindow().getScaledWidth() * ConfigHandler.CLIENT.pinnedWidthScale.get());
+				final int maxHeight = MathHelper.floor(mc.getMainWindow().getScaledHeight() * ConfigHandler.CLIENT.pinnedHeightScale.get());
 				final int renderWidth = RenderUtils.getSplitStringWidth(text, maxWidth);
 				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxWidth);
-				final int width = mc.mainWindow.getScaledWidth() - renderWidth;
-				final int height = (mc.mainWindow.getScaledHeight() / 2) - (renderHeight / 2);
+				final int width = mc.getMainWindow().getScaledWidth() - renderWidth;
+				final int height = (mc.getMainWindow().getScaledHeight() / 2) - (renderHeight / 2);
 
 				final int fixedRenderWidth = RenderUtils.getRenderWidth(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderWidth);
 				final int fixedRenderHeight = RenderUtils.getRenderHeight(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderHeight);

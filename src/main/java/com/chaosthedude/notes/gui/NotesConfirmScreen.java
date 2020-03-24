@@ -15,15 +15,11 @@ public class NotesConfirmScreen extends ConfirmScreen {
 		super.init();
 		buttons.clear();
 		addButton(new NotesButton(this.width / 2 - 155, height / 6 + 96, 150, 20, confirmButtonText, (p_213002_1_) -> {
-			field_213003_c.accept(true);
+			callbackFunction.accept(true);
 		}));
 		addButton(new NotesButton(this.width / 2 - 155 + 160, height / 6 + 96, 150, 20, cancelButtonText, (p_213001_1_) -> {
-			field_213003_c.accept(false);
+			callbackFunction.accept(false);
 		}));
-	}
-	
-	public BooleanConsumer getConsumer() {
-		return field_213003_c;
 	}
 
 }

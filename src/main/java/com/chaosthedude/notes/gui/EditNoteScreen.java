@@ -157,7 +157,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(minecraft.world.getBiome(new BlockPos(minecraft.player.posX, minecraft.player.posY, minecraft.player.posZ))));
+		noteTextField.insert(StringUtils.fixBiomeName(minecraft.world.getBiome(new BlockPos(minecraft.player.getPosX(), minecraft.player.getPosY(), minecraft.player.getPosZ()))));
 	}
 
 	private void insertChunk() {
@@ -165,7 +165,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void insertCoords() {
-		noteTextField.insert((int) minecraft.player.posX + ", " + (int) minecraft.player.posY + ", " + (int) minecraft.player.posZ);
+		noteTextField.insert((int) minecraft.player.getPosX() + ", " + (int) minecraft.player.getPosY() + ", " + (int) minecraft.player.getPosZ());
 	}
 
 }

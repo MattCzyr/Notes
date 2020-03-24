@@ -8,6 +8,7 @@ import com.chaosthedude.notes.util.RenderUtils;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -462,10 +463,10 @@ public class NotesTitleField extends Screen implements IGuiEventListener {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 
-		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture();
-		GlStateManager.enableColorLogicOp();
-		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
+		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.disableTexture();
+		RenderSystem.enableColorLogicOp();
+		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos(startX, endY, 0.0D).endVertex();
@@ -474,8 +475,8 @@ public class NotesTitleField extends Screen implements IGuiEventListener {
 		buffer.pos(startX, startY, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.disableColorLogicOp();
-		GlStateManager.enableTexture();
+		RenderSystem.disableColorLogicOp();
+		RenderSystem.enableTexture();
 	}
 
 	public void setMaxStringLength(int length) {
