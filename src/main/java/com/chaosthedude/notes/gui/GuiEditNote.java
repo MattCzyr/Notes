@@ -78,16 +78,16 @@ public class GuiEditNote extends GuiScreen {
 			noteTitleField.setFocused(false);
 			noteTextField.setFocused(true);
 			return true;
-		}/* else if (noteTitleField.isFocused()) {
-			noteTitleField.keyPressed(keyCode, par2, par3);
-			return true;
-		} else if (noteTextField.isFocused()) {
-			noteTextField.keyTyped(keyCode, par2, par3);
-			return true;
-		}*/
+		}
 		
 		updateNote();
 		return false;
+	}
+	
+	@Override
+	public boolean keyReleased(int keyCode, int par2, int par3) {
+		updateNote();
+		return super.keyReleased(keyCode, par2, par3);
 	}
 
 	@Override
@@ -104,8 +104,6 @@ public class GuiEditNote extends GuiScreen {
 	}
 
 	private void setupButtons() {
-		//buttonList.clear();
-
 		saveButton = addButton(new GuiNotesButton(0, 10, 40, 110, 20, I18n.format("notes.save")) {
 			@Override
 			public void onClick(double mouseX, double mouseY) {

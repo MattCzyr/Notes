@@ -38,22 +38,6 @@ public class GuiListNotes extends GuiListExtended<GuiListNotesEntry> {
 		return slotIndex == selectedIndex;
 	}
 
-	/*@Override
-	public void handleMouseInput() {
-		int i2 = Mouse.getEventDWheel();
-		if (i2 != 0) {
-			if (i2 > 0) {
-				i2 = -1;
-			} else if (i2 < 0) {
-				i2 = 1;
-			}
-
-			amountScrolled += (float) (i2 * slotHeight);
-		} else {
-			super.handleMouseInput();
-		}
-	}*/
-
 	@Override
 	public void drawScreen(int parMouseX, int parMouseY, float partialTicks) {
 		if (visible) {
@@ -113,7 +97,6 @@ public class GuiListNotes extends GuiListExtended<GuiListNotesEntry> {
 	public void refreshList() {
 		clearEntries();
 		for (Note note : Note.getCurrentNotes()) {
-			System.out.println("adding note");
 			addEntry(new GuiListNotesEntry(this, note));
 		}
 	}
