@@ -145,7 +145,7 @@ public class EditNoteScreen extends Screen {
 		noteTitleField.setFocused(true);
 		children.add(noteTitleField);
 
-		noteTextField = new NotesTextField(font, 130, 85, width - 140, 136, 5);
+		noteTextField = new NotesTextField(font, 130, 85, width - 140, height - 95, 5);
 		noteTextField.setText(note.getFilteredText());
 		children.add(noteTextField);
 	}
