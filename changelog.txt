@@ -4,6 +4,7 @@
  1.15.2, 1.14.4, 1.13.2:
     FEATURES:
     - Added a "pinned" indicator next to the pinned note in the note selection GUI
+    - Automatically size note text field based on GUI height
     FIXES:
     - Fixed a HeadlessException when trying to open a note in the system text editor or viewer on an unsupported system
  1.15.2:
