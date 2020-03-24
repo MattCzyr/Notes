@@ -5,11 +5,11 @@ import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 public class RenderTickHandler {
 
@@ -17,7 +17,7 @@ public class RenderTickHandler {
 
 	@SubscribeEvent
 	public void onRenderTick(RenderTickEvent event) {
-		if (event.phase == Phase.END && !mc.gameSettings.hideGUI && (mc.currentScreen == null || mc.currentScreen instanceof GuiChat)) {
+		if (event.phase == Phase.END && !mc.gameSettings.hideGUI && (mc.currentScreen == null || mc.currentScreen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
 

@@ -6,9 +6,9 @@ import com.chaosthedude.notes.gui.GuiSelectNote;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class KeybindHandler {
 

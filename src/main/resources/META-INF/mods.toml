@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[25,)"
+loaderVersion="[28,)"
 issueTrackerURL="https://github.com/MattCzyr/Notes/issues"
 [[mods]]
     modId="notes"
@@ -14,6 +14,12 @@ issueTrackerURL="https://github.com/MattCzyr/Notes/issues"
 [[dependencies.notes]]
     modId="forge"
     mandatory=true
-    versionRange="[25,)"
+    versionRange="[28,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.notes]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"

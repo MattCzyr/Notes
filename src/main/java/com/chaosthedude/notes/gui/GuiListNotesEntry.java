@@ -6,22 +6,21 @@ import java.text.SimpleDateFormat;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.gui.GuiScreenWorking;
-import net.minecraft.client.gui.GuiYesNoCallback;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.widget.list.ExtendedList.AbstractListEntry;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiListNotesEntry extends GuiListExtended.IGuiListEntry<GuiListNotesEntry> {
+public class GuiListNotesEntry extends AbstractListEntry<GuiListNotesEntry> {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
 	private final Minecraft mc;
@@ -38,27 +37,29 @@ public class GuiListNotesEntry extends GuiListExtended.IGuiListEntry<GuiListNote
 	}
 
 	@Override
-	public void drawEntry(int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
-		mc.fontRenderer.drawString(note.getTitle(), getX() + 1, getY() + 1, 0xffffff);
-		mc.fontRenderer.drawString(note.getScope().format(), getX() + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), getY() + 1, 0x808080);
+	public void render(int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+		mc.fontRenderer.drawString(note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.drawString(note.getScope().format(), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), par2 + 1, 0x808080);
 		if (note.isPinned()) {
-			mc.fontRenderer.drawString(I18n.format("notes.pinned"), getX() + 4 + mc.fontRenderer.getStringWidth(note.getTitle()) + mc.fontRenderer.getStringWidth(note.getScope().format()) + 4, getY() + 1, 0xffffff);
+			mc.fontRenderer.drawString(I18n.format("notes.pinned"), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()) + mc.fontRenderer.getStringWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff);
 		}
-		mc.fontRenderer.drawString(note.getTitle(), getX() + 1, getY() + 1, 0xffffff);
-		mc.fontRenderer.drawString(note.getPreview(MathHelper.floor(listWidth * 0.9)), getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRenderer.drawString(note.getLastModifiedString(), getX() + 1, getY() + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString(note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.drawString(note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(note.getLastModifiedString(), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	@Override
-	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-		notesList.selectNote(getIndex());
-		if (Util.milliTime() - lastClickTime < 250L) {
-			loadNote();
-			return true;
-		}
+	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int button) {
+		if (button == 0) {
+			notesList.selectNote(this);
+			if (Util.milliTime() - lastClickTime < 250L) {
+				loadNote();
+				return true;
+			}
 
-		lastClickTime = Util.milliTime();
+			lastClickTime = Util.milliTime();
+		}
 		return false;
 	}
 
@@ -74,7 +75,7 @@ public class GuiListNotesEntry extends GuiListExtended.IGuiListEntry<GuiListNote
 	}
 
 	public void loadNote() {
-		mc.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		if (ConfigHandler.CLIENT.useInGameViewer.get() || !note.tryOpenExternal()) {
 			mc.displayGuiScreen(new GuiDisplayNote(guiNotes, note));
 		}
@@ -92,20 +93,19 @@ public class GuiListNotesEntry extends GuiListExtended.IGuiListEntry<GuiListNote
 	public boolean isPinned() {
 		return note.equals(Notes.pinnedNote);
 	}
+	
+	public Note getNote() {
+		return note;
+	}
 
 	public void deleteNote() {
-		mc.displayGuiScreen(new GuiNotesYesNo(new GuiYesNoCallback() {
-			@Override
-			public void confirmResult(boolean result, int id) {
-				if (result) {
-					GuiListNotesEntry.this.mc.displayGuiScreen(new GuiScreenWorking());
-					note.delete();
-					GuiListNotesEntry.this.notesList.refreshList();
-				}
-
-				GuiListNotesEntry.this.mc.displayGuiScreen(GuiListNotesEntry.this.guiNotes);
+		mc.displayGuiScreen(new NotesConfirmScreen((result) -> {
+			if (result) {
+				note.delete();
 			}
-		}, I18n.format("notes.confirmDelete"), note.getTitle(), 0));
+
+			GuiListNotesEntry.this.mc.displayGuiScreen(GuiListNotesEntry.this.guiNotes);
+		}, new StringTextComponent(I18n.format("notes.confirmDelete")), new StringTextComponent(note.getTitle())));
 	}
 
 }

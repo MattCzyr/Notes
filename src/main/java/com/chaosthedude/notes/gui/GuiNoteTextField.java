@@ -8,23 +8,23 @@ import org.lwjgl.glfw.GLFW;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiNoteTextField extends Gui implements IGuiEventListener {
+public class GuiNoteTextField extends Screen implements IGuiEventListener {
 
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -50,6 +50,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 	private boolean visible = true;
 
 	public GuiNoteTextField(FontRenderer fontRenderer, int x, int y, int width, int height, int margin) {
+		super(new StringTextComponent(""));
 		this.fontRenderer = fontRenderer;
 		this.xPosition = x;
 		this.yPosition = y;
@@ -65,14 +66,14 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 
 	@Override
 	public boolean keyPressed(int keyCode, int par2, int par3) {
-		if (GuiScreen.isKeyComboCtrlC(keyCode)) {
+		if (Screen.isCopy(keyCode)) {
 			mc.keyboardListener.setClipboardString(getSelectedText());
-		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
+		} else if (Screen.isCut(keyCode)) {
 			if (getSelectionDifference() != 0) {
 				mc.keyboardListener.setClipboardString(getSelectedText());
 				deleteSelectedText();
 			}
-		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
+		} else if (Screen.isPaste(keyCode)) {
 			insert(mc.keyboardListener.getClipboardString());
 		} else if (isKeyComboCtrlBack(keyCode)) {
 			deletePrevWord();
@@ -118,7 +119,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_LEFT) {
 				boolean moveLeft = true;
-				if (GuiScreen.isShiftKeyDown()) {
+				if (Screen.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -136,7 +137,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
 				boolean moveRight = true;
-				if (GuiScreen.isShiftKeyDown()) {
+				if (Screen.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -172,7 +173,8 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 	      return false;
 	   }
 
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+	@Override
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
 
 		renderVisibleText();
@@ -228,11 +230,11 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 	}
 
 	@Override
-	public boolean mouseScrolled(double amount) {
-		if (amount < 0) {
+	public boolean mouseScrolled(double par1, double par2, double par3) {
+		if (par1 < 0) {
 			incrementVisibleLines();
 			return true;
-		} else if (amount > 0) {
+		} else if (par1 > 0) {
 			decrementVisibleLines();
 			return true;
 		}
@@ -361,7 +363,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 	}
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
-		return keyCode == GLFW.GLFW_KEY_BACKSPACE && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !GuiScreen.isAltKeyDown();
+		return keyCode == GLFW.GLFW_KEY_BACKSPACE && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
 	}
 
 	public void insert(String newText) {
@@ -583,7 +585,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 	}
 
 	private void updateSelectionPos() {
-		if (GuiScreen.isShiftKeyDown()) {
+		if (Screen.hasShiftDown()) {
 			if (selectionPos < 0) {
 				selectionPos = cursorPos;
 			}
@@ -657,8 +659,8 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableColorLogic();
+		GlStateManager.disableTexture();
+		GlStateManager.enableColorLogicOp();
 		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
@@ -668,8 +670,8 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 		buffer.pos(startX, startY, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.disableColorLogic();
-		GlStateManager.enableTexture2D();
+		GlStateManager.disableColorLogicOp();
+		GlStateManager.enableTexture();
 	}
 
 	private void renderSelectionBox(int y, int renderY, String line) {
@@ -729,7 +731,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 			final int renderCursorX = xPosition + margin + fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
 			final int renderCursorY = yPosition + margin + (getRenderSafeCursorY() * fontRenderer.FONT_HEIGHT);
 
-			drawRect(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.FONT_HEIGHT + 1, -3092272);
+			RenderUtils.drawRect(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.FONT_HEIGHT + 1, -3092272);
 		}
 	}
 
@@ -745,7 +747,7 @@ public class GuiNoteTextField extends Gui implements IGuiEventListener {
 				scrollBarTop -= diff;
 			}
 
-			drawRect(xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			RenderUtils.drawRect(xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
 

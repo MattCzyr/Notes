@@ -2,10 +2,11 @@ package com.chaosthedude.notes.util;
 
 import java.util.List;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
@@ -64,7 +65,7 @@ public class RenderUtils {
 		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color4f(red, green, blue, alpha);
 
@@ -75,7 +76,7 @@ public class RenderUtils {
 		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 		GlStateManager.disableBlend();
 	}
 

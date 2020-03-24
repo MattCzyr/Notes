@@ -7,20 +7,20 @@ import org.lwjgl.glfw.GLFW;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 
-public class GuiNoteTitleField extends Gui implements IGuiEventListener {
+public class GuiNoteTitleField extends Screen implements IGuiEventListener {
 
 	private final int id;
 	private final FontRenderer fontRenderer;
@@ -45,6 +45,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 	private Predicate<String> validator = Predicates.<String> alwaysTrue();
 
 	public GuiNoteTitleField(int id, FontRenderer fontRenderer, int x, int y, int width, int height) {
+		super(new StringTextComponent(""));
 		this.id = id;
 		this.fontRenderer = fontRenderer;
 		this.xPosition = x;
@@ -231,20 +232,20 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 	public boolean keyPressed(int keyCode, int par2, int par3) {
 		if (!isFocused) {
 			return false;
-		} else if (GuiScreen.isKeyComboCtrlA(keyCode)) {
+		} else if (Screen.isSelectAll(keyCode)) {
 			setCursorPositionEnd();
 			setSelectionPos(0);
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlC(keyCode)) {
+		} else if (Screen.isCopy(keyCode)) {
 			Minecraft.getInstance().keyboardListener.setClipboardString(getSelectedText());
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlV(keyCode)) {
+		} else if (Screen.isPaste(keyCode)) {
 			if (isEnabled) {
 				writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
 			}
 
 			return true;
-		} else if (GuiScreen.isKeyComboCtrlX(keyCode)) {
+		} else if (Screen.isCut(keyCode)) {
 			Minecraft.getInstance().keyboardListener.setClipboardString(getSelectedText());
 			if (this.isEnabled) {
 				writeText("");
@@ -254,7 +255,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 		} else {
 			switch (keyCode) {
 			case GLFW.GLFW_KEY_BACKSPACE:
-				if (GuiScreen.isCtrlKeyDown()) {
+				if (Screen.hasControlDown()) {
 					if (isEnabled) {
 						deleteWords(-1);
 					}
@@ -264,13 +265,13 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 
 				return true;
 			case GLFW.GLFW_KEY_LEFT:
-				if (GuiScreen.isShiftKeyDown()) {
-					if (GuiScreen.isCtrlKeyDown()) {
+				if (Screen.hasShiftDown()) {
+					if (Screen.hasControlDown()) {
 						setSelectionPos(getNthWordFromPos(-1, getSelectionEnd()));
 					} else {
 						setSelectionPos(getSelectionEnd() - 1);
 					}
-				} else if (GuiScreen.isCtrlKeyDown()) {
+				} else if (Screen.hasControlDown()) {
 					setCursorPosition(getNthWordFromCursor(-1));
 				} else {
 					moveCursorBy(-1);
@@ -278,13 +279,13 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 
 				return true;
 			case GLFW.GLFW_KEY_RIGHT:
-				if (GuiScreen.isShiftKeyDown()) {
-					if (GuiScreen.isCtrlKeyDown()) {
+				if (Screen.hasShiftDown()) {
+					if (Screen.hasControlDown()) {
 						setSelectionPos(getNthWordFromPos(1, getSelectionEnd()));
 					} else {
 						setSelectionPos(getSelectionEnd() + 1);
 					}
-				} else if (GuiScreen.isCtrlKeyDown()) {
+				} else if (Screen.hasControlDown()) {
 					setCursorPosition(getNthWordFromCursor(1));
 				} else {
 					moveCursorBy(1);
@@ -293,7 +294,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 				return true;
 			case GLFW.GLFW_KEY_DOWN:
 			case GLFW.GLFW_KEY_END:
-				if (GuiScreen.isShiftKeyDown()) {
+				if (Screen.hasShiftDown()) {
 					setSelectionPos(text.length());
 				} else {
 					setCursorPositionEnd();
@@ -302,7 +303,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 				return true;
 			case GLFW.GLFW_KEY_UP:
 			case GLFW.GLFW_KEY_HOME:
-				if (GuiScreen.isShiftKeyDown()) {
+				if (Screen.hasShiftDown()) {
 					setSelectionPos(0);
 				} else {
 					setCursorPositionZero();
@@ -310,7 +311,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 
 				return true;
 			case GLFW.GLFW_KEY_DELETE:
-				if (GuiScreen.isCtrlKeyDown()) {
+				if (Screen.hasControlDown()) {
 					if (isEnabled) {
 						deleteWords(1);
 					}
@@ -424,7 +425,7 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 
 			if (shouldDisplayCursor) {
 				if (cursorIsAtEnd) {
-					Gui.drawRect(renderX, y - 1, renderX + 1, y + 1 + fontRenderer.FONT_HEIGHT, -3092272);
+					RenderUtils.drawRect(renderX, y - 1, renderX + 1, y + 1 + fontRenderer.FONT_HEIGHT, -3092272);
 				} else {
 					fontRenderer.drawStringWithShadow("_", renderX, y, color);
 				}
@@ -462,8 +463,8 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.color4f(0.0F, 0.0F, 255.0F, 255.0F);
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableColorLogic();
+		GlStateManager.disableTexture();
+		GlStateManager.enableColorLogicOp();
 		GlStateManager.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
@@ -473,8 +474,8 @@ public class GuiNoteTitleField extends Gui implements IGuiEventListener {
 		buffer.pos(startX, startY, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.disableColorLogic();
-		GlStateManager.enableTexture2D();
+		GlStateManager.disableColorLogicOp();
+		GlStateManager.enableTexture();
 	}
 
 	public void setMaxStringLength(int length) {
