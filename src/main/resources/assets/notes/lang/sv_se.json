@@ -1,0 +1,43 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "SWEDEN - SWEDISH",
+
+    "_comment": "TITLES",
+    "notes.newNote": "Ny anteckning",
+    "notes.editNote": "Redigera anteckning",
+    "notes.selectNote": "Välj anteckning",
+
+    "_comment": "BUTTONS",
+    "notes.biome": "Infoga biom",
+    "notes.chunk": "Infoga datablock",
+    "notes.coordinates": "Infoga koordinater",
+    "notes.copy": "Kopiera",
+    "notes.delete": "Radera",
+    "notes.edit": "Redigera",
+    "notes.global": "Global",
+    "notes.insert": "Infoga",
+    "notes.new": "Ny",
+    "notes.off": "AV",
+    "notes.on": "PÅ",
+    "notes.pin": "Nåla fast",
+    "notes.pinned": "Fastnålad",
+    "notes.save": "Spara",
+    "notes.select": "Välj",
+    "notes.unpin": "Ta bort nål",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "lokal",
+    "notes.scope.global": "global",
+    "notes.scope.remote": "fjärr",
+
+    "_comment": "CATEGORIES",
+    "key.category.notes": "Notes",
+
+    "_comment": "KEYBINDS",
+    "key.openNotes": "Öppna anteckningslistan",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Radera denna anteckning?",
+    "notes.lastModified": "Senast ändrad",
+    "notes.saveAs": "Kommer att sparas som \"%s\""
+}
