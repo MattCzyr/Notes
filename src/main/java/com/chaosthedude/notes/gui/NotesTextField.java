@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -175,14 +176,15 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	   }
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
 
-		renderVisibleText();
+		renderVisibleText(stack);
 		renderCursor();
 		renderScrollBar();
 	}
 
+	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
 		if (canLoseFocus) {
@@ -194,7 +196,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 				final int relativeMouseX = (int) mouseX - xPosition - margin;
 				final int relativeMouseY = (int) mouseY - yPosition - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
+				final int x = fontRenderer.func_238413_a_(getLine(y), relativeMouseX, false).length();
 
 				setCursorPos(countCharacters(y) + x);
 				return true;
@@ -215,7 +217,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 				final int relativeMouseX = (int) mouseX - xPosition - margin;
 				final int relativeMouseY = (int) mouseY - yPosition - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimStringToWidth(getLine(y), relativeMouseX).length();
+				final int x = fontRenderer.func_238413_a_(getLine(y), relativeMouseX, false).length();
 
 				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
 				if (pos != cursorPos) {
@@ -713,11 +715,11 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 		}
 	}
 
-	private void renderVisibleText() {
+	private void renderVisibleText(MatrixStack stack) {
 		int renderY = yPosition + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawStringWithShadow(line, xPosition + margin, renderY, 14737632);
+			fontRenderer.drawStringWithShadow(stack, line, xPosition + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
 			renderY += fontRenderer.FONT_HEIGHT;

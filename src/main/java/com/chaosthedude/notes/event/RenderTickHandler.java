@@ -3,6 +3,7 @@ package com.chaosthedude.notes.event;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.RenderUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -34,9 +35,11 @@ public class RenderTickHandler {
 
 				final double opacity = mc.gameSettings.chatOpacity * 0.9F + 0.1F;
 				final int color = (int) (255.0F * opacity);
+				
+				final MatrixStack stack = new MatrixStack();
 
 				RenderUtils.drawRect(fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color / 2 << 24);
-				RenderUtils.drawSplitStringOnHUD(text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth);
+				RenderUtils.renderSplitString(stack, text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, 0xffffff);
 			}
 		}
 	}

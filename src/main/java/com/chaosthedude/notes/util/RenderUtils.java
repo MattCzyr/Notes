@@ -1,7 +1,9 @@
 package com.chaosthedude.notes.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -10,25 +12,31 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.Style;
 
 public class RenderUtils {
 
 	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer font = mc.fontRenderer;
-
-	public static void drawSplitStringOnHUD(String str, int x, int y, int wrapWidth) {
-		renderSplitString(str, x, y, wrapWidth);
+	
+	public static List<String> trimStringToWidth(String str, int maxWidth) {
+		List<String> trimmedStrings = new ArrayList<String>();
+		for (ITextProperties text : font.getCharacterManager().func_238365_g_(str, maxWidth, Style.EMPTY)) {
+			trimmedStrings.add(text.getString());
+		}
+		return trimmedStrings;
 	}
 
-	public static void renderSplitString(String string, int x, int y, int wrapWidth) {
-		for (String s : font.listFormattedStringToWidth(string, wrapWidth)) {
-			font.drawStringWithShadow(s, x, y, 0xffffff);
+	public static void renderSplitString(MatrixStack stack, String string, int x, int y, int wrapWidth, int color) {
+		for (String s : trimStringToWidth(string, wrapWidth)) {
+			font.drawStringWithShadow(stack, s, x, y, color);
 			y += font.FONT_HEIGHT;
 		}
 	}
 
 	public static int getSplitStringWidth(String string, int wrapWidth) {
-		final List<String> lines = font.listFormattedStringToWidth(string, wrapWidth);
+		final List<String> lines = trimStringToWidth(string, wrapWidth);
 		int width = 0;
 		for (String line : lines) {
 			final int stringWidth = font.getStringWidth(line);
@@ -41,7 +49,7 @@ public class RenderUtils {
 	}
 
 	public static int getSplitStringHeight(String string, int wrapWidth) {
-		return font.FONT_HEIGHT * font.listFormattedStringToWidth(string, wrapWidth).size();
+		return font.FONT_HEIGHT * trimStringToWidth(string, wrapWidth).size();
 	}
 
 	public static void drawRect(int left, int top, int right, int bottom, int color) {

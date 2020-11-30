@@ -7,6 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.SharedConstants;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public final class StringUtils {
@@ -92,8 +95,8 @@ public final class StringUtils {
 		return text;
 	}
 
-	public static String fixBiomeName(Biome biome) {
-		final String original = I18n.format(biome.getTranslationKey());
+	public static String fixBiomeName(World world, Biome biome) {
+		final String original = I18n.format(Util.makeTranslationKey("biome", world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome)));
 		String fixed = "";
 		char pre = ' ';
 		for (int i = 0; i < original.length(); i++) {

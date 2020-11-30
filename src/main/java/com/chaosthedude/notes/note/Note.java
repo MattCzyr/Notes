@@ -17,6 +17,7 @@ import java.util.List;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.FileUtils;
+import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
@@ -107,8 +108,8 @@ public class Note {
 	public String getPreview(int width) {
 		String preview = rawText;
 		boolean addEllipsis = false;
-		if (fontRenderer.getStringWidth(preview) > width || fontRenderer.listFormattedStringToWidth(preview, width).size() > 1) {
-			preview = fontRenderer.trimStringToWidth(preview, width);
+		if (fontRenderer.getStringWidth(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
+			preview = RenderUtils.trimStringToWidth(preview, width).get(0);
 			addEllipsis = true;
 		}
 

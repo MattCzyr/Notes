@@ -6,12 +6,14 @@ import java.util.List;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
+import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,41 +54,41 @@ public class DisplayNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		renderBackground();
-		drawCenteredString(font, title.getFormattedText(), width / 2 + 60, 15, -1);
-		displayNote();
+	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(stack);
+		drawCenteredString(stack, font, title.getString(), width / 2 + 60, 15, -1);
+		displayNote(stack);
 
-		super.render(mouseX, mouseY, partialTicks);
+		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
-	public void displayNote() {
-		font.drawSplitString(pages.get(page), 160, 40, width - 200, 0xFFFFFF);
+	public void displayNote(MatrixStack stack) {
+		RenderUtils.renderSplitString(stack, pages.get(page), 160, 40, width - 200, 0xFFFFFF);
 	}
 
 	private void setupButtons() {
-		editButton = addButton(new NotesButton(10, 40, 110, 20, I18n.format("notes.edit"), (onPress) -> {
+		editButton = addButton(new NotesButton(10, 40, 110, 20, new TranslationTextComponent("notes.edit"), (onPress) -> {
 			minecraft.displayGuiScreen(new EditNoteScreen(DisplayNoteScreen.this.parentScreen, note));
 		}));
-		deleteButton = addButton(new NotesButton(10, 65, 110, 20, I18n.format("notes.delete"), (onPress) -> {
+		deleteButton = addButton(new NotesButton(10, 65, 110, 20, new TranslationTextComponent("notes.delete"), (onPress) -> {
 			deleteNote();
 		}));
-		pinButton = addButton(new NotesButton(10, 90, 110, 20, isPinned() ? I18n.format("notes.unpin") : I18n.format("notes.pin"), (onPress) -> {
+		pinButton = addButton(new NotesButton(10, 90, 110, 20, isPinned() ? new TranslationTextComponent("notes.unpin") : new TranslationTextComponent("notes.pin"), (onPress) -> {
 			togglePin();
 			if (isPinned()) {
 				minecraft.displayGuiScreen(null);
 			}
 		}));
-		doneButton = addButton(new NotesButton(10, height - 30, 110, 20, I18n.format("gui.done"), (onPress) -> {
+		doneButton = addButton(new NotesButton(10, height - 30, 110, 20, new TranslationTextComponent("gui.done"), (onPress) -> {
 			minecraft.displayGuiScreen(parentScreen);
 		}));
 
-		prevButton = addButton(new NotesButton(130, height - 30, 20, 20, I18n.format("<"), (onPress) -> {
+		prevButton = addButton(new NotesButton(130, height - 30, 20, 20, new TranslationTextComponent("<"), (onPress) -> {
 			if (page > 0) {
 				page--;
 			}
 		}));
-		nextButton = addButton(new NotesButton(width - 30, height - 30, 20, 20, I18n.format(">"), (onPress) -> {
+		nextButton = addButton(new NotesButton(width - 30, height - 30, 20, 20, new TranslationTextComponent(">"), (onPress) -> {
 			if (page < pages.size() - 1) {
 				page++;
 			}
@@ -95,7 +97,7 @@ public class DisplayNoteScreen extends Screen {
 
 	private void setupPages() {
 		if (note != null) {
-			final List<String> lines = ConfigHandler.CLIENT.wrapNote.get() ? font.listFormattedStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
+			final List<String> lines = ConfigHandler.CLIENT.wrapNote.get() ? RenderUtils.trimStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";
@@ -127,10 +129,10 @@ public class DisplayNoteScreen extends Screen {
 	private void togglePin() {
 		if (isPinned()) {
 			Notes.pinnedNote = null;
-			pinButton.setMessage(I18n.format("notes.pin"));
+			pinButton.setMessage(new TranslationTextComponent("notes.pin"));
 		} else {
 			Notes.pinnedNote = note;
-			pinButton.setMessage(I18n.format("notes.unpin"));
+			pinButton.setMessage(new TranslationTextComponent("notes.unpin"));
 		}
 	}
 

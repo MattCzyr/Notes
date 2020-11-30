@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
@@ -37,15 +38,15 @@ public class NotesListEntry extends AbstractListEntry<NotesListEntry> {
 	}
 
 	@Override
-	public void render(int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		mc.fontRenderer.drawString(note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		mc.fontRenderer.drawString(note.getScope().format(), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), par2 + 1, 0x808080);
+	public void render(MatrixStack stack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+		mc.fontRenderer.drawString(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.drawString(stack, note.getScope().format(), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()), par2 + 1, 0x808080);
 		if (note.isPinned()) {
-			mc.fontRenderer.drawString(I18n.format("notes.pinned"), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()) + mc.fontRenderer.getStringWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff);
+			mc.fontRenderer.drawString(stack, I18n.format("notes.pinned"), par3 + 4 + mc.fontRenderer.getStringWidth(note.getTitle()) + mc.fontRenderer.getStringWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff);
 		}
-		mc.fontRenderer.drawString(note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		mc.fontRenderer.drawString(note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
-		mc.fontRenderer.drawString(note.getLastModifiedString(), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
+		mc.fontRenderer.drawString(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		mc.fontRenderer.drawString(stack, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 3, 0x808080);
+		mc.fontRenderer.drawString(stack, note.getLastModifiedString(), par3 + 1, par2 + mc.fontRenderer.FONT_HEIGHT + 14, 0x808080);
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
