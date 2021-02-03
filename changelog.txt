@@ -1,6 +1,9 @@
 -------------------------------------------------
- VERSION 1.2.3 - 1.16.4
+ VERSION 1.2.3 - 1.16.5, 1.16.4
 -------------------------------------------------
+ 1.16.5:
+    UPDATES:
+    - Updated to MC 1.16.5 (Forge 36.0.14)
  1.16.4:
     FIXES:
     - Fixed issue that caused servers to be marked as incompatible when mod is not installed on server
