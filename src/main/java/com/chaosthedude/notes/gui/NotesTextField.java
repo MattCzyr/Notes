@@ -234,10 +234,10 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 
 	@Override
 	public boolean mouseScrolled(double par1, double par2, double par3) {
-		if (par1 < 0) {
+		if (par3 < 0) {
 			incrementVisibleLines();
 			return true;
-		} else if (par1 > 0) {
+		} else if (par3 > 0) {
 			decrementVisibleLines();
 			return true;
 		}
