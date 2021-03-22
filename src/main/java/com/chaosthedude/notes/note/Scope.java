@@ -132,8 +132,9 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			// If there's a better way to get the world's folder, I'd love to know
-			return StringUtils.filterFileName(mc.getIntegratedServer().getWorldIconFile().getParent());
+			// Better in the sense that the folders are not long path strings.
+			String[] result = StringUtils.filterFileName(mc.getIntegratedServer().getWorldIconFile().getParent()).split("~");
+			return StringUtils.filterFileName(result[result.length - 1]);
 		}
 
 		return null;
