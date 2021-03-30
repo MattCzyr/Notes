@@ -1,0 +1,43 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "INDONESIAN - INDONESIAN",
+
+    "_comment": "TITLES",
+    "notes.newNote": "Catatan Baru",
+    "notes.editNote": "Ubah Catatan",
+    "notes.selectNote": "Pilih Catatan",
+
+    "_comment": "BUTTONS",
+    "notes.biome": "Bioma",
+    "notes.chunk": "Bingkah",
+    "notes.coordinates": "Koordinat",
+    "notes.copy": "Salin",
+    "notes.delete": "Hapus",
+    "notes.edit": "Ubah",
+    "notes.global": "Global",
+    "notes.insert": "Masukkan",
+    "notes.new": "Baru",
+    "notes.off": "Tidak",
+    "notes.on": "Ya",
+    "notes.pin": "Pin",
+    "notes.pinned": "Telah di pin",
+    "notes.save": "Simpan",
+    "notes.select": "Pilih",
+    "notes.unpin": "Tidak Pin",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Lokal",
+    "notes.scope.global": "Global",
+    "notes.scope.remote": "Remote",
+
+    "_comment": "CATEGORIES",
+    "key.category.notes": "Semua Catatan",
+
+    "_comment": "KEYBINDS",
+    "key.openNotes": "Buka Semua Catatan",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Hapus catatan ini?",
+    "notes.lastModified": "Terakhir diubah",
+    "notes.saveAs": "Akan disimpan sebagai %s"
+}
