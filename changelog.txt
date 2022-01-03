@@ -1,9 +1,12 @@
 -------------------------------------------------
- VERSION 1.2.3 - 1.16.5, 1.16.4
+ VERSION 1.2.3 - 1.17.1, 1.16.5, 1.16.4
 -------------------------------------------------
+ 1.17.1:
+    UPDATES:
+    - Updated to Forge 1.17.1
  1.16.5:
     UPDATES:
-    - Updated to MC 1.16.5 (Forge 36.0.14)
+    - Updated to Forge 1.16.5
  1.16.4:
     FIXES:
     - Fixed issue that caused servers to be marked as incompatible when mod is not installed on server
@@ -23,7 +26,7 @@
 -------------------------------------------------
  1.16.4:
     UPDATES:
-    - Updated to MC 1.16.4 (Forge 35.1.4)
+    - Updated to Forge 1.16.4
     FEATURES:
     - Added Swedish translations
 
@@ -39,13 +42,13 @@
     - Fixed a HeadlessException when trying to open a note in the system text editor or viewer on an unsupported system
  1.15.2:
     UPDATES:
-    - Updated to MC 1.15.2 (Forge 31.1.27)
+    - Updated to Forge 1.15.2
  1.14.4:
     UPDATES:
-    - Updated to MC 1.14.4 (Forge 28.2.3)
+    - Updated to Forge 1.14.4
  1.13.2:
     UPDATES:
-    - Updated to MC 1.13.2 (Forge 25.0.219)
+    - Updated to Forge 1.13.2
 
 
 -------------------------------------------------
@@ -53,7 +56,7 @@
 -------------------------------------------------
  1.12:
     UPDATES:
-    - Updated to MC 1.12 (Forge #2387)
+    - Updated to Forge 1.12
  1.11.2, 1.10.2, 1.7.10:
     FIXES:
     - Fixed FileNotFoundException after editing a pinned note
@@ -86,13 +89,13 @@
 -------------------------------------------------
  1.11.2:
     UPDATES:
-    - First release for MC 1.11.2 (Forge #2213)
+    - First release for Forge 1.11.2
  1.11:
     UPDATES:
-    - First release for MC 1.11 (Forge #2199)
+    - First release for Forge 1.11
  1.10.2:
     UPDATES:
-    - First release for MC 1.10.2 (Forge #2202)
+    - First release for Forge 1.10.2
  1.7.10:
     UPDATES:
-    - First release for MC 1.7.10 (Forge #1614)
+    - First release for Forge 1.7.10
