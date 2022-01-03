@@ -8,14 +8,13 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,7 +36,7 @@ public class EditNoteScreen extends Screen {
 	private boolean pinned;
 
 	public EditNoteScreen(Screen parentScreen, @Nullable Note note) {
-		super(new StringTextComponent(note != null ? I18n.format("notes.editNote") : I18n.format("notes.newNote")));
+		super(new TextComponent(note != null ? I18n.get("notes.editNote") : I18n.get("notes.newNote")));
 		this.parentScreen = parentScreen;
 		if (note != null) {
 			this.note = note;
@@ -51,7 +50,7 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void init() {
-		minecraft.keyboardListener.enableRepeatEvents(true);
+		minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
 		setupTextFields();
 		setupButtons();
@@ -67,14 +66,14 @@ public class EditNoteScreen extends Screen {
 	
 	@Override
 	public void onClose() {
-		minecraft.keyboardListener.enableRepeatEvents(false);
+		minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 	
 	@Override
 	public boolean keyPressed(int keyCode, int par2, int par3) {
 		super.keyPressed(keyCode, par2, par3);
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-			minecraft.displayGuiScreen(parentScreen);
+			minecraft.setScreen(parentScreen);
 			return true;
 		} else if (keyCode == GLFW.GLFW_KEY_TAB && noteTitleField.isFocused()) {
 			noteTitleField.setFocused(false);
@@ -91,65 +90,46 @@ public class EditNoteScreen extends Screen {
 		updateNote();
 		return super.keyReleased(keyCode, par2, par3);
 	}
-	
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean ret = false;
-		for(IGuiEventListener listener : getEventListeners()) {
-			if (listener.mouseClicked(mouseX, mouseY, button)) {
-				setListener(listener);
-				if (button == 0) {
-					setDragging(true);
-				}
-				ret = true;
-			}
-		}
-		return ret;
-	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
 		drawCenteredString(stack, font, title.getString(), width / 2 + 60, 15, 0xffffff);
-
-		noteTitleField.render(stack, mouseX, mouseY, partialTicks);
-		noteTextField.render(stack, mouseX, mouseY, partialTicks);
-
-		drawCenteredString(stack, font, I18n.format("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		drawCenteredString(stack, font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
 
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
-		saveButton = addButton(new NotesButton(10, 40, 110, 20, new TranslationTextComponent("notes.save"), (onPress) -> {
+		saveButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, new TranslatableComponent("notes.save"), (onPress) -> {
 			updateNote();
 			note.save();
-			minecraft.displayGuiScreen(new DisplayNoteScreen(parentScreen, note));
+			minecraft.setScreen(new DisplayNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
 			}
 		}));
-		globalButton = addButton(new NotesButton(10, 65, 110, 20, new StringTextComponent(I18n.format("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.format("notes.on") : I18n.format("notes.off"))), (onPress) -> {
+		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, new TextComponent(I18n.get("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.get("notes.on") : I18n.get("notes.off"))), (onPress) -> {
 			if (scope == Scope.GLOBAL) {
 				scope = Scope.getCurrentScope();
 			} else {
 				scope = Scope.GLOBAL;
 			}
 
-			globalButton.setMessage(new StringTextComponent(I18n.format("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.format("notes.on") : ": " + I18n.format("notes.off"))));
+			globalButton.setMessage(new TextComponent(I18n.get("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.get("notes.on") : ": " + I18n.get("notes.off"))));
 			updateNote();
 		}));
-		insertBiomeButton = addButton(new NotesButton(10, 90, 110, 20, new TranslationTextComponent("notes.biome"), (onPress) -> {
+		insertBiomeButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, new TranslatableComponent("notes.biome"), (onPress) -> {
 			insertBiome();
 		}));
-		insertChunkButton = addButton(new NotesButton(10, 115, 110, 20, new TranslationTextComponent("notes.chunk"), (onPress) -> {
+		insertChunkButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, new TranslatableComponent("notes.chunk"), (onPress) -> {
 			insertChunk();
 		}));
-		insertCoordsButton = addButton(new NotesButton(10, 140, 110, 20, new TranslationTextComponent("notes.coordinates"), (onPress) -> {
+		insertCoordsButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, new TranslatableComponent("notes.coordinates"), (onPress) -> {
 			insertCoords();
 		}));
-		cancelButton = addButton(new NotesButton(10, height - 30, 110, 20, new TranslationTextComponent("gui.cancel"), (onPress) -> {
-			minecraft.displayGuiScreen(parentScreen);
+		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, new TranslatableComponent("gui.cancel"), (onPress) -> {
+			minecraft.setScreen(parentScreen);
 		}));
 
 		insertBiomeButton.active = false;
@@ -158,34 +138,34 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void setupTextFields() {
-		noteTitleField = new NotesTitleField(font, 130, 40, width - 140, 20, new StringTextComponent(""));
-		noteTitleField.setText(note.getTitle());
-		children.add(noteTitleField);
+		noteTitleField = addRenderableWidget(new NotesTitleField(font, 130, 40, width - 140, 20, new TextComponent("")));
+		noteTitleField.setValue(note.getTitle());
+		addRenderableWidget(noteTitleField);
 		noteTitleField.changeFocus(true);
 		noteTitleField.setFocused(true);
-		setListener(noteTitleField);
+		setFocused(noteTitleField);
 
-		noteTextField = new NotesTextField(font, 130, 85, width - 140, height - 95, 5);
+		noteTextField = addRenderableWidget(new NotesTextField(font, 130, 85, width - 140, height - 95, 5));
 		noteTextField.setText(note.getFilteredText());
-		children.add(noteTextField);
+		addRenderableOnly(noteTextField);
 	}
 
 	private void updateNote() {
-		note.setTitle(noteTitleField.getText());
+		note.setTitle(noteTitleField.getValue());
 		note.setText(noteTextField.getText());
 		note.setScope(scope);
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(minecraft.world, minecraft.world.getBiome(minecraft.player.getPosition())));
+		noteTextField.insert(StringUtils.fixBiomeName(minecraft.level, minecraft.level.getBiome(minecraft.player.blockPosition())));
 	}
 
 	private void insertChunk() {
-		noteTextField.insert((int) minecraft.player.chunkCoordX + ", " + (int) minecraft.player.chunkCoordY + ", " + (int) minecraft.player.chunkCoordZ);
+		noteTextField.insert((int) minecraft.player.chunkPosition().x + ", " + (int) minecraft.player.chunkPosition().z);
 	}
 
 	private void insertCoords() {
-		noteTextField.insert((int) minecraft.player.getPosX() + ", " + (int) minecraft.player.getPosY() + ", " + (int) minecraft.player.getPosZ());
+		noteTextField.insert((int) minecraft.player.getBlockX() + ", " + (int) minecraft.player.getBlockY() + ", " + (int) minecraft.player.getBlockZ());
 	}
 
 }

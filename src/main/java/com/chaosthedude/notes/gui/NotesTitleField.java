@@ -1,22 +1,24 @@
 package com.chaosthedude.notes.gui;
 
 import com.chaosthedude.notes.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
-public class NotesTitleField extends TextFieldWidget {
+public class NotesTitleField extends EditBox {
 
-	private FontRenderer fontRenderer;
-	private ITextComponent label;
+	private Font font;
+	private Component label;
 	private int labelColor = 0x808080;
 
 	private boolean pseudoIsEnabled = true;
@@ -28,25 +30,25 @@ public class NotesTitleField extends TextFieldWidget {
 	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
 
-	public NotesTitleField(FontRenderer fontRenderer, int x, int y, int width, int height, ITextComponent label) {
-		super(fontRenderer, x, y, width, height, label);
-		this.fontRenderer = fontRenderer;
+	public NotesTitleField(Font font, int x, int y, int width, int height, Component label) {
+		super(font, x, y, width, height, label);
+		this.font = font;
 		this.label = label;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (getVisible()) {
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
+				GuiComponent.fill(poseStack, x, y, x + width, y + height, color / 2 << 24);
 			}
-			boolean showLabel = !isFocused() && getText().isEmpty();
+			boolean showLabel = !isFocused() && getValue().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
-			String text = showLabel ? label.getString() : getText();
-			String s = fontRenderer.func_238412_a_(text.substring(pseudoLineScrollOffset), getWidth());
+			String text = showLabel ? label.getString() : getValue();
+			String s = font.plainSubstrByWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
 			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
 			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
@@ -59,10 +61,10 @@ public class NotesTitleField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = fontRenderer.drawStringWithShadow(matrixStack, s1, (float) l, (float) i1, i);
+				j1 = font.drawShadow(poseStack, s1, (float) l, (float) i1, i);
 			}
 
-			boolean flag2 = getCursorPosition() < getText().length() || getText().length() >= pseudoMaxStringLength;
+			boolean flag2 = getCursorPosition() < getValue().length() || getValue().length() >= pseudoMaxStringLength;
 			int k1 = j1;
 
 			if (!flag) {
@@ -73,27 +75,27 @@ public class NotesTitleField extends TextFieldWidget {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = fontRenderer.drawStringWithShadow(matrixStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = font.drawShadow(poseStack, s.substring(j), (float) j1, (float) i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.FONT_HEIGHT, -3092272);
+					GuiComponent.fill(poseStack, k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
 				} else {
-					fontRenderer.drawStringWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
+					font.drawShadow(poseStack, "_", (float) k1, (float) i1, i);
 				}
 			}
 
 			if (k != j) {
-				int l1 = l + fontRenderer.getStringWidth(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + fontRenderer.FONT_HEIGHT);
+				int l1 = l + font.width(s.substring(0, k));
+				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + font.lineHeight);
 			}
 		}
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
+	public void setEditable(boolean enabled) {
+		super.setEditable(enabled);
 		pseudoIsEnabled = enabled;
 	}
 
@@ -104,8 +106,8 @@ public class NotesTitleField extends TextFieldWidget {
 	}
 
 	@Override
-	public void setDisabledTextColour(int color) {
-		super.setDisabledTextColour(color);
+	public void setTextColorUneditable(int color) {
+		super.setTextColorUneditable(color);
 		pseudoDisabledColor = color;
 	}
 
@@ -118,14 +120,14 @@ public class NotesTitleField extends TextFieldWidget {
 	}
 	
 	@Override
-	public void setEnableBackgroundDrawing(boolean enableBackgroundDrawing) {
-		super.setEnableBackgroundDrawing(enableBackgroundDrawing);
+	public void setBordered(boolean enableBackgroundDrawing) {
+		super.setBordered(enableBackgroundDrawing);
 		pseudoEnableBackgroundDrawing = enableBackgroundDrawing;
 	}
 	
 	@Override
-	public void setMaxStringLength(int length) {
-		super.setMaxStringLength(length);
+	public void setMaxLength(int length) {
+		super.setMaxLength(length);
 		pseudoMaxStringLength = length;
 	}
 	
@@ -136,20 +138,20 @@ public class NotesTitleField extends TextFieldWidget {
 	}
 	
 	@Override
-	public void setSelectionPos(int position) {
-		super.setSelectionPos(position);
-		int i = getText().length();
-	      pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
-	      if (fontRenderer != null) {
+	public void setHighlightPos(int position) {
+		super.setHighlightPos(position);
+		int i = getValue().length();
+	      pseudoSelectionEnd = Mth.clamp(position, 0, i);
+	      if (font != null) {
 	         if (pseudoLineScrollOffset > i) {
 	            pseudoLineScrollOffset = i;
 	         }
 
-	         int j = getAdjustedWidth();
-	         String s = fontRenderer.func_238413_a_(getText().substring(this.pseudoLineScrollOffset), j, false);
+	         int j = getInnerWidth();
+	         String s = font.plainSubstrByWidth(getValue().substring(this.pseudoLineScrollOffset), j, false);
 	         int k = s.length() + pseudoLineScrollOffset;
 	         if (pseudoSelectionEnd == pseudoLineScrollOffset) {
-	            pseudoLineScrollOffset -= fontRenderer.func_238413_a_(getText(), j, true).length();
+	            pseudoLineScrollOffset -= font.plainSubstrByWidth(getValue(), j, true).length();
 	         }
 
 	         if (pseudoSelectionEnd > k) {
@@ -158,11 +160,11 @@ public class NotesTitleField extends TextFieldWidget {
 	        	 pseudoLineScrollOffset -= pseudoLineScrollOffset - pseudoSelectionEnd;
 	         }
 
-	         pseudoLineScrollOffset = MathHelper.clamp(pseudoLineScrollOffset, 0, i);
+	         pseudoLineScrollOffset = Mth.clamp(pseudoLineScrollOffset, 0, i);
 	      }
 	}
 
-	public void setLabel(ITextComponent label) {
+	public void setLabel(Component label) {
 		this.label = label;
 	}
 
@@ -191,20 +193,20 @@ public class NotesTitleField extends TextFieldWidget {
 			startX = x + width;
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder builder = tesselator.getBuilder();
+		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos((double) startX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.pos((double) endX, (double) startY, 0.0D).endVertex();
-		bufferbuilder.pos((double) startX, (double) startY, 0.0D).endVertex();
-		tessellator.draw();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		builder.vertex((double) startX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
+		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
+		tesselator.end();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
-	
+
 }

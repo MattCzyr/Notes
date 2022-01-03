@@ -2,21 +2,24 @@ package com.chaosthedude.notes.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class StringUtils {
 
 	public static final char[] FILTER_CHARS = new char[] { '\r', '\f' };
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static final FontRenderer fontRenderer = mc.fontRenderer;
+	private static final Font font = mc.font;
 
 	public static String insertStringAt(String insert, String insertTo, int pos) {
 		return insertTo.substring(0, pos) + insert + insertTo.substring(pos, insertTo.length());
@@ -27,7 +30,7 @@ public final class StringUtils {
 		String temp = "";
 		for (int i = 0; i < str.length(); i++) {
 			char c = str.charAt(i);
-			if (c == '\n' || fontRenderer.getStringWidth(temp + String.valueOf(c)) >= wrapWidth) {
+			if (c == '\n' || font.width(temp + String.valueOf(c)) >= wrapWidth) {
 				strings.add(temp);
 				temp = "";
 			}
@@ -52,7 +55,7 @@ public final class StringUtils {
 				strings.add(new WrappedString(temp, wrapped));
 				temp = "";
 				wrapped = false;
-			} else if (fontRenderer.getStringWidth(temp + String.valueOf(c)) >= wrapWidth) {
+			} else if (font.width(temp + String.valueOf(c)) >= wrapWidth) {
 				strings.add(new WrappedString(temp, wrapped));
 				temp = "";
 				wrapped = true;
@@ -95,8 +98,8 @@ public final class StringUtils {
 		return text;
 	}
 
-	public static String fixBiomeName(World world, Biome biome) {
-		final String original = I18n.format(Util.makeTranslationKey("biome", world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome)));
+	public static String fixBiomeName(Level world, Biome biome) {
+		final String original = I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(world, biome).get()));
 		String fixed = "";
 		char pre = ' ';
 		for (int i = 0; i < original.length(); i++) {
@@ -109,6 +112,14 @@ public final class StringUtils {
 		}
 
 		return fixed;
+	}
+	
+	private static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
+		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
+	}
+
+	private static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
+		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
 	}
 
 }

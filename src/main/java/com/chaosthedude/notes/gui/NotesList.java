@@ -3,23 +3,23 @@ package com.chaosthedude.notes.gui;
 import java.util.Objects;
 
 import com.chaosthedude.notes.note.Note;
-import com.chaosthedude.notes.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.list.ExtendedList;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class NotesList extends ExtendedList<NotesListEntry> {
+public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
-	private final SelectNoteScreen guiNotes;
+	private final SelectNoteScreen parentScreen;
 	private boolean pseudoRenderSelection = true;
 
-	public NotesList(SelectNoteScreen guiNotes, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
+	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
-		this.guiNotes = guiNotes;
+		this.parentScreen = notesScreen;
 		refreshList();
 	}
 	
@@ -35,11 +35,11 @@ public class NotesList extends ExtendedList<NotesListEntry> {
 
 	@Override
 	protected boolean isSelectedItem(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < getEventListeners().size() ? getEventListeners().get(slotIndex).equals(getSelected()) : false;
+		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelected()) : false;
 	}
 	
 	@Override
-	public void render(MatrixStack stack, int par1, int par2, float par3) {
+	public void render(PoseStack stack, int par1, int par2, float par3) {
 		int i = getScrollbarPosition();
 		int k = getRowLeft();
 		int l = y0 + 4 - (int) getScrollAmount();
@@ -47,7 +47,7 @@ public class NotesList extends ExtendedList<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderList(MatrixStack stack, int par1, int par2, int par3, int par4, float par5) {
+	protected void renderList(PoseStack stack, int par1, int par2, int par3, int par4, float par5) {
 		int i = getItemCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -58,7 +58,7 @@ public class NotesList extends ExtendedList<NotesListEntry> {
 				int k1 = getRowWidth();
 				if (pseudoRenderSelection && isSelectedItem(j)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					RenderUtils.drawRect(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					GuiComponent.fill(stack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = this.getRowLeft();
@@ -74,12 +74,12 @@ public class NotesList extends ExtendedList<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(MatrixStack stack) {
-		guiNotes.renderBackground(stack);
+	protected void renderBackground(PoseStack stack) {
+		parentScreen.renderBackground(stack);
 	}
 	
-	private int getRowBottom(int p_getRowBottom_1_) {
-		return this.getRowTop(p_getRowBottom_1_) + this.itemHeight;
+	private int getRowBottom(int index) {
+		return getRowTop(index) + itemHeight;
 	}
 
 	public void refreshList() {
@@ -91,11 +91,11 @@ public class NotesList extends ExtendedList<NotesListEntry> {
 
 	public void selectNote(NotesListEntry entry) {
 		setSelected(entry);
-		guiNotes.selectNote(entry);
+		parentScreen.selectNote(entry);
 	}
 
-	public SelectNoteScreen getGuiNotes() {
-		return guiNotes;
+	public SelectNoteScreen getParentScreen() {
+		return parentScreen;
 	}
 
 }

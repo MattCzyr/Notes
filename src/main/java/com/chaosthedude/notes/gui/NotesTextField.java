@@ -5,28 +5,32 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class NotesTextField extends Screen implements IGuiEventListener {
+public class NotesTextField extends AbstractWidget implements Widget, GuiEventListener {
 
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -36,7 +40,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	private int bottomVisibleLine;
 	private int maxVisibleLines;
 	private int wrapWidth;
-	private final FontRenderer fontRenderer;
+	private final Font fontRenderer;
 	public int xPosition;
 	public int yPosition;
 	public int width;
@@ -51,8 +55,8 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	private int disabledColor = 7368816;
 	private boolean visible = true;
 
-	public NotesTextField(FontRenderer fontRenderer, int x, int y, int width, int height, int margin) {
-		super(new StringTextComponent(""));
+	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
+		super(x, y, width, height, new TextComponent(""));
 		this.fontRenderer = fontRenderer;
 		this.xPosition = x;
 		this.yPosition = y;
@@ -61,7 +65,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 		this.margin = margin;
 
 		text = "";
-		maxVisibleLines = MathHelper.floor((height - (margin * 2)) / fontRenderer.FONT_HEIGHT) - 1;
+		maxVisibleLines = Mth.floor((height - (margin * 2)) / fontRenderer.lineHeight) - 1;
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
@@ -69,14 +73,14 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	@Override
 	public boolean keyPressed(int keyCode, int par2, int par3) {
 		if (Screen.isCopy(keyCode)) {
-			mc.keyboardListener.setClipboardString(getSelectedText());
+			mc.keyboardHandler.setClipboard(getSelectedText());
 		} else if (Screen.isCut(keyCode)) {
 			if (getSelectionDifference() != 0) {
-				mc.keyboardListener.setClipboardString(getSelectedText());
+				mc.keyboardHandler.setClipboard(getSelectedText());
 				deleteSelectedText();
 			}
 		} else if (Screen.isPaste(keyCode)) {
-			insert(mc.keyboardListener.getClipboardString());
+			insert(mc.keyboardHandler.getClipboard());
 		} else if (isKeyComboCtrlBack(keyCode)) {
 			deletePrevWord();
 		} else {
@@ -163,7 +167,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	@Override
 	public boolean charTyped(char typedChar, int p_charTyped_2_) {
 	      if (isFocused()) {
-	         if (SharedConstants.isAllowedCharacter(typedChar)) {
+	         if (SharedConstants.isAllowedChatCharacter(typedChar)) {
 	            if (this.isEnabled) {
 	               insert(Character.toString(typedChar));
 	               updateVisibleLines();
@@ -176,12 +180,13 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	   }
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		RenderUtils.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, 255 / 2 << 24);
+	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+		final int color = (int) (255.0F * 0.55f);
+		GuiComponent.fill(stack, xPosition, yPosition, xPosition + width, yPosition + height, color / 2 << 24);
 
 		renderVisibleText(stack);
-		renderCursor();
-		renderScrollBar();
+		renderCursor(stack);
+		renderScrollBar(stack);
 	}
 
 	@Override
@@ -195,8 +200,8 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 			if (mouseButton == 0) {
 				final int relativeMouseX = (int) mouseX - xPosition - margin;
 				final int relativeMouseY = (int) mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.func_238413_a_(getLine(y), relativeMouseX, false).length();
+				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
 				setCursorPos(countCharacters(y) + x);
 				return true;
@@ -216,10 +221,10 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 			if (state == 0) {
 				final int relativeMouseX = (int) mouseX - xPosition - margin;
 				final int relativeMouseY = (int) mouseY - yPosition - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.FONT_HEIGHT) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.func_238413_a_(getLine(y), relativeMouseX, false).length();
+				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
-				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+				final int pos = Mth.clamp(countCharacters(y) + x, 0, text.length());
 				if (pos != cursorPos) {
 					selectionPos = cursorPos;
 					setCursorPos(pos);
@@ -242,6 +247,25 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public int getWidth() {
+		return width - (margin * 2);
+	}
+
+	@Override
+	public boolean isFocused() {
+		return isFocused;
+	}
+
+	@Override
+	public void setFocused(boolean focused) {
+		if (focused && !isFocused) {
+			cursorCounter = 0;
+		}
+
+		isFocused = focused;
 	}
 
 	public void tick() {
@@ -308,7 +332,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 
 	public int getCursorWidth(int pos) {
 		final String line = getCurrentLine();
-		return fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+		return fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
 	}
 
 	public int getCursorWidth() {
@@ -347,22 +371,6 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 
 	public boolean needsScrollBar() {
 		return toLines().size() > getVisibleLineCount();
-	}
-
-	public int getWidth() {
-		return width - (margin * 2);
-	}
-
-	public boolean isFocused() {
-		return isFocused;
-	}
-
-	public void setFocused(boolean focused) {
-		if (focused && !isFocused) {
-			cursorCounter = 0;
-		}
-
-		isFocused = focused;
 	}
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
@@ -547,7 +555,7 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 	}
 
 	private void setCursorPos(int pos) {
-		cursorPos = MathHelper.clamp(pos, 0, text.length());
+		cursorPos = Mth.clamp(pos, 0, text.length());
 		if (getCursorY() > bottomVisibleLine) {
 			incrementVisibleLines();
 		} else if (getCursorY() < topVisibleLine) {
@@ -658,20 +666,20 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 			startX = xPosition + width;
 		}
 
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder buffer = tessellator.getBuffer();
+		final Tesselator tesselator = Tesselator.getInstance();
+		final BufferBuilder buffer = tesselator.getBuilder();
 
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
-		buffer.begin(7, DefaultVertexFormats.POSITION);
-		buffer.pos(startX, endY, 0.0D).endVertex();
-		buffer.pos(endX, endY, 0.0D).endVertex();
-		buffer.pos(endX, startY, 0.0D).endVertex();
-		buffer.pos(startX, startY, 0.0D).endVertex();
-		tessellator.draw();
+		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		buffer.vertex(startX, endY, 0.0D).endVertex();
+		buffer.vertex(endX, endY, 0.0D).endVertex();
+		buffer.vertex(endX, startY, 0.0D).endVertex();
+		buffer.vertex(startX, startY, 0.0D).endVertex();
+		tesselator.end();
 
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
@@ -708,50 +716,54 @@ public class NotesTextField extends Screen implements IGuiEventListener {
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = xPosition + margin + fontRenderer.getStringWidth(absoluteLine.substring(0, start));
-				final int endX = startX + fontRenderer.getStringWidth(selection);
-				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.FONT_HEIGHT);
+				final int startX = xPosition + margin + fontRenderer.width(absoluteLine.substring(0, start));
+				final int endX = startX + fontRenderer.width(selection);
+				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
 		}
 	}
 
-	private void renderVisibleText(MatrixStack stack) {
+	private void renderVisibleText(PoseStack stack) {
 		int renderY = yPosition + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawStringWithShadow(stack, line, xPosition + margin, renderY, 14737632);
+			fontRenderer.drawShadow(stack, line, xPosition + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
-			renderY += fontRenderer.FONT_HEIGHT;
+			renderY += fontRenderer.lineHeight;
 			y++;
 		}
 	}
 
-	private void renderCursor() {
+	private void renderCursor(PoseStack poseStack) {
 		final boolean shouldDisplayCursor = isFocused && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = xPosition + margin + fontRenderer.getStringWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = yPosition + margin + (getRenderSafeCursorY() * fontRenderer.FONT_HEIGHT);
+			final int renderCursorX = xPosition + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = yPosition + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
-			RenderUtils.drawRect(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.FONT_HEIGHT + 1, -3092272);
+			GuiComponent.fill(poseStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
 	}
 
-	private void renderScrollBar() {
+	private void renderScrollBar(PoseStack poseStack) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
 			final int effectiveHeight = height - (margin / 2);
-			final int scrollBarHeight = MathHelper.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = yPosition + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			final int scrollBarHeight = Mth.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
+			int scrollBarTop = yPosition + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
 			final int diff = (scrollBarTop + scrollBarHeight) - (yPosition + height);
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			RenderUtils.drawRect(xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			GuiComponent.fill(poseStack, xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
+	}
+
+	@Override
+	public void updateNarration(NarrationElementOutput output) {
 	}
 
 }

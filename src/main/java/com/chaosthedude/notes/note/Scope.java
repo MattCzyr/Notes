@@ -6,7 +6,7 @@ import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 public class Scope {
 
@@ -62,7 +62,7 @@ public class Scope {
 	}
 
 	public String localize() {
-		return I18n.format(unlocName);
+		return I18n.get(unlocName);
 	}
 
 	public String format() {
@@ -115,16 +115,16 @@ public class Scope {
 	}
 
 	public static boolean isLocal() {
-		return mc.isSingleplayer();
+		return mc.isLocalServer();
 	}
 
 	public static boolean isRemote() {
-		return mc.getCurrentServerData() != null;
+		return mc.getCurrentServer() != null;
 	}
 
 	public static String getServerIP() {
 		if (isRemote()) {
-			return StringUtils.filterFileName(mc.getCurrentServerData().serverIP);
+			return StringUtils.filterFileName(mc.getCurrentServer().ip);
 		}
 
 		return null;
@@ -132,8 +132,7 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			// Better in the sense that the folders are not long path strings.
-			String[] result = StringUtils.filterFileName(mc.getIntegratedServer().getWorldIconFile().getParent()).split("~");
+			String[] result = StringUtils.filterFileName(mc.getSingleplayerServer().getServerDirectory().getName()).split("~");
 			return StringUtils.filterFileName(result[result.length - 1]);
 		}
 

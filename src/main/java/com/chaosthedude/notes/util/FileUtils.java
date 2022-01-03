@@ -11,7 +11,7 @@ public class FileUtils {
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static File getRootSaveDirectory() {
-		final File saveDir = new File(mc.gameDir, "notes");
+		final File saveDir = new File(mc.gameDirectory, "notes");
 		if (!saveDir.exists()) {
 			saveDir.mkdirs();
 		}

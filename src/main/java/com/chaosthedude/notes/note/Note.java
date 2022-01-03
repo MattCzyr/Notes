@@ -20,16 +20,16 @@ import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.SharedConstants;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
 
 public class Note {
 
 	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.CLIENT.dateFormat.get());
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static final FontRenderer fontRenderer = mc.fontRenderer;
+	private static final Font font = mc.font;
 
 	private String title;
 	private String rawText;
@@ -108,7 +108,7 @@ public class Note {
 	public String getPreview(int width) {
 		String preview = rawText;
 		boolean addEllipsis = false;
-		if (fontRenderer.getStringWidth(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
+		if (font.width(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
 			preview = RenderUtils.trimStringToWidth(preview, width).get(0);
 			addEllipsis = true;
 		}
@@ -135,7 +135,7 @@ public class Note {
 	}
 
 	public String getLastModifiedString() {
-		return I18n.format("notes.lastModified") + ": " + dateFormat.format(getLastModified());
+		return I18n.get("notes.lastModified") + ": " + dateFormat.format(getLastModified());
 	}
 
 	public String getUncollidingSaveName(String name) {
