@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -647,40 +648,39 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 
 	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
-			final int temp = startX;
+			int i = startX;
 			startX = endX;
-			endX = temp;
+			endX = i;
 		}
 
 		if (startY < endY) {
-			final int temp = startY;
+			int j = startY;
 			startY = endY;
-			endY = temp;
+			endY = j;
 		}
 
-		if (endX > xPosition + width) {
-			endX = xPosition + width;
+		if (endX > this.x + this.width) {
+			endX = this.x + this.width;
 		}
 
-		if (startX > xPosition + width) {
-			startX = xPosition + width;
+		if (startX > this.x + this.width) {
+			startX = this.x + this.width;
 		}
 
-		final Tesselator tesselator = Tesselator.getInstance();
-		final BufferBuilder buffer = tesselator.getBuilder();
-
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder builder = tesselator.getBuilder();
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-
-		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		buffer.vertex(startX, endY, 0.0D).endVertex();
-		buffer.vertex(endX, endY, 0.0D).endVertex();
-		buffer.vertex(endX, startY, 0.0D).endVertex();
-		buffer.vertex(startX, startY, 0.0D).endVertex();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		builder.vertex((double) startX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
+		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
 		tesselator.end();
-
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
