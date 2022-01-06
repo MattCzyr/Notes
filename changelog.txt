@@ -1,14 +1,22 @@
 -------------------------------------------------
+ VERSION 1.2.4 - 1.18.1, 1.17.1
+-------------------------------------------------
+ 1.18.1:
+    - Updated to Forge 1.18.1
+ 1.17.1:
+    - Updated to Forge 1.17.1
+    - Fixed incorrect scroll direction when trying to scroll down
+    - Added Indonesian translations
+
+
+-------------------------------------------------
  VERSION 1.2.3 - 1.17.1, 1.16.5, 1.16.4
 -------------------------------------------------
  1.17.1:
-    UPDATES:
     - Updated to Forge 1.17.1
  1.16.5:
-    UPDATES:
     - Updated to Forge 1.16.5
  1.16.4:
-    FIXES:
     - Fixed issue that caused servers to be marked as incompatible when mod is not installed on server
     - Allowed mod to be installed on servers without crashing
 
@@ -17,7 +25,6 @@
  VERSION 1.2.2 - 1.16.4
 -------------------------------------------------
  1.16.4:
-    FIXES:
     - Fixed a bug that prevented phrases from being translated when using English localization
 
 
@@ -25,9 +32,7 @@
  VERSION 1.2.1 - 1.16.4
 -------------------------------------------------
  1.16.4:
-    UPDATES:
     - Updated to Forge 1.16.4
-    FEATURES:
     - Added Swedish translations
 
 
@@ -35,19 +40,14 @@
  VERSION 1.2.0 - 1.15.2, 1.14.4, 1.13.2
 -------------------------------------------------
  1.15.2, 1.14.4, 1.13.2:
-    FEATURES:
     - Added a "pinned" indicator next to the pinned note in the note selection GUI
     - Automatically size note text field based on GUI height
-    FIXES:
     - Fixed a HeadlessException when trying to open a note in the system text editor or viewer on an unsupported system
  1.15.2:
-    UPDATES:
     - Updated to Forge 1.15.2
  1.14.4:
-    UPDATES:
     - Updated to Forge 1.14.4
  1.13.2:
-    UPDATES:
     - Updated to Forge 1.13.2
 
 
@@ -55,10 +55,8 @@
  VERSION 1.1.1 - 1.12, 1.11.2, 1.10.2, 1.7.10
 -------------------------------------------------
  1.12:
-    UPDATES:
     - Updated to Forge 1.12
  1.11.2, 1.10.2, 1.7.10:
-    FIXES:
     - Fixed FileNotFoundException after editing a pinned note
     - Fixed StringIndexOutOfBoundsException when attempting to copy an empty selection
 
@@ -67,10 +65,8 @@
  VERSION 1.1.0 - 1.11.2, 1.10.2, 1.7.10
 -------------------------------------------------
  1.11.2, 1.10.2, 1.7.10:
-    FEATURES:
     - Added the ability to tab from title field to text field
     - Added a config field to set the HUD position of a pinned note
-    FIXES:
     - Fixed IndexOutOfBoundsException when ending a selection on an empty line
 
 
@@ -78,7 +74,6 @@
  VERSION 1.0.1 - 1.11.2, 1.10.2, 1.7.10
 -------------------------------------------------
  1.11.2, 1.10.2, 1.7.10:
-    FIXES:
     - Fixed NPE that occurred when opening the Notes GUI on some multiplayer servers
     - Fixed pinned note not being unpinned upon deletion
     - Fixed notes being loaded if the left side of its list entry is clicked
@@ -88,14 +83,10 @@
  VERSION 1.0.0 - 1.11.2, 1.11, 1.10.2, 1.7.10
 -------------------------------------------------
  1.11.2:
-    UPDATES:
     - First release for Forge 1.11.2
  1.11:
-    UPDATES:
     - First release for Forge 1.11
  1.10.2:
-    UPDATES:
     - First release for Forge 1.10.2
  1.7.10:
-    UPDATES:
     - First release for Forge 1.7.10
