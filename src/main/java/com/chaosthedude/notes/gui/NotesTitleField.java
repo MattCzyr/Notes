@@ -1,6 +1,5 @@
 package com.chaosthedude.notes.gui;
 
-import com.chaosthedude.notes.util.RenderUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -12,6 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -195,7 +195,8 @@ public class NotesTitleField extends EditBox {
 
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder builder = tesselator.getBuilder();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
@@ -205,6 +206,7 @@ public class NotesTitleField extends EditBox {
 		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
 		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
 		tesselator.end();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}

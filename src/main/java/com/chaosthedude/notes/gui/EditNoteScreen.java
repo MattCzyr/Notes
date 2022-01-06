@@ -2,8 +2,6 @@ package com.chaosthedude.notes.gui;
 
 import javax.annotation.Nullable;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
@@ -71,24 +69,24 @@ public class EditNoteScreen extends Screen {
 	
 	@Override
 	public boolean keyPressed(int keyCode, int par2, int par3) {
-		super.keyPressed(keyCode, par2, par3);
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-			minecraft.setScreen(parentScreen);
-			return true;
-		} else if (keyCode == GLFW.GLFW_KEY_TAB && noteTitleField.isFocused()) {
-			noteTitleField.setFocused(false);
-			noteTextField.setFocused(true);
-			return true;
-		}
-		
+		boolean ret = super.keyPressed(keyCode, par2, par3);
 		updateNote();
-		return false;
+		return ret;
 	}
 	
 	@Override
 	public boolean keyReleased(int keyCode, int par2, int par3) {
+		boolean ret = super.keyReleased(keyCode, par2, par3);
 		updateNote();
-		return super.keyReleased(keyCode, par2, par3);
+		return ret;
+	}
+	
+	@Override
+	public void setFocused(GuiEventListener listener) {
+		super.setFocused(listener);
+		if (listener != noteTextField && noteTextField != null) {
+			noteTextField.setFocused(false);
+		}
 	}
 
 	@Override
@@ -96,7 +94,6 @@ public class EditNoteScreen extends Screen {
 		renderBackground(stack);
 		drawCenteredString(stack, font, title.getString(), width / 2 + 60, 15, 0xffffff);
 		drawCenteredString(stack, font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
@@ -147,7 +144,7 @@ public class EditNoteScreen extends Screen {
 
 		noteTextField = addRenderableWidget(new NotesTextField(font, 130, 85, width - 140, height - 95, 5));
 		noteTextField.setText(note.getFilteredText());
-		addRenderableOnly(noteTextField);
+		addRenderableWidget(noteTextField);
 	}
 
 	private void updateNote() {

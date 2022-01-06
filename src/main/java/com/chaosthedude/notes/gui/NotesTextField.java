@@ -42,27 +42,17 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	private int maxVisibleLines;
 	private int wrapWidth;
 	private final Font fontRenderer;
-	public int xPosition;
-	public int yPosition;
-	public int width;
-	public int height;
 	private int cursorCounter;
 	private boolean canLoseFocus = true;
-	private boolean isFocused;
 	private boolean isEnabled = true;
 	private int cursorPos;
 	private int selectionPos;
 	private int enabledColor = 14737632;
 	private int disabledColor = 7368816;
-	private boolean visible = true;
 
 	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
 		super(x, y, width, height, new TextComponent(""));
 		this.fontRenderer = fontRenderer;
-		this.xPosition = x;
-		this.yPosition = y;
-		this.width = width;
-		this.height = height;
 		this.margin = margin;
 
 		text = "";
@@ -183,7 +173,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	@Override
 	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		GuiComponent.fill(stack, xPosition, yPosition, xPosition + width, yPosition + height, color / 2 << 24);
+		GuiComponent.fill(stack, x, y, x + width, y + height, color / 2 << 24);
 
 		renderVisibleText(stack);
 		renderCursor(stack);
@@ -197,10 +187,10 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 			setFocused(isWithinBounds);
 		}
 
-		if (isFocused && isWithinBounds) {
+		if (isFocused() && isWithinBounds) {
 			if (mouseButton == 0) {
-				final int relativeMouseX = (int) mouseX - xPosition - margin;
-				final int relativeMouseY = (int) mouseY - yPosition - margin;
+				final int relativeMouseX = (int) mouseX - x - margin;
+				final int relativeMouseY = (int) mouseY - y - margin;
 				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
@@ -218,10 +208,10 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 			setFocused(isWithinBounds);
 		}
 
-		if (isFocused && isWithinBounds) {
+		if (isFocused() && isWithinBounds) {
 			if (state == 0) {
-				final int relativeMouseX = (int) mouseX - xPosition - margin;
-				final int relativeMouseY = (int) mouseY - yPosition - margin;
+				final int relativeMouseX = (int) mouseX - x - margin;
+				final int relativeMouseY = (int) mouseY - y - margin;
 				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
@@ -256,17 +246,11 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	@Override
-	public boolean isFocused() {
-		return isFocused;
-	}
-
-	@Override
 	public void setFocused(boolean focused) {
-		if (focused && !isFocused) {
+		if (focused && !isFocused()) {
 			cursorCounter = 0;
 		}
-
-		isFocused = focused;
+		super.setFocused(focused);
 	}
 
 	public void tick() {
@@ -341,7 +325,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	public boolean isWithinBounds(double mouseX, double mouseY) {
-		return mouseX >= xPosition && mouseX < xPosition + width && mouseY >= yPosition && mouseY < yPosition + height;
+		return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
 	}
 
 	public boolean atBeginningOfLine() {
@@ -716,7 +700,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = xPosition + margin + fontRenderer.width(absoluteLine.substring(0, start));
+				final int startX = x + margin + fontRenderer.width(absoluteLine.substring(0, start));
 				final int endX = startX + fontRenderer.width(selection);
 				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
@@ -724,10 +708,10 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	private void renderVisibleText(PoseStack stack) {
-		int renderY = yPosition + margin;
+		int renderY = y + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawShadow(stack, line, xPosition + margin, renderY, 14737632);
+			fontRenderer.drawShadow(stack, line, x + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
 			renderY += fontRenderer.lineHeight;
@@ -736,11 +720,11 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	private void renderCursor(PoseStack poseStack) {
-		final boolean shouldDisplayCursor = isFocused && cursorCounter / 6 % 2 == 0 && cursorIsValid();
+		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = xPosition + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = yPosition + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
+			final int renderCursorX = x + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = y + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
 			GuiComponent.fill(poseStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
@@ -751,14 +735,14 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 			final List<String> lines = toLines();
 			final int effectiveHeight = height - (margin / 2);
 			final int scrollBarHeight = Mth.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = yPosition + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			int scrollBarTop = y + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
-			final int diff = (scrollBarTop + scrollBarHeight) - (yPosition + height);
+			final int diff = (scrollBarTop + scrollBarHeight) - (y + height);
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			GuiComponent.fill(poseStack, xPosition + width - (margin * 3 / 4), scrollBarTop, xPosition + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			GuiComponent.fill(poseStack, x + width - (margin * 3 / 4), scrollBarTop, x + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
 
