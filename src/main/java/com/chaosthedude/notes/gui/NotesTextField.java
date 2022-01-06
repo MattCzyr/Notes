@@ -183,7 +183,6 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
-		System.out.println("mouseClicked: " + isWithinBounds);
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
@@ -205,7 +204,6 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int state) {
 		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
-		System.out.println("mouseReleased: " + isWithinBounds);
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
