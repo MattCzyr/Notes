@@ -11,6 +11,7 @@ import com.chaosthedude.notes.note.Note;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -31,7 +32,7 @@ public class Notes {
 			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 		});
 		
-		//ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+		ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (a, b) -> true));
 	}
 
 }
