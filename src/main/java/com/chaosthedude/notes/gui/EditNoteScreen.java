@@ -154,7 +154,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(minecraft.level, minecraft.level.getBiome(minecraft.player.blockPosition())));
+		noteTextField.insert(StringUtils.fixBiomeName(minecraft.level, minecraft.level.getBiome(minecraft.player.blockPosition()).value()));
 	}
 
 	private void insertChunk() {
