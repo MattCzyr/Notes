@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +22,7 @@ public class SelectNoteScreen extends Screen {
 	private NotesList selectionList;
 
 	public SelectNoteScreen(Screen prevScreen) {
-		super(new TextComponent(I18n.get("notes.selectNote")));
+		super(Component.translatable("notes.selectNote"));
 		this.prevScreen = prevScreen;
 	}
 
@@ -45,7 +44,7 @@ public class SelectNoteScreen extends Screen {
 	@Override
 	public void tick() {
 		if (selectionList.getSelected() != null) {
-			pinButton.setMessage(selectionList.getSelected().isPinned() ? new TranslatableComponent("notes.unpin") : new TranslatableComponent("notes.pin"));
+			pinButton.setMessage(selectionList.getSelected().isPinned() ? Component.translatable("notes.unpin") : Component.translatable("notes.pin"));
 		}
 	}
 
@@ -59,36 +58,36 @@ public class SelectNoteScreen extends Screen {
 	}
 
 	private void setupButtons() {
-		newButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, new TranslatableComponent("notes.new"), (onPress) -> {
+		newButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.new"), (onPress) -> {
 			minecraft.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
 		}));
-		selectButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, new TranslatableComponent("notes.select"), (onPress) -> {
+		selectButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.select"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.loadNote();
 			}
 		}));
-		editButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, new TranslatableComponent("notes.edit"), (onPress) -> {
+		editButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.editNote();
 			}
 		}));
-		copyButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, new TranslatableComponent("notes.copy"), (onPress) -> {
+		copyButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, Component.translatable("notes.copy"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			notesEntry.copyNote();
 		}));
-		deleteButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, new TranslatableComponent("notes.delete"), (onPress) -> {
+		deleteButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.deleteNote();
 			}
 		}));
-		pinButton = addRenderableWidget(new NotesButton(10, 165, 110, 20, new TranslatableComponent("notes.pin"), (onPress) -> {
+		pinButton = addRenderableWidget(new NotesButton(10, 165, 110, 20, Component.translatable("notes.pin"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			notesEntry.togglePin();
 		}));
-		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, new TranslatableComponent("gui.cancel"), (onPress) -> {
+		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(prevScreen);
 		}));
 

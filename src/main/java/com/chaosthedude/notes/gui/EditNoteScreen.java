@@ -11,8 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,7 +33,7 @@ public class EditNoteScreen extends Screen {
 	private boolean pinned;
 
 	public EditNoteScreen(Screen parentScreen, @Nullable Note note) {
-		super(new TextComponent(note != null ? I18n.get("notes.editNote") : I18n.get("notes.newNote")));
+		super(Component.literal(note != null ? I18n.get("notes.editNote") : I18n.get("notes.newNote")));
 		this.parentScreen = parentScreen;
 		if (note != null) {
 			this.note = note;
@@ -98,7 +97,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void setupButtons() {
-		saveButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, new TranslatableComponent("notes.save"), (onPress) -> {
+		saveButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.save"), (onPress) -> {
 			updateNote();
 			note.save();
 			minecraft.setScreen(new DisplayNoteScreen(parentScreen, note));
@@ -106,26 +105,26 @@ public class EditNoteScreen extends Screen {
 				Notes.pinnedNote = note;
 			}
 		}));
-		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, new TextComponent(I18n.get("notes.global") + ": " + (note.getScope() == Scope.GLOBAL ? I18n.get("notes.on") : I18n.get("notes.off"))), (onPress) -> {
+		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.global").append(Component.literal(": ").append(note.getScope() == Scope.GLOBAL ? Component.translatable("notes.on") : Component.translatable("notes.off"))), (onPress) -> {
 			if (scope == Scope.GLOBAL) {
 				scope = Scope.getCurrentScope();
 			} else {
 				scope = Scope.GLOBAL;
 			}
 
-			globalButton.setMessage(new TextComponent(I18n.get("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.get("notes.on") : ": " + I18n.get("notes.off"))));
+			globalButton.setMessage(Component.literal(I18n.get("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.get("notes.on") : ": " + I18n.get("notes.off"))));
 			updateNote();
 		}));
-		insertBiomeButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, new TranslatableComponent("notes.biome"), (onPress) -> {
+		insertBiomeButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, Component.translatable("notes.biome"), (onPress) -> {
 			insertBiome();
 		}));
-		insertChunkButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, new TranslatableComponent("notes.chunk"), (onPress) -> {
+		insertChunkButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, Component.translatable("notes.chunk"), (onPress) -> {
 			insertChunk();
 		}));
-		insertCoordsButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, new TranslatableComponent("notes.coordinates"), (onPress) -> {
+		insertCoordsButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, Component.translatable("notes.coordinates"), (onPress) -> {
 			insertCoords();
 		}));
-		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, new TranslatableComponent("gui.cancel"), (onPress) -> {
+		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(parentScreen);
 		}));
 
@@ -135,7 +134,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void setupTextFields() {
-		noteTitleField = addRenderableWidget(new NotesTitleField(font, 130, 40, width - 140, 20, new TextComponent("")));
+		noteTitleField = addRenderableWidget(new NotesTitleField(font, 130, 40, width - 140, 20, Component.literal("")));
 		noteTitleField.setValue(note.getTitle());
 		addRenderableWidget(noteTitleField);
 		noteTitleField.changeFocus(true);

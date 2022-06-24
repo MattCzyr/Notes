@@ -34,7 +34,7 @@ public class RenderTickHandler {
 				final int fixedRenderWidth = RenderUtils.getRenderWidth(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderWidth);
 				final int fixedRenderHeight = RenderUtils.getRenderHeight(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderHeight);
 
-				final double opacity = mc.options.chatOpacity * 0.9F + 0.1F;
+				final double opacity = mc.options.chatOpacity().get() * 0.9F + 0.1F;
 				final int color = (int) (255.0F * opacity);
 				
 				final PoseStack stack = new PoseStack();

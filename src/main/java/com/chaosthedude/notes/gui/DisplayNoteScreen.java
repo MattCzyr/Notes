@@ -11,9 +11,7 @@ import com.chaosthedude.notes.util.StringUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +30,7 @@ public class DisplayNoteScreen extends Screen {
 	private List<String> pages;
 
 	public DisplayNoteScreen(Screen parentScreen, Note note) {
-		super(new TextComponent(note.getTitle()));
+		super(Component.literal(note.getTitle()));
 		this.parentScreen = parentScreen;
 		this.note = note;
 
@@ -67,28 +65,28 @@ public class DisplayNoteScreen extends Screen {
 	}
 
 	private void setupButtons() {
-		editButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, new TranslatableComponent("notes.edit"), (onPress) -> {
+		editButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
 			minecraft.setScreen(new EditNoteScreen(DisplayNoteScreen.this.parentScreen, note));
 		}));
-		deleteButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, new TranslatableComponent("notes.delete"), (onPress) -> {
+		deleteButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
 			deleteNote();
 		}));
-		pinButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, isPinned() ? new TranslatableComponent("notes.unpin") : new TranslatableComponent("notes.pin"), (onPress) -> {
+		pinButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, isPinned() ? Component.translatable("notes.unpin") : Component.translatable("notes.pin"), (onPress) -> {
 			togglePin();
 			if (isPinned()) {
 				minecraft.setScreen(null);
 			}
 		}));
-		doneButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, new TranslatableComponent("gui.done"), (onPress) -> {
+		doneButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.done"), (onPress) -> {
 			minecraft.setScreen(parentScreen);
 		}));
 
-		prevButton = addRenderableWidget(new NotesButton(130, height - 30, 20, 20, new TranslatableComponent("<"), (onPress) -> {
+		prevButton = addRenderableWidget(new NotesButton(130, height - 30, 20, 20, Component.translatable("<"), (onPress) -> {
 			if (page > 0) {
 				page--;
 			}
 		}));
-		nextButton = addRenderableWidget(new NotesButton(width - 30, height - 30, 20, 20, new TranslatableComponent(">"), (onPress) -> {
+		nextButton = addRenderableWidget(new NotesButton(width - 30, height - 30, 20, 20, Component.translatable(">"), (onPress) -> {
 			if (page < pages.size() - 1) {
 				page++;
 			}
@@ -129,10 +127,10 @@ public class DisplayNoteScreen extends Screen {
 	private void togglePin() {
 		if (isPinned()) {
 			Notes.pinnedNote = null;
-			pinButton.setMessage(new TranslatableComponent("notes.pin"));
+			pinButton.setMessage(Component.translatable("notes.pin"));
 		} else {
 			Notes.pinnedNote = note;
-			pinButton.setMessage(new TranslatableComponent("notes.unpin"));
+			pinButton.setMessage(Component.translatable("notes.unpin"));
 		}
 	}
 
@@ -143,7 +141,7 @@ public class DisplayNoteScreen extends Screen {
 			}
 
 			DisplayNoteScreen.this.minecraft.setScreen(parentScreen);
-		}, new TextComponent(I18n.get("notes.confirmDelete")), new TextComponent(note.getTitle())));
+		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
 	}
 
 }

@@ -15,7 +15,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -107,12 +106,12 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 			}
 
 			NotesListEntry.this.mc.setScreen(NotesListEntry.this.parentScreen);
-		}, new TextComponent(I18n.get("notes.confirmDelete")), new TextComponent(note.getTitle())));
+		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
 	}
 
 	@Override
 	public Component getNarration() {
-		return new TextComponent(note.getTitle());
+		return Component.literal(note.getTitle());
 	}
 
 }

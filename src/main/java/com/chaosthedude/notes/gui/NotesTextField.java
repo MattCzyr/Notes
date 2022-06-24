@@ -25,7 +25,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,7 +51,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	private int disabledColor = 7368816;
 
 	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
-		super(x, y, width, height, new TextComponent(""));
+		super(x, y, width, height, Component.literal(""));
 		this.fontRenderer = fontRenderer;
 		this.margin = margin;
 
