@@ -218,7 +218,7 @@ public class Note {
 	public void catchNullScope() {
 		scope = Scope.GLOBAL;
 		saveDir = scope.getCurrentSaveDirectory();
-		Notes.logger.error("No scope found for the following note:" + getTitle() + ". Setting scope to Global.");
+		Notes.LOGGER.error("No scope found for the following note:" + getTitle() + ". Setting scope to Global.");
 	}
 
 	public void update(File file) {

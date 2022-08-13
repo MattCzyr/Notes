@@ -15,7 +15,7 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.notes]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[41.0.64,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.notes]]

@@ -4,8 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.notes.config.ConfigHandler;
-import com.chaosthedude.notes.event.RenderTickHandler;
-import com.chaosthedude.notes.key.KeybindHandler;
+import com.chaosthedude.notes.event.TickHandler;
 import com.chaosthedude.notes.note.Note;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,14 +20,13 @@ public class Notes {
 
 	public static final String MODID = "notes";
 
-	public static final Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static Note pinnedNote;
 	
 	public Notes() {
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () ->  () -> {
-			MinecraftForge.EVENT_BUS.register(new KeybindHandler());
-			MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
+			MinecraftForge.EVENT_BUS.register(new TickHandler());
 			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
 		});
 		
