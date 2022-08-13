@@ -39,15 +39,15 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 	
 	@Override
-	public void render(PoseStack stack, int par1, int par2, float par3) {
+	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		int i = getScrollbarPosition();
 		int k = getRowLeft();
 		int l = y0 + 4 - (int) getScrollAmount();
-		renderList(stack, k, l, par1, par2, par3);
+		renderList(stack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(PoseStack stack, int par1, int par2, int par3, int par4, float par5) {
+	protected void renderList(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		int i = getItemCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -62,7 +62,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 				}
 
 				int j2 = this.getRowLeft();
-				e.render(stack, j, k, j2, k1, j1, par3, par4, this.isMouseOver((double) par3, (double) par4) && Objects .equals(this.getEntryAtPosition((double) par3, (double) par4), e), par5);
+				e.render(stack, j, k, j2, k1, j1, mouseX, mouseY, this.isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 	}

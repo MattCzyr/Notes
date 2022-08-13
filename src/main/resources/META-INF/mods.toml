@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[42,)"
 issueTrackerURL="https://github.com/MattCzyr/Notes/issues"
 license="CC BY-NC-SA 4.0"
 [[mods]]
@@ -15,12 +15,12 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.notes]]
     modId="forge"
     mandatory=true
-    versionRange="[41.0.64,)"
+    versionRange="[42,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.notes]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19]"
+    versionRange="[1.19.1]"
     ordering="NONE"
     side="BOTH"
