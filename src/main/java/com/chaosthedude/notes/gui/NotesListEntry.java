@@ -1,30 +1,26 @@
 package com.chaosthedude.notes.gui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import com.chaosthedude.notes.Notes;
-import com.chaosthedude.notes.config.ConfigHandler;
+import com.chaosthedude.notes.config.NotesConfig;
 import com.chaosthedude.notes.note.Note;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 
-@OnlyIn(Dist.CLIENT)
-public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
+@Environment(EnvType.CLIENT)
+public class NotesListEntry extends EntryListWidget.Entry<NotesListEntry> {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
-	private final Minecraft mc;
+	private final MinecraftClient client;
 	private final SelectNoteScreen parentScreen;
 	private final Note note;
 	private final NotesList notesList;
@@ -34,19 +30,19 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 		this.notesList = notesList;
 		this.note = note;
 		parentScreen = notesList.getParentScreen();
-		mc = Minecraft.getInstance();
+		client = MinecraftClient.getInstance();
 	}
 
 	@Override
-	public void render(PoseStack stack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		mc.font.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		mc.font.draw(stack, note.getScope().format(), par3 + 4 + mc.font.width(note.getTitle()), par2 + 1, 0x808080);
+	public void render(MatrixStack stack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+		client.textRenderer.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		client.textRenderer.draw(stack, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0x808080);
 		if (note.isPinned()) {
-			mc.font.draw(stack, I18n.get("notes.pinned"), par3 + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, par2 + 1, 0xffffff);
+			client.textRenderer.draw(stack, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff);
 		}
-		mc.font.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		mc.font.draw(stack, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.font.lineHeight + 3, 0x808080);
-		mc.font.draw(stack, note.getLastModifiedString(), par3 + 1, par2 + mc.font.lineHeight + 14, 0x808080);
+		client.textRenderer.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
+		client.textRenderer.draw(stack, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0x808080);
+		client.textRenderer.draw(stack, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0x808080);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
@@ -54,19 +50,19 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int button) {
 		if (button == 0) {
 			notesList.selectNote(this);
-			if (Util.getMillis() - lastClickTime < 250L) {
+			if (Util.getMeasuringTimeMs() - lastClickTime < 250L) {
 				loadNote();
 				return true;
 			}
 
-			lastClickTime = Util.getMillis();
+			lastClickTime = Util.getMeasuringTimeMs();
 		}
 		return false;
 	}
 
 	public void editNote() {
-		if (ConfigHandler.CLIENT.useInGameEditor.get() || !note.tryOpenExternal()) {
-			mc.setScreen(new EditNoteScreen(parentScreen, note));
+		if (NotesConfig.useInGameEditor || !note.tryOpenExternal()) {
+			client.setScreen(new EditNoteScreen(parentScreen, note));
 		}
 	}
 
@@ -76,9 +72,9 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	}
 
 	public void loadNote() {
-		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-		if (ConfigHandler.CLIENT.useInGameViewer.get() || !note.tryOpenExternal()) {
-			mc.setScreen(new DisplayNoteScreen(parentScreen, note));
+		client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+		if (NotesConfig.useInGameViewer || !note.tryOpenExternal()) {
+			client.setScreen(new DisplayNoteScreen(parentScreen, note));
 		}
 	}
 
@@ -87,7 +83,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 			Notes.pinnedNote = null;
 		} else {
 			Notes.pinnedNote = note;
-			mc.setScreen(null);
+			client.setScreen(null);
 		}
 	}
 
@@ -100,18 +96,13 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	}
 
 	public void deleteNote() {
-		mc.setScreen(new NotesConfirmScreen((result) -> {
+		client.setScreen(new NotesConfirmScreen((result) -> {
 			if (result) {
 				note.delete();
 			}
 
-			NotesListEntry.this.mc.setScreen(NotesListEntry.this.parentScreen);
-		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
-	}
-
-	@Override
-	public Component getNarration() {
-		return Component.literal(note.getTitle());
+			NotesListEntry.this.client.setScreen(NotesListEntry.this.parentScreen);
+		}, Text.translatable("notes.confirmDelete"), Text.literal(note.getTitle())));
 	}
 
 }

@@ -15,21 +15,21 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.chaosthedude.notes.Notes;
-import com.chaosthedude.notes.config.NotesConfig;
+import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
 
 public class Note {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(NotesConfig.dateFormat);
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
+	private static final DateFormat dateFormat = new SimpleDateFormat(ConfigHandler.CLIENT.dateFormat.get());
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Font font = mc.font;
 
 	private String title;
 	private String rawText;
@@ -108,7 +108,7 @@ public class Note {
 	public String getPreview(int width) {
 		String preview = rawText;
 		boolean addEllipsis = false;
-		if (TEXT_RENDERER.getWidth(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
+		if (font.width(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
 			preview = RenderUtils.trimStringToWidth(preview, width).get(0);
 			addEllipsis = true;
 		}
@@ -135,7 +135,7 @@ public class Note {
 	}
 
 	public String getLastModifiedString() {
-		return I18n.translate("notes.lastModified") + ": " + DATE_FORMAT.format(getLastModified());
+		return I18n.get("notes.lastModified") + ": " + dateFormat.format(getLastModified());
 	}
 
 	public String getUncollidingSaveName(String name) {
@@ -153,7 +153,7 @@ public class Note {
 
 	public String getSaveName() {
 		String saveDirName = title.trim();
-		for (char c : SharedConstants.INVALID_CHARS_LEVEL_NAME) {
+		for (char c : SharedConstants.ILLEGAL_FILE_CHARACTERS) {
 			saveDirName = saveDirName.replace(c, '_');
 		}
 

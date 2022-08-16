@@ -4,14 +4,14 @@ import java.io.File;
 
 import org.apache.commons.io.FilenameUtils;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class FileUtils {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static File getRootSaveDirectory() {
-		final File saveDir = new File(CLIENT.runDirectory, "notes");
+		final File saveDir = new File(mc.gameDirectory, "notes");
 		if (!saveDir.exists()) {
 			saveDir.mkdirs();
 		}

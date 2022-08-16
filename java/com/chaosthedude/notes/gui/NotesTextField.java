@@ -9,30 +9,31 @@ import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@Environment(EnvType.CLIENT)
-public class NotesTextField extends ClickableWidget implements Drawable, Element {
+@OnlyIn(Dist.CLIENT)
+public class NotesTextField extends AbstractWidget implements Widget, GuiEventListener {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	private int margin;
 	private String text;
@@ -40,7 +41,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private int bottomVisibleLine;
 	private int maxVisibleLines;
 	private int wrapWidth;
-	private final TextRenderer fontRenderer;
+	private final Font fontRenderer;
 	private int cursorCounter;
 	private boolean canLoseFocus = true;
 	private boolean isEnabled = true;
@@ -49,13 +50,13 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private int enabledColor = 14737632;
 	private int disabledColor = 7368816;
 
-	public NotesTextField(TextRenderer fontRenderer, int x, int y, int width, int height, int margin) {
-		super(x, y, width, height, Text.literal(""));
+	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
+		super(x, y, width, height, Component.literal(""));
 		this.fontRenderer = fontRenderer;
 		this.margin = margin;
 
 		text = "";
-		maxVisibleLines = MathHelper.floor((height - (margin * 2)) / fontRenderer.fontHeight) - 1;
+		maxVisibleLines = Mth.floor((height - (margin * 2)) / fontRenderer.lineHeight) - 1;
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
@@ -63,14 +64,14 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public boolean keyPressed(int keyCode, int par2, int par3) {
 		if (Screen.isCopy(keyCode)) {
-			CLIENT.keyboard.setClipboard(getSelectedText());
+			mc.keyboardHandler.setClipboard(getSelectedText());
 		} else if (Screen.isCut(keyCode)) {
 			if (getSelectionDifference() != 0) {
-				CLIENT.keyboard.setClipboard(getSelectedText());
+				mc.keyboardHandler.setClipboard(getSelectedText());
 				deleteSelectedText();
 			}
 		} else if (Screen.isPaste(keyCode)) {
-			insert(CLIENT.keyboard.getClipboard());
+			insert(mc.keyboardHandler.getClipboard());
 		} else if (isKeyComboCtrlBack(keyCode)) {
 			deletePrevWord();
 		} else {
@@ -157,7 +158,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public boolean charTyped(char typedChar, int p_charTyped_2_) {
 	      if (isFocused()) {
-	         if (SharedConstants.isValidChar(typedChar)) {
+	         if (SharedConstants.isAllowedChatCharacter(typedChar)) {
 	            if (this.isEnabled) {
 	               insert(Character.toString(typedChar));
 	               updateVisibleLines();
@@ -170,9 +171,9 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	   }
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		Screen.fill(stack, x, y, x + width, y + height, color / 2 << 24);
+		GuiComponent.fill(stack, x, y, x + width, y + height, color / 2 << 24);
 
 		renderVisibleText(stack);
 		renderCursor(stack);
@@ -190,8 +191,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			if (mouseButton == 0) {
 				final int relativeMouseX = (int) mouseX - x - margin;
 				final int relativeMouseY = (int) mouseY - y - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
 				setCursorPos(countCharacters(y) + x);
 				return true;
@@ -211,10 +212,10 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			if (state == 0) {
 				final int relativeMouseX = (int) mouseX - x - margin;
 				final int relativeMouseY = (int) mouseY - y - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
-				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+				final int pos = Mth.clamp(countCharacters(y) + x, 0, text.length());
 				if (pos != cursorPos) {
 					selectionPos = cursorPos;
 					setCursorPos(pos);
@@ -316,7 +317,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 
 	public int getCursorWidth(int pos) {
 		final String line = getCurrentLine();
-		return fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+		return fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
 	}
 
 	public int getCursorWidth() {
@@ -539,7 +540,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	private void setCursorPos(int pos) {
-		cursorPos = MathHelper.clamp(pos, 0, text.length());
+		cursorPos = Mth.clamp(pos, 0, text.length());
 		if (getCursorY() > bottomVisibleLine) {
 			incrementVisibleLines();
 		} else if (getCursorY() < topVisibleLine) {
@@ -650,19 +651,19 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			startX = this.x + this.width;
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder builder = tessellator.getBuffer();
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder builder = tesselator.getBuilder();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-		builder.vertex((double) startX, (double) endY, 0.0D).next();
-		builder.vertex((double) endX, (double) endY, 0.0D).next();
-		builder.vertex((double) endX, (double) startY, 0.0D).next();
-		builder.vertex((double) startX, (double) startY, 0.0D).next();
-		tessellator.draw();
+		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		builder.vertex((double) startX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) endY, 0.0D).endVertex();
+		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
+		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
+		tesselator.end();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
@@ -699,54 +700,54 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = x + margin + fontRenderer.getWidth(absoluteLine.substring(0, start));
-				final int endX = startX + fontRenderer.getWidth(selection);
-				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.fontHeight);
+				final int startX = x + margin + fontRenderer.width(absoluteLine.substring(0, start));
+				final int endX = startX + fontRenderer.width(selection);
+				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
 		}
 	}
 
-	private void renderVisibleText(MatrixStack stack) {
+	private void renderVisibleText(PoseStack stack) {
 		int renderY = y + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawWithShadow(stack, line, x + margin, renderY, 14737632);
+			fontRenderer.drawShadow(stack, line, x + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
-			renderY += fontRenderer.fontHeight;
+			renderY += fontRenderer.lineHeight;
 			y++;
 		}
 	}
 
-	private void renderCursor(MatrixStack MatrixStack) {
+	private void renderCursor(PoseStack poseStack) {
 		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = x + margin + fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = y + margin + (getRenderSafeCursorY() * fontRenderer.fontHeight);
+			final int renderCursorX = x + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = y + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
-			Screen.fill(MatrixStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.fontHeight + 1, -3092272);
+			GuiComponent.fill(poseStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
 	}
 
-	private void renderScrollBar(MatrixStack MatrixStack) {
+	private void renderScrollBar(PoseStack poseStack) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
 			final int effectiveHeight = height - (margin / 2);
-			final int scrollBarHeight = MathHelper.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = y + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			final int scrollBarHeight = Mth.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
+			int scrollBarTop = y + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
 			final int diff = (scrollBarTop + scrollBarHeight) - (y + height);
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			Screen.fill(MatrixStack, x + width - (margin * 3 / 4), scrollBarTop, x + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			GuiComponent.fill(poseStack, x + width - (margin * 3 / 4), scrollBarTop, x + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
-	
+
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	public void updateNarration(NarrationElementOutput output) {
 	}
 
 }

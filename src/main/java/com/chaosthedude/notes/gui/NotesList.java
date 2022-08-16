@@ -3,29 +3,30 @@ package com.chaosthedude.notes.gui;
 import java.util.Objects;
 
 import com.chaosthedude.notes.note.Note;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.util.math.MatrixStack;
 
-@OnlyIn(Dist.CLIENT)
-public class NotesList extends ObjectSelectionList<NotesListEntry> {
+@Environment(EnvType.CLIENT)
+public class NotesList extends EntryListWidget<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
 	private boolean pseudoRenderSelection = true;
 
-	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
+	public NotesList(SelectNoteScreen notesScreen, MinecraftClient mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
 		this.parentScreen = notesScreen;
 		refreshList();
 	}
 	
 	@Override
-	protected int getScrollbarPosition() {
-		return super.getScrollbarPosition() + 20;
+	protected int getScrollbarPositionX() {
+		return super.getScrollbarPositionX() + 20;
 	}
 
 	@Override
@@ -34,35 +35,32 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 
 	@Override
-	protected boolean isSelectedItem(int slotIndex) {
-		return slotIndex >= 0 && slotIndex < children().size() ? children().get(slotIndex).equals(getSelected()) : false;
+	protected boolean isSelectedEntry(int index) {
+		return index >= 0 && index < children().size() ? children().get(index).equals(getSelectedOrNull()) : false;
 	}
 	
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		int i = getScrollbarPosition();
-		int k = getRowLeft();
-		int l = y0 + 4 - (int) getScrollAmount();
+	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderList(stack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		int i = getItemCount();
+	protected void renderList(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
-			if (l >= y0 && k <= y1) {
+			if (l >= top && k <= bottom) {
 				int j1 = this.itemHeight - 4;
 				NotesListEntry e = this.getEntry(j);
 				int k1 = getRowWidth();
-				if (pseudoRenderSelection && isSelectedItem(j)) {
-					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					GuiComponent.fill(stack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+				if (pseudoRenderSelection && isSelectedEntry(j)) {
+					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
+					Screen.fill(stack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = this.getRowLeft();
-				e.render(stack, j, k, j2, k1, j1, mouseX, mouseY, this.isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				e.render(stack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 	}
@@ -74,7 +72,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(PoseStack stack) {
+	protected void renderBackground(MatrixStack stack) {
 		parentScreen.renderBackground(stack);
 	}
 	
@@ -96,6 +94,11 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	public SelectNoteScreen getParentScreen() {
 		return parentScreen;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		
 	}
 
 }

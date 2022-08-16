@@ -3,29 +3,30 @@ package com.chaosthedude.notes.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Style;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 
 public class RenderUtils {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Font font = mc.font;
 	
 	public static List<String> trimStringToWidth(String str, int maxWidth) {
 		List<String> trimmedStrings = new ArrayList<String>();
-		for (StringVisitable text : TEXT_RENDERER.getTextHandler().wrapLines(str, maxWidth, Style.EMPTY)) {
+		for (FormattedText text : font.getSplitter().splitLines(str, maxWidth, Style.EMPTY)) {
 			trimmedStrings.add(text.getString());
 		}
 		return trimmedStrings;
 	}
 
-	public static void renderSplitString(MatrixStack stack, String string, int x, int y, int wrapWidth, int color) {
+	public static void renderSplitString(PoseStack stack, String string, int x, int y, int wrapWidth, int color) {
 		for (String s : trimStringToWidth(string, wrapWidth)) {
-			TEXT_RENDERER.drawWithShadow(stack, s, x, y, color);
-			y += TEXT_RENDERER.fontHeight;
+			font.drawShadow(stack, s, x, y, color);
+			y += font.lineHeight;
 		}
 	}
 
@@ -33,7 +34,7 @@ public class RenderUtils {
 		final List<String> lines = trimStringToWidth(string, wrapWidth);
 		int width = 0;
 		for (String line : lines) {
-			final int stringWidth = TEXT_RENDERER.getWidth(line);
+			final int stringWidth = font.width(line);
 			if (stringWidth > width) {
 				width = stringWidth;
 			}
@@ -43,7 +44,7 @@ public class RenderUtils {
 	}
 
 	public static int getSplitStringHeight(String string, int wrapWidth) {
-		return TEXT_RENDERER.fontHeight * trimStringToWidth(string, wrapWidth).size();
+		return font.lineHeight * trimStringToWidth(string, wrapWidth).size();
 	}
 
 	public static int getRenderWidth(String position, int width) {
@@ -52,7 +53,7 @@ public class RenderUtils {
 			return 10;
 		}
 
-		return CLIENT.getWindow().getScaledWidth() - width;
+		return mc.getWindow().getGuiScaledWidth() - width;
 	}
 
 	public static int getRenderHeight(String position, int height) {
@@ -60,10 +61,10 @@ public class RenderUtils {
 		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
-			return CLIENT.getWindow().getScaledHeight() - height - 5;
+			return mc.getWindow().getGuiScaledHeight() - height - 5;
 		}
 
-		return (CLIENT.getWindow().getScaledHeight() / 2) - (height / 2);
+		return (mc.getWindow().getGuiScaledHeight() / 2) - (height / 2);
 	}
 
 }
