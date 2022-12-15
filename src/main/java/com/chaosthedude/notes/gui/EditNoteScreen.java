@@ -47,8 +47,6 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void init() {
-		minecraft.keyboardHandler.setSendRepeatsToGui(true);
-
 		setupTextFields();
 		setupButtons();
 	}
@@ -59,11 +57,6 @@ public class EditNoteScreen extends Screen {
 		noteTextField.tick();
 
 		insertBiomeButton.active = insertChunkButton.active = insertCoordsButton.active = noteTextField.isFocused();
-	}
-	
-	@Override
-	public void onClose() {
-		minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 	
 	@Override

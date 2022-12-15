@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 public class NotesButton extends Button {
 
 	public NotesButton(int x, int y, int width, int height, Component label, OnPress onPress) {
-		super(x, y, width, height, label, onPress);
+		super(x, y, width, height, label, onPress, DEFAULT_NARRATION);
 	}
 
 	@Override
@@ -26,8 +26,8 @@ public class NotesButton extends Button {
 			final float f = state / 2 * 0.9F + 0.1F;
 			final int color = (int) (255.0F * f);
 
-			GuiComponent.fill(poseStack, x, y, x + width, y + height, color / 2 << 24);
-			drawCenteredString(poseStack, mc.font, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
+			GuiComponent.fill(poseStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+			drawCenteredString(poseStack, mc.font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
 		}
 	}
 

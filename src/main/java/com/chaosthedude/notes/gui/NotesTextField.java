@@ -20,8 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -31,7 +29,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class NotesTextField extends AbstractWidget implements Widget, GuiEventListener {
+public class NotesTextField extends AbstractWidget {
 
 	private static final Minecraft mc = Minecraft.getInstance();
 
@@ -173,7 +171,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	@Override
 	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		GuiComponent.fill(stack, x, y, x + width, y + height, color / 2 << 24);
+		GuiComponent.fill(stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
 		renderVisibleText(stack);
 		renderCursor(stack);
@@ -189,8 +187,8 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 
 		if (isFocused() && isWithinBounds) {
 			if (mouseButton == 0) {
-				final int relativeMouseX = (int) mouseX - x - margin;
-				final int relativeMouseY = (int) mouseY - y - margin;
+				final int relativeMouseX = (int) mouseX - getX() - margin;
+				final int relativeMouseY = (int) mouseY - getY() - margin;
 				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
@@ -210,8 +208,8 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 
 		if (isFocused() && isWithinBounds) {
 			if (state == 0) {
-				final int relativeMouseX = (int) mouseX - x - margin;
-				final int relativeMouseY = (int) mouseY - y - margin;
+				final int relativeMouseX = (int) mouseX - getX() - margin;
+				final int relativeMouseY = (int) mouseY - getY() - margin;
 				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
@@ -325,7 +323,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	public boolean isWithinBounds(double mouseX, double mouseY) {
-		return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+		return mouseX >= getX() && mouseX < getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
 	}
 
 	public boolean atBeginningOfLine() {
@@ -643,12 +641,12 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 			endY = j;
 		}
 
-		if (endX > this.x + this.width) {
-			endX = this.x + this.width;
+		if (endX > getX() + getWidth()) {
+			endX = getX() + getWidth();
 		}
 
-		if (startX > this.x + this.width) {
-			startX = this.x + this.width;
+		if (startX > getX() + getWidth()) {
+			startX = getX() + getWidth();
 		}
 
 		Tesselator tesselator = Tesselator.getInstance();
@@ -700,7 +698,7 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = x + margin + fontRenderer.width(absoluteLine.substring(0, start));
+				final int startX = getX() + margin + fontRenderer.width(absoluteLine.substring(0, start));
 				final int endX = startX + fontRenderer.width(selection);
 				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
@@ -708,10 +706,10 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	}
 
 	private void renderVisibleText(PoseStack stack) {
-		int renderY = y + margin;
+		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawShadow(stack, line, x + margin, renderY, 14737632);
+			fontRenderer.drawShadow(stack, line, getX() + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
 			renderY += fontRenderer.lineHeight;
@@ -723,8 +721,8 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = x + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = y + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
+			final int renderCursorX = getX() + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = getY() + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
 			GuiComponent.fill(poseStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
@@ -733,21 +731,21 @@ public class NotesTextField extends AbstractWidget implements Widget, GuiEventLi
 	private void renderScrollBar(PoseStack poseStack) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
-			final int effectiveHeight = height - (margin / 2);
+			final int effectiveHeight = getHeight() - (margin / 2);
 			final int scrollBarHeight = Mth.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = y + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			int scrollBarTop = getY() + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
-			final int diff = (scrollBarTop + scrollBarHeight) - (y + height);
+			final int diff = (scrollBarTop + scrollBarHeight) - (getY() + getHeight());
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			GuiComponent.fill(poseStack, x + width - (margin * 3 / 4), scrollBarTop, x + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			GuiComponent.fill(poseStack, getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput output) {
+	protected void updateWidgetNarration(NarrationElementOutput output) {
 	}
 
 }
