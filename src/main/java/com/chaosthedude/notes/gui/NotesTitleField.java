@@ -43,7 +43,7 @@ public class NotesTitleField extends TextFieldWidget {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				Screen.fill(matrixStack, x, y, x + width, y + height, color / 2 << 24);
+				Screen.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
@@ -53,8 +53,8 @@ public class NotesTitleField extends TextFieldWidget {
 			String s = textRenderer.trimToWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
 			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
-			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
-			int i1 = pseudoEnableBackgroundDrawing ? y + (height - 8) / 2 : y;
+			int l = pseudoEnableBackgroundDrawing ? getX() + 4 : getX();
+			int i1 = pseudoEnableBackgroundDrawing ? getY() + (getHeight() - 8) / 2 : getY();
 			int j1 = l;
 
 			if (k > s.length()) {
@@ -187,12 +187,12 @@ public class NotesTitleField extends TextFieldWidget {
 			endY = j;
 		}
 
-		if (endX > x + width) {
-			endX = x + width;
+		if (endX > getX() + getWidth()) {
+			endX = getX() + getWidth();
 		}
 
-		if (startX > x + width) {
-			startX = x + width;
+		if (startX > getX() + getWidth()) {
+			startX = getX() + getWidth();
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();

@@ -172,7 +172,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		Screen.fill(stack, x, y, x + width, y + height, color / 2 << 24);
+		Screen.fill(stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
 		renderVisibleText(stack);
 		renderCursor(stack);
@@ -188,8 +188,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 
 		if (isFocused() && isWithinBounds) {
 			if (mouseButton == 0) {
-				final int relativeMouseX = (int) mouseX - x - margin;
-				final int relativeMouseY = (int) mouseY - y - margin;
+				final int relativeMouseX = (int) mouseX - getX() - margin;
+				final int relativeMouseY = (int) mouseY - getY() - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
 
@@ -209,8 +209,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 
 		if (isFocused() && isWithinBounds) {
 			if (state == 0) {
-				final int relativeMouseX = (int) mouseX - x - margin;
-				final int relativeMouseY = (int) mouseY - y - margin;
+				final int relativeMouseX = (int) mouseX - getX() - margin;
+				final int relativeMouseY = (int) mouseY - getY() - margin;
 				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
 				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
 
@@ -324,7 +324,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	public boolean isWithinBounds(double mouseX, double mouseY) {
-		return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+		return mouseX >= getX() && mouseX < getX() + getWidth() && mouseY >= getY() && mouseY < getY() + getHeight();
 	}
 
 	public boolean atBeginningOfLine() {
@@ -642,17 +642,17 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			endY = j;
 		}
 
-		if (endX > this.x + this.width) {
-			endX = this.x + this.width;
+		if (endX > getX() + getWidth()) {
+			endX = getX() + getWidth();
 		}
 
-		if (startX > this.x + this.width) {
-			startX = this.x + this.width;
+		if (startX > getX() + getWidth()) {
+			startX = getX() + getWidth();
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder builder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
@@ -699,7 +699,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = x + margin + fontRenderer.getWidth(absoluteLine.substring(0, start));
+				final int startX = getX() + margin + fontRenderer.getWidth(absoluteLine.substring(0, start));
 				final int endX = startX + fontRenderer.getWidth(selection);
 				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.fontHeight);
 			}
@@ -707,10 +707,10 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	private void renderVisibleText(MatrixStack stack) {
-		int renderY = y + margin;
+		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawWithShadow(stack, line, x + margin, renderY, 14737632);
+			fontRenderer.drawWithShadow(stack, line, getX() + margin, renderY, 14737632);
 			renderSelectionBox(y, renderY, line);
 
 			renderY += fontRenderer.fontHeight;
@@ -722,8 +722,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = x + margin + fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = y + margin + (getRenderSafeCursorY() * fontRenderer.fontHeight);
+			final int renderCursorX = getX() + margin + fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = getY() + margin + (getRenderSafeCursorY() * fontRenderer.fontHeight);
 
 			Screen.fill(MatrixStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.fontHeight + 1, -3092272);
 		}
@@ -732,21 +732,21 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private void renderScrollBar(MatrixStack MatrixStack) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
-			final int effectiveHeight = height - (margin / 2);
+			final int effectiveHeight = getHeight() - (margin / 2);
 			final int scrollBarHeight = MathHelper.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = y + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			int scrollBarTop = getY() + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
-			final int diff = (scrollBarTop + scrollBarHeight) - (y + height);
+			final int diff = (scrollBarTop + scrollBarHeight) - (getY() + getHeight());
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			Screen.fill(MatrixStack, x + width - (margin * 3 / 4), scrollBarTop, x + width - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			Screen.fill(MatrixStack, getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
-	
+
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 	}
 
 }

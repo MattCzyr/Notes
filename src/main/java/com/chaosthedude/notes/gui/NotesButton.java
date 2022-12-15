@@ -12,7 +12,7 @@ import net.minecraft.text.Text;
 public class NotesButton extends ButtonWidget {
 
 	public NotesButton(int x, int y, int width, int height, Text label, PressAction onPress) {
-		super(x, y, width, height, label, onPress);
+		super(x, y, width, height, label, onPress, DEFAULT_NARRATION_SUPPLIER);
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class NotesButton extends ButtonWidget {
 			final float f = state / 2 * 0.9F + 0.1F;
 			final int color = (int) (255.0F * f);	
 
-			Screen.fill(matrixStack, x, y, x + width, y + height, color / 2 << 24);
-			drawCenteredText(matrixStack, mc.textRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0xffffff);
+			Screen.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+			drawCenteredText(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
 		}
 	}
 

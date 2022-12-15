@@ -8,9 +8,10 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
@@ -114,7 +115,7 @@ public final class StringUtils {
 	}
 	
 	private static Optional<? extends Registry<Biome>> getBiomeRegistry(World world) {
-		return world.getRegistryManager().getOptional(Registry.BIOME_KEY);
+		return world.getRegistryManager().getOptional(RegistryKeys.BIOME);
 	}
 
 	private static Optional<Identifier> getKeyForBiome(World world, Biome biome) {

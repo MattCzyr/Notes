@@ -1,7 +1,5 @@
 package com.chaosthedude.notes.gui;
 
-import javax.annotation.Nullable;
-
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
@@ -32,7 +30,7 @@ public class EditNoteScreen extends Screen {
 	private Scope scope;
 	private boolean pinned;
 
-	public EditNoteScreen(Screen parentScreen, @Nullable Note note) {
+	public EditNoteScreen(Screen parentScreen, Note note) {
 		super(Text.literal(note != null ? I18n.translate("notes.editNote") : I18n.translate("notes.newNote")));
 		this.parentScreen = parentScreen;
 		if (note != null) {
@@ -47,8 +45,6 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void init() {
-		client.keyboard.setRepeatEvents(true);
-
 		setupTextFields();
 		setupButtons();
 	}
@@ -59,11 +55,6 @@ public class EditNoteScreen extends Screen {
 		noteTextField.tick();
 
 		insertBiomeButton.active = insertChunkButton.active = insertCoordsButton.active = noteTextField.isFocused();
-	}
-	
-	@Override
-	public void close() {
-		client.keyboard.setRepeatEvents(false);
 	}
 	
 	@Override
