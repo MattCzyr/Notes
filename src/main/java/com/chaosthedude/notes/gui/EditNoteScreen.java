@@ -130,7 +130,6 @@ public class EditNoteScreen extends Screen {
 		noteTitleField = addRenderableWidget(new NotesTitleField(font, 130, 40, width - 140, 20, Component.literal("")));
 		noteTitleField.setValue(note.getTitle());
 		addRenderableWidget(noteTitleField);
-		noteTitleField.changeFocus(true);
 		noteTitleField.setFocused(true);
 		setFocused(noteTitleField);
 

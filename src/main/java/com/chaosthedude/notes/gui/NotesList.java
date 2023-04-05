@@ -78,7 +78,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 		parentScreen.renderBackground(stack);
 	}
 	
-	private int getRowBottom(int index) {
+	protected int getRowBottom(int index) {
 		return getRowTop(index) + itemHeight;
 	}
 

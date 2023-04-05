@@ -197,7 +197,6 @@ public class NotesTitleField extends EditBox {
 		BufferBuilder builder = tesselator.getBuilder();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -208,7 +207,6 @@ public class NotesTitleField extends EditBox {
 		tesselator.end();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
 	}
 
 }

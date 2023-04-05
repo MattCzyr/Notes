@@ -169,7 +169,7 @@ public class NotesTextField extends AbstractWidget {
 	   }
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
 		GuiComponent.fill(stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
@@ -653,7 +653,6 @@ public class NotesTextField extends AbstractWidget {
 		BufferBuilder builder = tesselator.getBuilder();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -664,7 +663,6 @@ public class NotesTextField extends AbstractWidget {
 		tesselator.end();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
 	}
 
 	private void renderSelectionBox(int y, int renderY, String line) {

@@ -1,63 +1,25 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Gradle
-/.gradle
-/build
+# eclipse
+bin
 *.launch
+.settings
+.metadata
+.classpath
+.project
 
-# ForgeGradle
-/run
-/logs
-
-# Eclipse
-/.settings
-/.metadata
-/.classpath
-/.project
-/eclipse
-/bin
-
-# IntelliJ
-out/
-.idea/
+# idea
+out
+*.ipr
+*.iws
 *.iml
+.idea
 
-# Folder config file
-Desktop.ini
+# gradle
+build
+.gradle
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# other
+eclipse
+run
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# OSX
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+# Files from Forge MDK
+forge*changelog.txt
