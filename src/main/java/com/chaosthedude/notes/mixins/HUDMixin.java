@@ -38,20 +38,16 @@ public class HUDMixin {
 				final int maxWidth = MathHelper.floor(client.getWindow().getScaledWidth() * NotesConfig.pinnedWidthScale);
 				final int maxHeight = MathHelper.floor(client.getWindow().getScaledHeight() * NotesConfig.pinnedHeightScale);
 				final int renderWidth = RenderUtils.getSplitStringWidth(text, maxWidth);
-				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxWidth);
-				final int width = client.getWindow().getScaledWidth() - renderWidth;
-				final int height = (client.getWindow().getScaledHeight() / 2) - (renderHeight / 2);
+				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxHeight);
 	
 				final int fixedRenderWidth = RenderUtils.getRenderWidth(NotesConfig.pinnedNotePosition, renderWidth);
 				final int fixedRenderHeight = RenderUtils.getRenderHeight(NotesConfig.pinnedNotePosition, renderHeight);
 	
-				final double opacity = client.options.getChatOpacity().getValue() * 0.9F + 0.1F;
+				final double opacity = client.options.getTextBackgroundOpacity().getValue();
 				final int color = (int) (255.0F * opacity);
-				
-				final MatrixStack stack = new MatrixStack();
 	
-				Screen.fill(stack, fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color / 2 << 24);
-				RenderUtils.renderSplitString(stack, text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, 0xffffff);
+				Screen.fill(matrixStack, fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color << 24);
+				RenderUtils.renderSplitString(matrixStack, text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, 0xffffff);
 			}
 		}
 	}

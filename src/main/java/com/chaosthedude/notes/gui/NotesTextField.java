@@ -20,11 +20,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -170,7 +166,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	   }
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
 		Screen.fill(stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
@@ -629,7 +625,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		return "";
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(MatrixStack matrixStack, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -650,25 +646,13 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			startX = getX() + getWidth();
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder builder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-		builder.vertex((double) startX, (double) endY, 0.0D).next();
-		builder.vertex((double) endX, (double) endY, 0.0D).next();
-		builder.vertex((double) endX, (double) startY, 0.0D).next();
-		builder.vertex((double) startX, (double) startY, 0.0D).next();
-		tessellator.draw();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
+        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
+        TextFieldWidget.fill(matrixStack, startX, startY, endX, endY, -16776961);
+        RenderSystem.disableColorLogicOp();
 	}
 
-	private void renderSelectionBox(int y, int renderY, String line) {
+	private void renderSelectionBox(MatrixStack matrixStack, int y, int renderY, String line) {
 		if (hasSelectionOnLine(y)) {
 			final String absoluteLine = getLine(y);
 			int count = 0;
@@ -701,7 +685,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 				final String selection = absoluteLine.substring(start, end);
 				final int startX = getX() + margin + fontRenderer.getWidth(absoluteLine.substring(0, start));
 				final int endX = startX + fontRenderer.getWidth(selection);
-				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.fontHeight);
+				drawSelectionBox(matrixStack, startX, renderY, endX, renderY + fontRenderer.fontHeight);
 			}
 		}
 	}
@@ -711,7 +695,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
 			fontRenderer.drawWithShadow(stack, line, getX() + margin, renderY, 14737632);
-			renderSelectionBox(y, renderY, line);
+			renderSelectionBox(stack, y, renderY, line);
 
 			renderY += fontRenderer.fontHeight;
 			y++;

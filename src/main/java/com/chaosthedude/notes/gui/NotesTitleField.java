@@ -8,10 +8,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat.DrawMode;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -90,7 +86,7 @@ public class NotesTitleField extends TextFieldWidget {
 
 			if (k != j) {
 				int l1 = l + textRenderer.getWidth(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
+				drawSelectionBox(matrixStack, k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
 			}
 		}
 	}
@@ -174,7 +170,7 @@ public class NotesTitleField extends TextFieldWidget {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(MatrixStack matrixStack, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -195,20 +191,10 @@ public class NotesTitleField extends TextFieldWidget {
 			startX = getX() + getWidth();
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(DrawMode.QUADS, VertexFormats.POSITION);
-		bufferbuilder.vertex((double) startX, (double) endY, 0.0D).next();
-		bufferbuilder.vertex((double) endX, (double) endY, 0.0D).next();
-		bufferbuilder.vertex((double) endX, (double) startY, 0.0D).next();
-		bufferbuilder.vertex((double) startX, (double) startY, 0.0D).next();
-		tessellator.draw();
-		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
+        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
+        TextFieldWidget.fill(matrixStack, startX, startY, endX, endY, -16776961);
+        RenderSystem.disableColorLogicOp();
 	}
 
 }

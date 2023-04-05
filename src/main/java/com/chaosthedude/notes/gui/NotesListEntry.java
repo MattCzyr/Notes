@@ -8,7 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class NotesListEntry extends EntryListWidget.Entry<NotesListEntry> {
+public class NotesListEntry extends AlwaysSelectedEntryListWidget.Entry<NotesListEntry> {
 
 	private final MinecraftClient client;
 	private final SelectNoteScreen parentScreen;
@@ -103,6 +103,11 @@ public class NotesListEntry extends EntryListWidget.Entry<NotesListEntry> {
 
 			NotesListEntry.this.client.setScreen(NotesListEntry.this.parentScreen);
 		}, Text.translatable("notes.confirmDelete"), Text.literal(note.getTitle())));
+	}
+
+	@Override
+	public Text getNarration() {
+		return Text.literal(note.getTitle());
 	}
 
 }

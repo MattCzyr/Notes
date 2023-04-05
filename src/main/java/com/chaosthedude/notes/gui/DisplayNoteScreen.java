@@ -54,7 +54,7 @@ public class DisplayNoteScreen extends Screen {
 	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
-		drawCenteredText(stack, textRenderer, title.getString(), width / 2 + 60, 15, -1);
+		drawCenteredTextWithShadow(stack, textRenderer, title.getString(), width / 2 + 60, 15, -1);
 		displayNote(stack);
 
 		super.render(stack, mouseX, mouseY, partialTicks);

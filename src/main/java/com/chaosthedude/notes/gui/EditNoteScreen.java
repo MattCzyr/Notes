@@ -82,8 +82,8 @@ public class EditNoteScreen extends Screen {
 	@Override
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
-		drawCenteredText(stack, textRenderer, title.getString(), width / 2 + 60, 15, 0xffffff);
-		drawCenteredText(stack, textRenderer, I18n.translate("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		drawCenteredTextWithShadow(stack, textRenderer, title.getString(), width / 2 + 60, 15, 0xffffff);
+		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 
@@ -128,7 +128,6 @@ public class EditNoteScreen extends Screen {
 		noteTitleField = addDrawableChild(new NotesTitleField(textRenderer, 130, 40, width - 140, 20, Text.literal("")));
 		noteTitleField.setText(note.getTitle());
 		addDrawableChild(noteTitleField);
-		noteTitleField.changeFocus(true);
 		noteTitleField.setFocused(true);
 		setFocused(noteTitleField);
 

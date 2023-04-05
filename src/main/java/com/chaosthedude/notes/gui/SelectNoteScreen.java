@@ -36,7 +36,7 @@ public class SelectNoteScreen extends Screen {
 	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(stack);
 		selectionList.render(stack, mouseX, mouseY, partialTicks);
-		drawCenteredText(stack, textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
+		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
 		super.render(stack, mouseX, mouseY, partialTicks);
 	}
 

@@ -29,7 +29,7 @@ public class NotesButton extends ButtonWidget {
 			final int color = (int) (255.0F * f);	
 
 			Screen.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
-			drawCenteredText(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
+			drawCenteredTextWithShadow(matrixStack, mc.textRenderer, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xffffff);
 		}
 	}
 

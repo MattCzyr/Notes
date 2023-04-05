@@ -76,7 +76,7 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 		parentScreen.renderBackground(stack);
 	}
 	
-	private int getRowBottom(int index) {
+	protected int getRowBottom(int index) {
 		return getRowTop(index) + itemHeight;
 	}
 
