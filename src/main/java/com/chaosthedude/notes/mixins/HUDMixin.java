@@ -43,10 +43,9 @@ public class HUDMixin {
 				final int fixedRenderWidth = RenderUtils.getRenderWidth(NotesConfig.pinnedNotePosition, renderWidth);
 				final int fixedRenderHeight = RenderUtils.getRenderHeight(NotesConfig.pinnedNotePosition, renderHeight);
 	
-				final double opacity = client.options.getTextBackgroundOpacity().getValue();
-				final int color = (int) (255.0F * opacity);
+				final int opacity = (int) (255.0F * client.options.getTextBackgroundOpacity().getValue());
 	
-				Screen.fill(matrixStack, fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color << 24);
+				Screen.fill(matrixStack, fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, opacity << 24);
 				RenderUtils.renderSplitString(matrixStack, text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, 0xffffff);
 			}
 		}
