@@ -42,10 +42,9 @@ public class TickHandler {
 				final int fixedRenderWidth = RenderUtils.getRenderWidth(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderWidth);
 				final int fixedRenderHeight = RenderUtils.getRenderHeight(ConfigHandler.CLIENT.pinnedNotePosition.get(), renderHeight);
 
-				final double opacity = CLIENT.options.textBackgroundOpacity().get() * 0.9F + 0.1F;
-				final int color = (int) (255.0F * opacity);
+				final int opacity = (int) (255.0F * CLIENT.options.textBackgroundOpacity().get());
 
-				GuiComponent.fill(event.getPoseStack(), fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, color / 2 << 24);
+				GuiComponent.fill(event.getPoseStack(), fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, opacity << 24);
 				RenderUtils.renderSplitStringWithMaxHeight(event.getPoseStack(), text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, maxHeight, 0xffffff);
 			}
 		}
