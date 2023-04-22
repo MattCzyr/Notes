@@ -107,11 +107,6 @@ public class Note {
 
 	public String getPreview(int width) {
 		String preview = rawText;
-		boolean addEllipsis = false;
-		if (font.width(preview) > width || RenderUtils.trimStringToWidth(preview, width).size() > 1) {
-			preview = RenderUtils.trimStringToWidth(preview, width).get(0);
-			addEllipsis = true;
-		}
 
 		for (char c : StringUtils.FILTER_CHARS) {
 			if (preview.contains(String.valueOf(c))) {
@@ -122,9 +117,9 @@ public class Note {
 		if (preview.indexOf('\n') >= 0) {
 			preview = preview.substring(0, preview.indexOf('\n'));
 		}
-
-		if (addEllipsis) {
-			preview += "...";
+		
+		if (font.width(preview) > width) {
+			preview = RenderUtils.addEllipses(preview, width);
 		}
 
 		return preview;
