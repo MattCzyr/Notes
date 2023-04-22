@@ -99,19 +99,23 @@ public final class StringUtils {
 	}
 
 	public static String fixBiomeName(Level world, Biome biome) {
-		final String original = I18n.get(Util.makeDescriptionId("biome", getKeyForBiome(world, biome).get()));
-		String fixed = "";
-		char pre = ' ';
-		for (int i = 0; i < original.length(); i++) {
-			final char c = original.charAt(i);
-			if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
-				fixed = fixed + " ";
+		Optional<ResourceLocation> optionalKey = getKeyForBiome(world, biome);
+		if (optionalKey.isPresent()) {
+			final String original = I18n.get(Util.makeDescriptionId("biome", optionalKey.get()));
+			String fixed = "";
+			char pre = ' ';
+			for (int i = 0; i < original.length(); i++) {
+				final char c = original.charAt(i);
+				if (Character.isUpperCase(c) && Character.isLowerCase(pre) && Character.isAlphabetic(pre)) {
+					fixed = fixed + " ";
+				}
+				fixed = fixed + String.valueOf(c);
+				pre = c;
 			}
-			fixed = fixed + String.valueOf(c);
-			pre = c;
+			return fixed;
 		}
 
-		return fixed;
+		return "";
 	}
 	
 	private static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
