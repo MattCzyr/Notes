@@ -61,7 +61,8 @@ public class DisplayNoteScreen extends Screen {
 	}
 
 	public void displayNote(MatrixStack stack) {
-		RenderUtils.renderSplitString(stack, pages.get(page), 160, 40, width - 200, 0xFFFFFF);
+		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
+		RenderUtils.renderSplitString(stack, lines, 160, 40, 0xFFFFFF);
 	}
 
 	private void setupButtons() {
@@ -95,7 +96,7 @@ public class DisplayNoteScreen extends Screen {
 
 	private void setupPages() {
 		if (note != null) {
-			final List<String> lines = NotesConfig.wrapNote ? RenderUtils.trimStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
+			final List<String> lines = NotesConfig.wrapNote ? RenderUtils.splitStringToWidth(note.getFilteredText(), width - 200) : StringUtils.wrapToWidth(note.getFilteredText(), width - 200);
 			pages = new ArrayList<String>();
 			int lineCount = 0;
 			String page = "";

@@ -12,28 +12,45 @@ import net.minecraft.text.Style;
 public class RenderUtils {
 
 	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
-	
-	public static List<String> trimStringToWidth(String str, int maxWidth) {
-		List<String> trimmedStrings = new ArrayList<String>();
-		for (StringVisitable text : TEXT_RENDERER.getTextHandler().wrapLines(str, maxWidth, Style.EMPTY)) {
-			trimmedStrings.add(text.getString());
+
+	public static List<String> splitStringToWidth(String str, int maxWidth) {
+		List<String> splitStrings = new ArrayList<String>();
+		for (StringVisitable text : CLIENT.textRenderer.getTextHandler().wrapLines(str, maxWidth, Style.EMPTY)) {
+			splitStrings.add(text.getString());
 		}
-		return trimmedStrings;
+		return splitStrings;
 	}
 
-	public static void renderSplitString(MatrixStack stack, String string, int x, int y, int wrapWidth, int color) {
-		for (String s : trimStringToWidth(string, wrapWidth)) {
-			TEXT_RENDERER.drawWithShadow(stack, s, x, y, color);
-			y += TEXT_RENDERER.fontHeight;
+	// Intermediary so we can check if any lines were removed
+	public static List<String> splitStringToHeight(List<String> widthSplitStrings, int maxHeight) {
+		List<String> splitStrings = new ArrayList<String>();
+		int height = 0;
+		for (String line : widthSplitStrings) {
+			// Check if we have room for this line before adding it
+			height += CLIENT.textRenderer.fontHeight;
+			if (height > maxHeight) {
+				break;
+			}
+			splitStrings.add(line);
+		}
+		return splitStrings;
+	}
+
+	public static List<String> splitStringToWidthAndHeight(String str, int maxWidth, int maxHeight) {
+		return splitStringToHeight(splitStringToWidth(str, maxWidth), maxHeight);
+	}
+
+	public static void renderSplitString(MatrixStack stack, List<String> splitString, int x, int y, int color) {
+		for (String s : splitString) {
+			CLIENT.textRenderer.drawWithShadow(stack, s, x, y, color);
+			y += CLIENT.textRenderer.fontHeight;
 		}
 	}
 
-	public static int getSplitStringWidth(String string, int wrapWidth) {
-		final List<String> lines = trimStringToWidth(string, wrapWidth);
+	public static int getSplitStringWidth(List<String> splitString, int wrapWidth) {
 		int width = 0;
-		for (String line : lines) {
-			final int stringWidth = TEXT_RENDERER.getWidth(line);
+		for (String line : splitString) {
+			final int stringWidth = CLIENT.textRenderer.getWidth(line);
 			if (stringWidth > width) {
 				width = stringWidth;
 			}
@@ -42,28 +59,41 @@ public class RenderUtils {
 		return width;
 	}
 
-	public static int getSplitStringHeight(String string, int wrapWidth) {
-		return TEXT_RENDERER.fontHeight * trimStringToWidth(string, wrapWidth).size();
+	public static int getSplitStringHeight(List<String> splitString, int wrapWidth) {
+		return CLIENT.textRenderer.fontHeight * splitString.size();
 	}
 
-	public static int getRenderWidth(String position, int width) {
+	// Returns the X position at which text with the given width should start rendering, assuming padding of 5 on each side
+	public static int getPinnedNoteX(String position, int noteWidth) {
 		final String positionLower = position.toLowerCase();
-		if (positionLower.equals("top_left") || positionLower.equals("center_left") || positionLower.equals("bottom_left")) {
-			return 10;
+		if (positionLower.equals("top_left") || positionLower.equals("center_left")
+				|| positionLower.equals("bottom_left")) {
+			// Left side
+			return 5;
 		}
 
-		return CLIENT.getWindow().getScaledWidth() - width;
+		// Right side
+		return CLIENT.getWindow().getScaledWidth() - noteWidth - 5;
 	}
 
-	public static int getRenderHeight(String position, int height) {
+	// Returns the Y position at which text with the given height should start rendering, assuming padding of 5 on each side
+	public static int getPinnedNoteY(String position, int noteHeight) {
 		final String positionLower = position.toLowerCase();
 		if (positionLower.equals("top_left") || positionLower.equals("top_right")) {
+			// Top
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
-			return CLIENT.getWindow().getScaledHeight() - height - 5;
+			// Bottom
+			return CLIENT.getWindow().getScaledHeight() - noteHeight - 5;
 		}
 
-		return (CLIENT.getWindow().getScaledHeight() / 2) - (height / 2);
+		// Center
+		return (CLIENT.getWindow().getScaledHeight() / 2) - (noteHeight / 2);
+	}
+
+	// Chops off characters as necessary and adds ellipses (...) to the end
+	public static String addEllipses(String str, int maxWidth) {
+		return CLIENT.textRenderer.trimToWidth(str, Math.max(0, maxWidth - CLIENT.textRenderer.getWidth("..."))) + "...";
 	}
 
 }

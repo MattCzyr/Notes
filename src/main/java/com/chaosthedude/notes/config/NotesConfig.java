@@ -68,7 +68,7 @@ public class NotesConfig {
 	}
 	
 	private static class Data {
-		private final String dateFormatComment = "The date format used in timestamps.";
+		private final String dateFormatComment = "The date format used in timestamps. Uses Java SimpleDateFormat conventions.";
 		private final String dateFormat;
 
 		private final String useInGameEditorComment = "Determines whether the in-game editor or the system's default text editor will be used to edit notes. If the system editor is not available, the in-game editor will be used.";

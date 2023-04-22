@@ -1,5 +1,7 @@
 package com.chaosthedude.notes.mixins;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,20 +35,33 @@ public class HUDMixin {
 		if (!client.options.hudHidden && (client.currentScreen == null || client.currentScreen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
-	
-				final String text = Notes.pinnedNote.getFilteredText();
+				
 				final int maxWidth = MathHelper.floor(client.getWindow().getScaledWidth() * NotesConfig.pinnedWidthScale);
 				final int maxHeight = MathHelper.floor(client.getWindow().getScaledHeight() * NotesConfig.pinnedHeightScale);
-				final int renderWidth = RenderUtils.getSplitStringWidth(text, maxWidth);
-				final int renderHeight = RenderUtils.getSplitStringHeight(text, maxHeight);
 	
-				final int fixedRenderWidth = RenderUtils.getRenderWidth(NotesConfig.pinnedNotePosition, renderWidth);
-				final int fixedRenderHeight = RenderUtils.getRenderHeight(NotesConfig.pinnedNotePosition, renderHeight);
+				final String text = Notes.pinnedNote.getFilteredText();
+				final List<String> widthSplitLines = RenderUtils.splitStringToWidth(text, maxWidth);
+				final List<String> lines = RenderUtils.splitStringToHeight(widthSplitLines, maxHeight);
+
+				// If any lines were removed, add ellipses
+				if (widthSplitLines.size() > lines.size()) {
+					String lastLine = lines.get(lines.size() - 1);
+					lines.set(lines.size() - 1, RenderUtils.addEllipses(lastLine, maxWidth));
+				}
+
+				final int renderWidth = RenderUtils.getSplitStringWidth(lines, maxWidth);
+				final int renderHeight = RenderUtils.getSplitStringHeight(lines, maxHeight);
+
+				final int renderX = RenderUtils.getPinnedNoteX(NotesConfig.pinnedNotePosition, renderWidth);
+				final int renderY = RenderUtils.getPinnedNoteY(NotesConfig.pinnedNotePosition, renderHeight);
 	
 				final int opacity = (int) (255.0F * client.options.getTextBackgroundOpacity().getValue());
 	
-				Screen.fill(matrixStack, fixedRenderWidth - 10, fixedRenderHeight - 5, fixedRenderWidth + renderWidth, fixedRenderHeight + renderHeight + 5, opacity << 24);
-				RenderUtils.renderSplitString(matrixStack, text, fixedRenderWidth - 5, fixedRenderHeight, maxWidth, 0xffffff);
+				// Render opaque background with padding of 5 on each side
+				Screen.fill(matrixStack, renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
+
+				// Render note
+				RenderUtils.renderSplitString(matrixStack, lines, renderX, renderY, 0xffffff);
 			}
 		}
 	}
