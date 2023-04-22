@@ -31,6 +31,7 @@ public class EditNoteScreen extends Screen {
 	private Note note;
 	private Scope scope;
 	private boolean pinned;
+	private boolean setTextFieldFocused;
 
 	public EditNoteScreen(Screen parentScreen, @Nullable Note note) {
 		super(Component.literal(note != null ? I18n.get("notes.editNote") : I18n.get("notes.newNote")));
@@ -43,6 +44,7 @@ public class EditNoteScreen extends Screen {
 
 		scope = Scope.getCurrentScope();
 		pinned = this.note.isPinned();
+		setTextFieldFocused = false;
 	}
 
 	@Override
@@ -57,6 +59,18 @@ public class EditNoteScreen extends Screen {
 		noteTextField.tick();
 
 		insertBiomeButton.active = insertChunkButton.active = insertCoordsButton.active = noteTextField.isFocused();
+	}
+	
+	@Override
+	public boolean mouseClicked(double x, double y, int button) {
+		boolean ret = super.mouseClicked(x, y, button);
+		if (setTextFieldFocused) {
+			// Change focus back to the text field after clicking the biome, coords, or chunk button
+			noteTextField.setFocused(true);
+			setFocused(noteTextField);
+			setTextFieldFocused = false;
+		}
+		return ret;
 	}
 	
 	@Override
@@ -110,12 +124,15 @@ public class EditNoteScreen extends Screen {
 		}));
 		insertBiomeButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, Component.translatable("notes.biome"), (onPress) -> {
 			insertBiome();
+			setTextFieldFocused = true;
 		}));
 		insertChunkButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, Component.translatable("notes.chunk"), (onPress) -> {
 			insertChunk();
+			setTextFieldFocused = true;
 		}));
 		insertCoordsButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, Component.translatable("notes.coordinates"), (onPress) -> {
 			insertCoords();
+			setTextFieldFocused = true;
 		}));
 		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(parentScreen);
