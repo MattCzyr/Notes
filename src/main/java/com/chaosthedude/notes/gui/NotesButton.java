@@ -16,7 +16,7 @@ public class NotesButton extends ButtonWidget {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (visible) {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			float state = 2;
