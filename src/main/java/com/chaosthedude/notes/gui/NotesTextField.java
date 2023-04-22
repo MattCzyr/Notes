@@ -237,11 +237,6 @@ public class NotesTextField extends AbstractWidget {
 		}
 		return false;
 	}
-	
-	@Override
-	public int getWidth() {
-		return width - (margin * 2);
-	}
 
 	@Override
 	public void setFocused(boolean focused) {
