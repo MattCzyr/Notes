@@ -29,6 +29,7 @@ public class EditNoteScreen extends Screen {
 	private Note note;
 	private Scope scope;
 	private boolean pinned;
+	private boolean setTextFieldFocused;
 
 	public EditNoteScreen(Screen parentScreen, Note note) {
 		super(Text.literal(note != null ? I18n.translate("notes.editNote") : I18n.translate("notes.newNote")));
@@ -41,6 +42,7 @@ public class EditNoteScreen extends Screen {
 
 		scope = Scope.getCurrentScope();
 		pinned = this.note.isPinned();
+		setTextFieldFocused = false;
 	}
 
 	@Override
@@ -55,6 +57,18 @@ public class EditNoteScreen extends Screen {
 		noteTextField.tick();
 
 		insertBiomeButton.active = insertChunkButton.active = insertCoordsButton.active = noteTextField.isFocused();
+	}
+	
+	@Override
+	public boolean mouseClicked(double x, double y, int button) {
+		boolean ret = super.mouseClicked(x, y, button);
+		if (setTextFieldFocused) {
+			// Change focus back to the text field after clicking the biome, coords, or chunk button
+			noteTextField.setFocused(true);
+			setFocused(noteTextField);
+			setTextFieldFocused = false;
+		}
+		return ret;
 	}
 	
 	@Override
@@ -108,12 +122,15 @@ public class EditNoteScreen extends Screen {
 		}));
 		insertBiomeButton = addDrawableChild(new NotesButton(10, 90, 110, 20, Text.translatable("notes.biome"), (onPress) -> {
 			insertBiome();
+			setTextFieldFocused = true;
 		}));
 		insertChunkButton = addDrawableChild(new NotesButton(10, 115, 110, 20, Text.translatable("notes.chunk"), (onPress) -> {
 			insertChunk();
+			setTextFieldFocused = true;
 		}));
 		insertCoordsButton = addDrawableChild(new NotesButton(10, 140, 110, 20, Text.translatable("notes.coordinates"), (onPress) -> {
 			insertCoords();
+			setTextFieldFocused = true;
 		}));
 		cancelButton = addDrawableChild(new NotesButton(10, height - 30, 110, 20, Text.translatable("gui.cancel"), (onPress) -> {
 			client.setScreen(parentScreen);
