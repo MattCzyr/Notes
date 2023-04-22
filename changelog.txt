@@ -1,8 +1,31 @@
 -------------------------------------------------
+ FORGE VERSION 1.3.0 - 1.19.4
+-------------------------------------------------
+ 1.19.4:
+    - Fixed pinned notes not respecting configured maximum width and height
+    - Fixed crash that occurred rarely when clicking the insert biome button
+    - Fixed text spilling off right side of note body background
+    - Adjusted button positions in note selection and edit GUI's
+    - Note body will no longer lose focus after clicking the insert biome, coordinates, or chunk buttons
+
+
+-------------------------------------------------
+ FABRIC VERSION 2.1.0 - 1.19.4
+-------------------------------------------------
+ 1.19.4:
+    - Fixed pinned notes not respecting configured maximum width and height
+    - Fixed crash that occurred rarely when clicking the insert biome button
+    - Fixed text spilling off right side of note body background
+    - Fixed button color not changing when hovered
+    - Adjusted button positions in note selection and edit GUI's
+    - Note body will no longer lose focus after clicking the insert biome, coordinates, or chunk buttons
+
+
+-------------------------------------------------
  FORGE VERSION 1.2.6 - 1.19.4
 -------------------------------------------------
  1.19.4:
-    - Updated to Forge 1.19.3
+    - Updated to Forge 1.19.4
     - Fixed pinned note background opacity not matching chat opacity
 
 
