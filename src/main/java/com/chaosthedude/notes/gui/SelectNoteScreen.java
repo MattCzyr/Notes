@@ -60,29 +60,29 @@ public class SelectNoteScreen extends Screen {
 		newButton = addDrawableChild(new NotesButton(10, 40, 110, 20, Text.translatable("notes.new"), (onPress) -> {
 			client.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
 		}));
-		selectButton = addDrawableChild(new NotesButton(10, 65, 110, 20, Text.translatable("notes.select"), (onPress) -> {
+		selectButton = addDrawableChild(new NotesButton(10, 75, 110, 20, Text.translatable("notes.select"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelectedOrNull();
 			if (notesEntry != null) {
 				notesEntry.loadNote();
 			}
 		}));
-		editButton = addDrawableChild(new NotesButton(10, 90, 110, 20, Text.translatable("notes.edit"), (onPress) -> {
+		editButton = addDrawableChild(new NotesButton(10, 100, 110, 20, Text.translatable("notes.edit"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelectedOrNull();
 			if (notesEntry != null) {
 				notesEntry.editNote();
 			}
 		}));
-		copyButton = addDrawableChild(new NotesButton(10, 115, 110, 20, Text.translatable("notes.copy"), (onPress) -> {
+		copyButton = addDrawableChild(new NotesButton(10, 125, 110, 20, Text.translatable("notes.copy"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelectedOrNull();
 			notesEntry.copyNote();
 		}));
-		deleteButton = addDrawableChild(new NotesButton(10, 140, 110, 20, Text.translatable("notes.delete"), (onPress) -> {
+		deleteButton = addDrawableChild(new NotesButton(10, 150, 110, 20, Text.translatable("notes.delete"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelectedOrNull();
 			if (notesEntry != null) {
 				notesEntry.deleteNote();
 			}
 		}));
-		pinButton = addDrawableChild(new NotesButton(10, 165, 110, 20, Text.translatable("notes.pin"), (onPress) -> {
+		pinButton = addDrawableChild(new NotesButton(10, 175, 110, 20, Text.translatable("notes.pin"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelectedOrNull();
 			notesEntry.togglePin();
 		}));
