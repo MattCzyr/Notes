@@ -234,11 +234,6 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		}
 		return false;
 	}
-	
-	@Override
-	public int getWidth() {
-		return width - (margin * 2);
-	}
 
 	@Override
 	public void setFocused(boolean focused) {
