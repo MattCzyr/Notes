@@ -122,15 +122,15 @@ public class EditNoteScreen extends Screen {
 			globalButton.setMessage(Component.literal(I18n.get("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.get("notes.on") : ": " + I18n.get("notes.off"))));
 			updateNote();
 		}));
-		insertBiomeButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, Component.translatable("notes.biome"), (onPress) -> {
+		insertBiomeButton = addRenderableWidget(new NotesButton(10, 100, 110, 20, Component.translatable("notes.biome"), (onPress) -> {
 			insertBiome();
 			setTextFieldFocused = true;
 		}));
-		insertChunkButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, Component.translatable("notes.chunk"), (onPress) -> {
+		insertChunkButton = addRenderableWidget(new NotesButton(10, 125, 110, 20, Component.translatable("notes.chunk"), (onPress) -> {
 			insertChunk();
 			setTextFieldFocused = true;
 		}));
-		insertCoordsButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, Component.translatable("notes.coordinates"), (onPress) -> {
+		insertCoordsButton = addRenderableWidget(new NotesButton(10, 150, 110, 20, Component.translatable("notes.coordinates"), (onPress) -> {
 			insertCoords();
 			setTextFieldFocused = true;
 		}));

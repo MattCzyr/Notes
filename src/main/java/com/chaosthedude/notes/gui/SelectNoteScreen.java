@@ -61,29 +61,29 @@ public class SelectNoteScreen extends Screen {
 		newButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.new"), (onPress) -> {
 			minecraft.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
 		}));
-		selectButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.select"), (onPress) -> {
+		selectButton = addRenderableWidget(new NotesButton(10, 75, 110, 20, Component.translatable("notes.select"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.loadNote();
 			}
 		}));
-		editButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
+		editButton = addRenderableWidget(new NotesButton(10, 100, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.editNote();
 			}
 		}));
-		copyButton = addRenderableWidget(new NotesButton(10, 115, 110, 20, Component.translatable("notes.copy"), (onPress) -> {
+		copyButton = addRenderableWidget(new NotesButton(10, 125, 110, 20, Component.translatable("notes.copy"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			notesEntry.copyNote();
 		}));
-		deleteButton = addRenderableWidget(new NotesButton(10, 140, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
+		deleteButton = addRenderableWidget(new NotesButton(10, 150, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.deleteNote();
 			}
 		}));
-		pinButton = addRenderableWidget(new NotesButton(10, 165, 110, 20, Component.translatable("notes.pin"), (onPress) -> {
+		pinButton = addRenderableWidget(new NotesButton(10, 175, 110, 20, Component.translatable("notes.pin"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			notesEntry.togglePin();
 		}));
