@@ -3,10 +3,9 @@ package com.chaosthedude.notes.gui;
 import java.util.Objects;
 
 import com.chaosthedude.notes.note.Note;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,15 +38,12 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 	
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		int i = getScrollbarPosition();
-		int k = getRowLeft();
-		int l = y0 + 4 - (int) getScrollAmount();
-		renderList(stack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderList(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+	protected void renderList(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		int i = getItemCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -58,11 +54,11 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 				int k1 = getRowWidth();
 				if (pseudoRenderSelection && isSelectedItem(j)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
-					GuiComponent.fill(stack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					guiGraphics.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = this.getRowLeft();
-				e.render(stack, j, k, j2, k1, j1, mouseX, mouseY, this.isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				e.render(guiGraphics, j, k, j2, k1, j1, mouseX, mouseY, this.isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 	}
@@ -74,8 +70,8 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(PoseStack stack) {
-		parentScreen.renderBackground(stack);
+	protected void renderBackground(GuiGraphics guiGraphics) {
+		parentScreen.renderBackground(guiGraphics);
 	}
 	
 	protected int getRowBottom(int index) {

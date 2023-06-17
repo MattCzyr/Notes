@@ -3,9 +3,8 @@ package com.chaosthedude.notes.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 
@@ -40,9 +39,9 @@ public class RenderUtils {
 		return splitStringToHeight(splitStringToWidth(str, maxWidth), maxHeight);
 	}
 
-	public static void renderSplitString(PoseStack stack, List<String> splitString, int x, int y, int color) {
+	public static void renderSplitString(GuiGraphics guiGraphics, List<String> splitString, int x, int y, int color) {
 		for (String s : splitString) {
-			CLIENT.font.drawShadow(stack, s, x, y, color);
+			guiGraphics.drawString(CLIENT.font, s, x, y, color, true);
 			y += CLIENT.font.lineHeight;
 		}
 	}

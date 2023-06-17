@@ -8,7 +8,6 @@ import com.chaosthedude.notes.gui.SelectNoteScreen;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,10 +56,10 @@ public class TickHandler {
 				final int opacity = (int) (255.0F * CLIENT.options.textBackgroundOpacity().get());
 
 				// Render opaque background with padding of 5 on each side
-				GuiComponent.fill(event.getPoseStack(), renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
+				event.getGuiGraphics().fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 				
 				// Render note
-				RenderUtils.renderSplitString(event.getPoseStack(), lines, renderX, renderY, 0xffffff);
+				RenderUtils.renderSplitString(event.getGuiGraphics(), lines, renderX, renderY, 0xffffff);
 			}
 		}
 	}

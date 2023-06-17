@@ -7,22 +7,15 @@ import org.lwjgl.glfw.GLFW;
 
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -169,13 +162,13 @@ public class NotesTextField extends AbstractWidget {
 	   }
 
 	@Override
-	public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		GuiComponent.fill(stack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+		guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
-		renderVisibleText(stack);
-		renderCursor(stack);
-		renderScrollBar(stack);
+		renderVisibleText(guiGraphics);
+		renderCursor(guiGraphics);
+		renderScrollBar(guiGraphics);
 	}
 
 	@Override
@@ -623,7 +616,7 @@ public class NotesTextField extends AbstractWidget {
 		return "";
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -644,23 +637,10 @@ public class NotesTextField extends AbstractWidget {
 			startX = getX() + getWidth();
 		}
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder builder = tesselator.getBuilder();
-		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		builder.vertex((double) startX, (double) endY, 0.0D).endVertex();
-		builder.vertex((double) endX, (double) endY, 0.0D).endVertex();
-		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
-		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
-		tesselator.end();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.disableColorLogicOp();
+		guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
 	}
 
-	private void renderSelectionBox(int y, int renderY, String line) {
+	private void renderSelectionBox(GuiGraphics guiGraphics, int y, int renderY, String line) {
 		if (hasSelectionOnLine(y)) {
 			final String absoluteLine = getLine(y);
 			int count = 0;
@@ -693,35 +673,35 @@ public class NotesTextField extends AbstractWidget {
 				final String selection = absoluteLine.substring(start, end);
 				final int startX = getX() + margin + fontRenderer.width(absoluteLine.substring(0, start));
 				final int endX = startX + fontRenderer.width(selection);
-				drawSelectionBox(startX, renderY, endX, renderY + fontRenderer.lineHeight);
+				drawSelectionBox(guiGraphics, startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
 		}
 	}
 
-	private void renderVisibleText(PoseStack stack) {
+	private void renderVisibleText(GuiGraphics guiGraphics) {
 		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			fontRenderer.drawShadow(stack, line, getX() + margin, renderY, 14737632);
-			renderSelectionBox(y, renderY, line);
+			guiGraphics.drawString(fontRenderer, line, getX() + margin, renderY, 14737632, true);
+			renderSelectionBox(guiGraphics, y, renderY, line);
 
 			renderY += fontRenderer.lineHeight;
 			y++;
 		}
 	}
 
-	private void renderCursor(PoseStack poseStack) {
+	private void renderCursor(GuiGraphics guiGraphics) {
 		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
 			final int renderCursorX = getX() + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
 			final int renderCursorY = getY() + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
-			GuiComponent.fill(poseStack, renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
+			guiGraphics.fill(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
 	}
 
-	private void renderScrollBar(PoseStack poseStack) {
+	private void renderScrollBar(GuiGraphics guiGraphics) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
 			final int effectiveHeight = getHeight() - (margin / 2);
@@ -733,7 +713,7 @@ public class NotesTextField extends AbstractWidget {
 				scrollBarTop -= diff;
 			}
 
-			GuiComponent.fill(poseStack, getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			guiGraphics.fill(getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
 

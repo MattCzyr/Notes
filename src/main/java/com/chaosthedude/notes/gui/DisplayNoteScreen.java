@@ -8,8 +8,8 @@ import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,17 +52,17 @@ public class DisplayNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		drawCenteredString(stack, font, title.getString(), width / 2 + 60, 15, -1);
-		displayNote(stack);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(guiGraphics);
+		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, -1);
+		displayNote(guiGraphics);
 
-		super.render(stack, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
-	public void displayNote(PoseStack stack) {
+	public void displayNote(GuiGraphics guiGraphics) {
 		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
-		RenderUtils.renderSplitString(stack, lines, 160, 40, 0xFFFFFF);
+		RenderUtils.renderSplitString(guiGraphics, lines, 160, 40, 0xFFFFFF);
 	}
 
 	private void setupButtons() {

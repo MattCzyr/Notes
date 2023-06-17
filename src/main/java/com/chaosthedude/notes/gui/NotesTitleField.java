@@ -1,17 +1,9 @@
 package com.chaosthedude.notes.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -37,11 +29,11 @@ public class NotesTitleField extends EditBox {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				GuiComponent.fill(poseStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+				guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getValue().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
@@ -61,7 +53,7 @@ public class NotesTitleField extends EditBox {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = font.drawShadow(poseStack, s1, (float) l, (float) i1, i);
+				j1 = guiGraphics.drawString(font, s1, (float) l, (float) i1, i, true);
 			}
 
 			boolean flag2 = getCursorPosition() < getValue().length() || getValue().length() >= pseudoMaxStringLength;
@@ -75,20 +67,20 @@ public class NotesTitleField extends EditBox {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = font.drawShadow(poseStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = guiGraphics.drawString(font, s.substring(j), (float) j1, (float) i1, i, true);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					GuiComponent.fill(poseStack, k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
+					guiGraphics.fill(RenderType.guiOverlay(), k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
 				} else {
-					font.drawShadow(poseStack, "_", (float) k1, (float) i1, i);
+					guiGraphics.drawString(font, "_", (float) k1, (float) i1, i, true);
 				}
 			}
 
 			if (k != j) {
 				int l1 = l + font.width(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + font.lineHeight);
+				drawSelectionBox(guiGraphics, k1, i1 - 1, l1 - 1, i1 + 1 + font.lineHeight);
 			}
 		}
 	}
@@ -172,7 +164,7 @@ public class NotesTitleField extends EditBox {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -193,20 +185,7 @@ public class NotesTitleField extends EditBox {
 			startX = getX() + getWidth();
 		}
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder builder = tesselator.getBuilder();
-		RenderSystem.setShader(GameRenderer::getPositionShader);
-		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		builder.vertex((double) startX, (double) endY, 0.0D).endVertex();
-		builder.vertex((double) endX, (double) endY, 0.0D).endVertex();
-		builder.vertex((double) endX, (double) startY, 0.0D).endVertex();
-		builder.vertex((double) startX, (double) startY, 0.0D).endVertex();
-		tesselator.end();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.disableColorLogicOp();
+		guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
 	}
 
 }

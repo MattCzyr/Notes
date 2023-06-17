@@ -6,8 +6,8 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -96,11 +96,11 @@ public class EditNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		drawCenteredString(stack, font, title.getString(), width / 2 + 60, 15, 0xffffff);
-		drawCenteredString(stack, font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(guiGraphics);
+		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffff);
+		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {

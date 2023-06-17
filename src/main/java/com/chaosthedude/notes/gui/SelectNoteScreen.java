@@ -1,7 +1,6 @@
 package com.chaosthedude.notes.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -34,11 +33,11 @@ public class SelectNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		selectionList.render(stack, mouseX, mouseY, partialTicks);
-		drawCenteredString(stack, font, I18n.get("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(guiGraphics);
+		selectionList.render(guiGraphics, mouseX, mouseY, partialTicks);
+		guiGraphics.drawCenteredString(font, I18n.get("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
