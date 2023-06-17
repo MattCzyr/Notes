@@ -16,10 +16,9 @@ import com.chaosthedude.notes.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -30,8 +29,8 @@ public class HUDMixin {
 	@Final
 	private MinecraftClient client;
 
-	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At(value = "TAIL"))
-	private void renderCompassInfo(MatrixStack matrixStack, float tickDelta, CallbackInfo info) {
+	@Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At(value = "TAIL"))
+	private void renderPinnedNote(DrawContext context, float tickDelta, CallbackInfo info) {
 		if (!client.options.hudHidden && (client.currentScreen == null || client.currentScreen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
@@ -58,10 +57,10 @@ public class HUDMixin {
 				final int opacity = (int) (255.0F * client.options.getTextBackgroundOpacity().getValue());
 	
 				// Render opaque background with padding of 5 on each side
-				Screen.fill(matrixStack, renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
+				context.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 
 				// Render note
-				RenderUtils.renderSplitString(matrixStack, lines, renderX, renderY, 0xffffff);
+				RenderUtils.renderSplitString(context, lines, renderX, renderY, 0xffffff);
 			}
 		}
 	}

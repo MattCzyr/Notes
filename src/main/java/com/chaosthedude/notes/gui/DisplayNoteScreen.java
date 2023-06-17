@@ -11,8 +11,8 @@ import com.chaosthedude.notes.util.StringUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -52,17 +52,17 @@ public class DisplayNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		drawCenteredTextWithShadow(stack, textRenderer, title.getString(), width / 2 + 60, 15, -1);
-		displayNote(stack);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(context);
+		context.drawCenteredTextWithShadow(textRenderer, title.getString(), width / 2 + 60, 15, -1);
+		displayNote(context);
 
-		super.render(stack, mouseX, mouseY, partialTicks);
+		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
-	public void displayNote(MatrixStack stack) {
+	public void displayNote(DrawContext context) {
 		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
-		RenderUtils.renderSplitString(stack, lines, 160, 40, 0xFFFFFF);
+		RenderUtils.renderSplitString(context, lines, 160, 40, 0xFFFFFF);
 	}
 
 	private void setupButtons() {

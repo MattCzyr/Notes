@@ -7,10 +7,10 @@ import com.chaosthedude.notes.util.StringUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -94,11 +94,11 @@ public class EditNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		drawCenteredTextWithShadow(stack, textRenderer, title.getString(), width / 2 + 60, 15, 0xffffff);
-		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(context);
+		context.drawCenteredTextWithShadow(textRenderer, title.getString(), width / 2 + 60, 15, 0xffffff);
+		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {

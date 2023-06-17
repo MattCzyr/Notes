@@ -1,14 +1,11 @@
 package com.chaosthedude.notes.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -35,11 +32,11 @@ public class NotesTitleField extends TextFieldWidget {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.55f);
-				Screen.fill(matrixStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+				context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoEditable ? pseudoEditableColor : pseudoUneditableColor);
@@ -59,7 +56,7 @@ public class NotesTitleField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = textRenderer.drawWithShadow(matrixStack, s1, (float) l, (float) i1, i);
+				j1 = context.drawTextWithShadow(textRenderer, s1, l, i1, i);
 			}
 
 			boolean flag2 = getCursor() < getText().length() || getText().length() >= pseudoMaxLength;
@@ -73,20 +70,20 @@ public class NotesTitleField extends TextFieldWidget {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = textRenderer.drawWithShadow(matrixStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = context.drawTextWithShadow(textRenderer, s.substring(j), j1, i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
-					Screen.fill(matrixStack, k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
+					context.fill(RenderLayer.getGuiTextHighlight(), k1, i1 - 1, k1 + 1, i1 + 1 + textRenderer.fontHeight, -3092272);
 				} else {
-					textRenderer.drawWithShadow(matrixStack, "_", (float) k1, (float) i1, i);
+					context.drawTextWithShadow(textRenderer, "_", k1, i1, i);
 				}
 			}
 
 			if (k != j) {
 				int l1 = l + textRenderer.getWidth(s.substring(0, k));
-				drawSelectionBox(matrixStack, k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
+				drawSelectionBox(context, k1, i1 - 1, l1 - 1, i1 + 1 + textRenderer.fontHeight);
 			}
 		}
 	}
@@ -170,7 +167,7 @@ public class NotesTitleField extends TextFieldWidget {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(MatrixStack matrixStack, int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(DrawContext context, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -191,10 +188,7 @@ public class NotesTitleField extends TextFieldWidget {
 			startX = getX() + getWidth();
 		}
 
-		RenderSystem.enableColorLogicOp();
-        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        TextFieldWidget.fill(matrixStack, startX, startY, endX, endY, -16776961);
-        RenderSystem.disableColorLogicOp();
+		context.fill(RenderLayer.getGuiTextHighlight(), startX, startY, endX, endY, -16776961);
 	}
 
 }

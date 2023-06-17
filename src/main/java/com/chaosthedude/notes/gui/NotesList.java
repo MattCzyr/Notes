@@ -7,10 +7,9 @@ import com.chaosthedude.notes.note.Note;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 
 @Environment(EnvType.CLIENT)
 public class NotesList extends EntryListWidget<NotesListEntry> {
@@ -40,12 +39,12 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 	
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderList(stack, mouseX, mouseY, partialTicks);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderList(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderList(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+	protected void renderList(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -56,11 +55,11 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 				int k1 = getRowWidth();
 				if (pseudoRenderSelection && isSelectedEntry(j)) {
 					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
-					Screen.fill(stack, insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+					context.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
 				int j2 = this.getRowLeft();
-				e.render(stack, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				e.render(context, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
 	}
@@ -72,8 +71,8 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderBackground(MatrixStack stack) {
-		parentScreen.renderBackground(stack);
+	protected void renderBackground(DrawContext context) {
+		parentScreen.renderBackground(context);
 	}
 	
 	protected int getRowBottom(int index) {

@@ -2,9 +2,9 @@ package com.chaosthedude.notes.gui;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -33,11 +33,11 @@ public class SelectNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		selectionList.render(stack, mouseX, mouseY, partialTicks);
-		drawCenteredTextWithShadow(stack, textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
-		super.render(stack, mouseX, mouseY, partialTicks);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(context);
+		selectionList.render(context, mouseX, mouseY, partialTicks);
+		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
+		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

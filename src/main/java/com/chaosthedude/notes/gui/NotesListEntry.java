@@ -8,10 +8,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -34,15 +34,15 @@ public class NotesListEntry extends AlwaysSelectedEntryListWidget.Entry<NotesLis
 	}
 
 	@Override
-	public void render(MatrixStack stack, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		client.textRenderer.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		client.textRenderer.draw(stack, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0x808080);
+	public void render(DrawContext context, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
+		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffff, false);
+		context.drawText(client.textRenderer, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0x808080, false);
 		if (note.isPinned()) {
-			client.textRenderer.draw(stack, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff);
+			context.drawText(client.textRenderer, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff, false);
 		}
-		client.textRenderer.draw(stack, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		client.textRenderer.draw(stack, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0x808080);
-		client.textRenderer.draw(stack, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0x808080);
+		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffff, false);
+		context.drawText(client.textRenderer, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0x808080, false);
+		context.drawText(client.textRenderer, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0x808080, false);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	

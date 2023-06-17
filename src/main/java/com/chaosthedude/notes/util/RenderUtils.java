@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 
@@ -40,9 +39,9 @@ public class RenderUtils {
 		return splitStringToHeight(splitStringToWidth(str, maxWidth), maxHeight);
 	}
 
-	public static void renderSplitString(MatrixStack stack, List<String> splitString, int x, int y, int color) {
+	public static void renderSplitString(DrawContext context, List<String> splitString, int x, int y, int color) {
 		for (String s : splitString) {
-			CLIENT.textRenderer.drawWithShadow(stack, s, x, y, color);
+			context.drawTextWithShadow(CLIENT.textRenderer, s, x, y, color);
 			y += CLIENT.textRenderer.fontHeight;
 		}
 	}
