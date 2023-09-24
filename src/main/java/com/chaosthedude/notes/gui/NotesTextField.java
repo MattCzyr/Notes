@@ -9,6 +9,7 @@ import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +34,7 @@ public class NotesTextField extends AbstractWidget {
 	private int maxVisibleLines;
 	private int wrapWidth;
 	private final Font fontRenderer;
-	private int cursorCounter;
+	private long focusedTime;
 	private boolean canLoseFocus = true;
 	private boolean isEnabled = true;
 	private int cursorPos;
@@ -220,7 +221,7 @@ public class NotesTextField extends AbstractWidget {
 	}
 
 	@Override
-	public boolean mouseScrolled(double par1, double par2, double par3) {
+	public boolean mouseScrolled(double par1, double par2, double par3, double par4) {
 		if (par3 < 0) {
 			incrementVisibleLines();
 			return true;
@@ -234,13 +235,9 @@ public class NotesTextField extends AbstractWidget {
 	@Override
 	public void setFocused(boolean focused) {
 		if (focused && !isFocused()) {
-			cursorCounter = 0;
+			focusedTime = Util.getMillis();
 		}
 		super.setFocused(focused);
-	}
-
-	public void tick() {
-		cursorCounter++;
 	}
 
 	public List<String> toLines() {
@@ -691,7 +688,7 @@ public class NotesTextField extends AbstractWidget {
 	}
 
 	private void renderCursor(GuiGraphics guiGraphics) {
-		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
+		final boolean shouldDisplayCursor = isFocused() && (Util.getMillis() - focusedTime) / 300L % 2L == 0L && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
 			final int renderCursorX = getX() + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));

@@ -55,9 +55,6 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void tick() {
-		noteTitleField.tick();
-		noteTextField.tick();
-
 		insertBiomeButton.active = insertChunkButton.active = insertCoordsButton.active = noteTextField.isFocused();
 	}
 	
@@ -97,7 +94,6 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(guiGraphics);
 		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffff);
 		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);

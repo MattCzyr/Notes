@@ -14,7 +14,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
-	private boolean pseudoRenderSelection = true;
 
 	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
 		super(mc, width, height, top, bottom, slotHeight);
@@ -52,7 +51,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 				int j1 = this.itemHeight - 4;
 				NotesListEntry e = this.getEntry(j);
 				int k1 = getRowWidth();
-				if (pseudoRenderSelection && isSelectedItem(j)) {
+				if (isSelectedItem(j)) {
 					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
 					guiGraphics.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
@@ -64,16 +63,6 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 	
 	@Override
-	public void setRenderSelection(boolean value) {
-		super.setRenderSelection(value);
-		pseudoRenderSelection = value;
-	}
-
-	@Override
-	protected void renderBackground(GuiGraphics guiGraphics) {
-		parentScreen.renderBackground(guiGraphics);
-	}
-	
 	protected int getRowBottom(int index) {
 		return getRowTop(index) + itemHeight;
 	}

@@ -1,5 +1,6 @@
 package com.chaosthedude.notes.gui;
 
+import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -19,8 +20,8 @@ public class NotesTitleField extends EditBox {
 	private int pseudoLineScrollOffset;
 	private int pseudoEnabledColor = 14737632;
 	private int pseudoDisabledColor = 7368816;
-	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
+	private long pseudoFocusedTime;
 
 	public NotesTitleField(Font font, int x, int y, int width, int height, Component label) {
 		super(font, x, y, width, height, label);
@@ -42,7 +43,7 @@ public class NotesTitleField extends EditBox {
 			String text = showLabel ? label.getString() : getValue();
 			String s = font.plainSubstrByWidth(text.substring(pseudoLineScrollOffset), getWidth());
 			boolean flag = j >= 0 && j <= s.length();
-			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
+			boolean flag1 = isFocused() && (Util.getMillis() - pseudoFocusedTime) / 300L % 2L == 0L && flag;
 			int l = pseudoEnableBackgroundDrawing ? getX() + 4 : getX();
 			int i1 = pseudoEnableBackgroundDrawing ? getY() + (getHeight() - 8) / 2 : getY();
 			int j1 = l;
@@ -106,7 +107,7 @@ public class NotesTitleField extends EditBox {
 	@Override
 	public void setFocused(boolean isFocused) {
 		if (isFocused && !isFocused()) {
-			pseudoCursorCounter = 0;
+			pseudoFocusedTime = Util.getMillis();
 		}
 		super.setFocused(isFocused);
 	}
@@ -121,12 +122,6 @@ public class NotesTitleField extends EditBox {
 	public void setMaxLength(int length) {
 		super.setMaxLength(length);
 		pseudoMaxStringLength = length;
-	}
-	
-	@Override
-	public void tick() {
-		super.tick();
-		pseudoCursorCounter++;
 	}
 	
 	@Override
