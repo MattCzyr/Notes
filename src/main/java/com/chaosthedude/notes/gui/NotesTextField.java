@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -35,7 +36,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private int maxVisibleLines;
 	private int wrapWidth;
 	private final TextRenderer fontRenderer;
-	private int cursorCounter;
+	private long focusedTime;
 	private boolean canLoseFocus = true;
 	private boolean isEnabled = true;
 	private int cursorPos;
@@ -222,7 +223,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	@Override
-	public boolean mouseScrolled(double par1, double par2, double par3) {
+	public boolean mouseScrolled(double par1, double par2, double par3, double par4) {
 		if (par3 < 0) {
 			incrementVisibleLines();
 			return true;
@@ -236,13 +237,9 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public void setFocused(boolean focused) {
 		if (focused && !isFocused()) {
-			cursorCounter = 0;
+			focusedTime = Util.getMeasuringTimeMs();
 		}
 		super.setFocused(focused);
-	}
-
-	public void tick() {
-		cursorCounter++;
 	}
 
 	public List<String> toLines() {
@@ -693,7 +690,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	private void renderCursor(DrawContext context) {
-		final boolean shouldDisplayCursor = isFocused() && cursorCounter / 6 % 2 == 0 && cursorIsValid();
+		final boolean shouldDisplayCursor = isFocused() && (Util.getMeasuringTimeMs() - focusedTime) / 300L % 2L == 0L && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
 			final int renderCursorX = getX() + margin + fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
