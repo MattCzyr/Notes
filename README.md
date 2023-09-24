@@ -2,7 +2,7 @@
 
 Notes is a clientside Minecraft mod that provides a fully functional notepad in-game.
 
-[Downloads and more information on Curse](https://minecraft.curseforge.com/projects/notes)
+Downloads and more information can be found on [CurseForge](https://minecraft.curseforge.com/projects/notes) and [Modrinth](https://modrinth.com/mod/notes).
 
 ## License
 
