@@ -1,11 +1,13 @@
 {
-    "_comment": "Notes - 言語ファイル",
-    "_comment": "日本語",
-    "_comment": "タイトル",
+    "_comment": "Notes - Language File",
+    "_comment": "JAPAN - JAPANESE",
+
+    "_comment": "TITLES",
     "notes.newNote": "新規作成",
     "notes.editNote": "編集",
     "notes.selectNote": "選択",
-    "_comment": "ボタン",
+
+    "_comment": "BUTTONS",
     "notes.biome": "バイオーム",
     "notes.chunk": "チャンク",
     "notes.coordinates": "座標",
@@ -22,14 +24,18 @@
     "notes.save": "保存",
     "notes.select": "選択",
     "notes.unpin": "解除",
+
     "_comment": "SCOPE",
     "notes.scope.local": "ローカル",
     "notes.scope.global": "グローバル",
     "notes.scope.remote": "リモート",
-    "_comment": "カテゴリ",
+
+    "_comment": "CATEGORIES",
     "key.category.notes": "ノート",
-    "_comment": "キー設定",
+
+    "_comment": "KEYBINDS",
     "key.openNotes": "ノートを開く",
+
     "_comment": "STRINGS",
     "notes.confirmDelete": "このノートを削除しますか?",
     "notes.lastModified": "最後の編集",
