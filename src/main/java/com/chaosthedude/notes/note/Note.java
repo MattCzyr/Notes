@@ -4,6 +4,12 @@ import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -177,13 +183,15 @@ public class Note {
 				saveFile.getParentFile().mkdirs();
 			}
 
-			writer = new BufferedWriter(new FileWriter(saveFile));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile), StandardCharsets.UTF_8));
 			writer.write(rawText);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				writer.close();
+				if (writer != null) {
+					writer.close();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -226,7 +234,7 @@ public class Note {
 		scope = Scope.getScopeFromParentFile(file.getParentFile());
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(file));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 			final StringBuilder builder = new StringBuilder();
 			String line = reader.readLine();
 			while (line != null) {
