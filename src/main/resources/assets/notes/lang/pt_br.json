@@ -1,0 +1,43 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "BRAZIL - PORTUGUESE",
+
+    "_comment": "TITLES",
+    "notes.newNote": "Nova nota",
+    "notes.editNote": "Editar nota",
+    "notes.selectNote": "Selecionar nota",
+
+    "_comment": "BUTTONS",
+    "notes.biome": "Bioma",
+    "notes.chunk": "Chunk",
+    "notes.coordinates": "Coordenadas",
+    "notes.copy": "Copiar",
+    "notes.delete": "Apagar",
+    "notes.edit": "Editar",
+    "notes.global": "Global",
+    "notes.insert": "Inserir",
+    "notes.new": "Nova",
+    "notes.off": "Off",
+    "notes.on": "On",
+    "notes.pin": "Fixar",
+    "notes.pinned": "Fixada",
+    "notes.save": "Salvar",
+    "notes.select": "Selecionar",
+    "notes.unpin": "Desfixar",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Local",
+    "notes.scope.global": "Global",
+    "notes.scope.remote": "Remota",
+
+    "_comment": "CATEGORIES",
+    "key.category.notes": "Notas",
+
+    "_comment": "KEYBINDS",
+    "key.openNotes": "Abrir notas",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Apagar esta nota?",
+    "notes.lastModified": "Última alterção",
+    "notes.saveAs": "Será salva como %s"
+}
