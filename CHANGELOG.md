@@ -1,5 +1,7 @@
 ## Version 1.3.0
-### Forge 1.20.2, 1.20.1, 1.20, 1.19.4
+### Forge 1.20.4, 1.20.3, 1.20.2, 1.20.1, 1.20, 1.19.4
+- Updated to Forge 1.20.4
+- Updated to Forge 1.20.3
 - Updated to Forge 1.20.2
 - Updated to Forge 1.20.1
 - Updated to Forge 1.20
@@ -10,7 +12,9 @@
 - Note body will no longer lose focus after clicking the insert biome, coordinates, or chunk buttons
 
 ## Version 2.1.0
-### Fabric 1.20.2, 1.20.1, 1.20, 1.19.4
+### Fabric 1.20.4, 1.20.3, 1.20.2, 1.20.1, 1.20, 1.19.4
+- Updated to Fabric 1.20.4
+- Updated to Fabric 1.20.3
 - Updated to Fabric 1.20.2
 - Updated to Fabric 1.20.1
 - Updated to Fabric 1.20
