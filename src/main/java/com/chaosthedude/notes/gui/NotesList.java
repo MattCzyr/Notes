@@ -15,8 +15,8 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
 
-	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int top, int bottom, int slotHeight) {
-		super(mc, width, height, top, bottom, slotHeight);
+	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int top, int bottom) {
+		super(mc, width, height, top, bottom);
 		this.parentScreen = notesScreen;
 		refreshList();
 	}
@@ -37,7 +37,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 	
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		renderList(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
@@ -47,12 +47,12 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
-			if (l >= y0 && k <= y1) {
+			if (l >= getY() && k <= getBottom()) {
 				int j1 = this.itemHeight - 4;
 				NotesListEntry e = this.getEntry(j);
 				int k1 = getRowWidth();
 				if (isSelectedItem(j)) {
-					final int insideLeft = x0 + width / 2 - getRowWidth() / 2 + 2;
+					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
 					guiGraphics.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 

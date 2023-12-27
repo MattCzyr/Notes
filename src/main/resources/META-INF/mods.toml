@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[48,)"
+loaderVersion="[49,)"
 issueTrackerURL="https://github.com/MattCzyr/Notes/issues"
 license="CC BY-NC-SA 4.0"
 [[mods]]
     modId="notes"
-    version="1.20.2-1.3.0-forge"
+    version="1.20.3-1.3.0-forge"
     displayName="Notes"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/notes"
     authors="ChaosTheDude"
@@ -15,12 +15,12 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.notes]]
     modId="forge"
     mandatory=true
-    versionRange="[48,)"
+    versionRange="[49,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.notes]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20.2]"
+    versionRange="[1.20.3]"
     ordering="NONE"
     side="BOTH"

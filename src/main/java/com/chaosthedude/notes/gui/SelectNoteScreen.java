@@ -28,7 +28,7 @@ public class SelectNoteScreen extends Screen {
 	@Override
 	public void init() {
 		setupButtons();
-		selectionList = new NotesList(this, minecraft, width + 110, height, 40, height - 64, 36);
+		selectionList = new NotesList(this, minecraft, width + 110, height, 40, 36);
 		addRenderableWidget(selectionList);
 	}
 
