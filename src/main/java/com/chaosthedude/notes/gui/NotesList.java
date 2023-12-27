@@ -16,8 +16,8 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
 
-	public NotesList(SelectNoteScreen notesScreen, MinecraftClient mc, int width, int height, int top, int bottom, int slotHeight) {
-		super(mc, width, height, top, bottom, slotHeight);
+	public NotesList(SelectNoteScreen notesScreen, MinecraftClient mc, int width, int height, int top, int bottom) {
+		super(mc, width, height, top, bottom);
 		this.parentScreen = notesScreen;
 		refreshList();
 	}
@@ -38,7 +38,7 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 	
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		renderList(context, mouseX, mouseY, partialTicks);
 	}
 
@@ -48,12 +48,12 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
 			int l = getRowBottom(j);
-			if (l >= top && k <= bottom) {
+			if (l >= getY() && k <= getBottom()) {
 				int j1 = this.itemHeight - 4;
 				NotesListEntry e = this.getEntry(j);
 				int k1 = getRowWidth();
 				if (isSelectedEntry(j)) {
-					final int insideLeft = left + width / 2 - getRowWidth() / 2 + 2;
+					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
 					context.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
 				}
 
@@ -85,8 +85,7 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder builder) {
-		
+	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
 	}
 
 }
