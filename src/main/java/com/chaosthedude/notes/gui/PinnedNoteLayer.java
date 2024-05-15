@@ -1,35 +1,27 @@
-package com.chaosthedude.notes.event;
+package com.chaosthedude.notes.gui;
 
 import java.util.List;
 
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
-import com.chaosthedude.notes.gui.SelectNoteScreen;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 
-@Mod.EventBusSubscriber(modid = Notes.MODID, value = Dist.CLIENT)
-public class TickHandler {
-
+@OnlyIn(Dist.CLIENT)
+public class PinnedNoteLayer implements IGuiOverlay {
+	
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	
-	@SubscribeEvent
-	public void onClientTick(ClientTickEvent event) {
-		if (KeybindHandler.OPEN_NOTES.isDown()) {
-			CLIENT.setScreen(new SelectNoteScreen(CLIENT.screen));
-		}
-	}
-
-	@SubscribeEvent
-	public void onRenderTick(RenderGuiEvent.Post event) {
+	@Override
+	public void render(ExtendedGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
 		if (!CLIENT.options.hideGui && (CLIENT.screen == null || CLIENT.screen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
@@ -56,10 +48,10 @@ public class TickHandler {
 				final int opacity = (int) (255.0F * CLIENT.options.textBackgroundOpacity().get());
 
 				// Render opaque background with padding of 5 on each side
-				event.getGuiGraphics().fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
+				guiGraphics.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 				
 				// Render note
-				RenderUtils.renderSplitString(event.getGuiGraphics(), lines, renderX, renderY, 0xffffff);
+				RenderUtils.renderSplitString(guiGraphics, lines, renderX, renderY, 0xffffff);
 			}
 		}
 	}

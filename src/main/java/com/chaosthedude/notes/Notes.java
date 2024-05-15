@@ -4,16 +4,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.chaosthedude.notes.config.ConfigHandler;
-import com.chaosthedude.notes.event.TickHandler;
+import com.chaosthedude.notes.event.NotesEvents;
 import com.chaosthedude.notes.note.Note;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.IExtensionPoint;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(Notes.MODID)
 public class Notes {
@@ -24,11 +24,13 @@ public class Notes {
 
 	public static Note pinnedNote;
 	
-	public Notes() {
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () ->  () -> {
-			MinecraftForge.EVENT_BUS.register(new TickHandler());
+	public Notes(IEventBus bus, Dist dist) {
+		if (dist == Dist.CLIENT) {
+			bus.addListener(NotesEvents::registerKeybinds);
+			bus.addListener(NotesEvents::registerOverlay);
+			NeoForge.EVENT_BUS.addListener(NotesEvents::onClientTick);
 			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-		});
+		}
 		
 		ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (a, b) -> true));
 	}

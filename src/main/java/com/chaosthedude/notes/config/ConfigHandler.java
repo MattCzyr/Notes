@@ -1,25 +1,25 @@
 package com.chaosthedude.notes.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigHandler {
 	
-	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 
 	public static final Client CLIENT = new Client(CLIENT_BUILDER);
 	
-	public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
+	public static final ModConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 	
 	public static class Client {
-		public final ForgeConfigSpec.ConfigValue<String> dateFormat;
-		public final ForgeConfigSpec.BooleanValue useInGameEditor;
-		public final ForgeConfigSpec.BooleanValue useInGameViewer;
-		public final ForgeConfigSpec.ConfigValue<String> pinnedNotePosition;
-		public final ForgeConfigSpec.DoubleValue pinnedWidthScale;
-		public final ForgeConfigSpec.DoubleValue pinnedHeightScale;
-		public final ForgeConfigSpec.BooleanValue wrapNote;
+		public final ModConfigSpec.ConfigValue<String> dateFormat;
+		public final ModConfigSpec.BooleanValue useInGameEditor;
+		public final ModConfigSpec.BooleanValue useInGameViewer;
+		public final ModConfigSpec.ConfigValue<String> pinnedNotePosition;
+		public final ModConfigSpec.DoubleValue pinnedWidthScale;
+		public final ModConfigSpec.DoubleValue pinnedHeightScale;
+		public final ModConfigSpec.BooleanValue wrapNote;
 		
-		Client(ForgeConfigSpec.Builder builder) {
+		Client(ModConfigSpec.Builder builder) {
 			String desc;
 			builder.push("Client");
 			

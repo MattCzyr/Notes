@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public final class StringUtils {
 
@@ -119,7 +119,7 @@ public final class StringUtils {
 	}
 	
 	private static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
-		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
+		return level.registryAccess().registry(Registries.BIOME);
 	}
 
 	private static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
