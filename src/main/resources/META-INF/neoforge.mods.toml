@@ -4,7 +4,7 @@ issueTrackerURL="https://github.com/MattCzyr/Notes/issues"
 license="CC BY-NC-SA 4.0"
 [[mods]]
     modId="notes"
-    version="1.20.4-3.0.0-neoforge"
+    version="1.20.6-3.0.0-neoforge"
     displayName="Notes"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/notes"
     authors="ChaosTheDude"
