@@ -53,10 +53,9 @@ public class DisplayNoteScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, -1);
 		displayNote(guiGraphics);
-
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	public void displayNote(GuiGraphics guiGraphics) {
