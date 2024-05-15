@@ -10,7 +10,6 @@ import com.chaosthedude.notes.util.WrappedString;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -152,7 +151,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public boolean charTyped(char typedChar, int p_charTyped_2_) {
 	      if (isFocused()) {
-	         if (SharedConstants.isValidChar(typedChar)) {
+	         if (isAllowedCharacter(typedChar)) {
 	            if (this.isEnabled) {
 	               insert(Character.toString(typedChar));
 	               updateVisibleLines();
@@ -345,6 +344,10 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
 		return keyCode == GLFW.GLFW_KEY_BACKSPACE && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
+	}
+	
+	public boolean isAllowedCharacter(char c) {
+		return c != 167 && c >= ' ' && c != 127;
 	}
 
 	public void insert(String newText) {

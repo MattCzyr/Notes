@@ -23,8 +23,8 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 	
 	@Override
-	protected int getScrollbarPositionX() {
-		return super.getScrollbarPositionX() + 20;
+	protected int getDefaultScrollbarX() {
+		return super.getDefaultScrollbarX() + 20;
 	}
 
 	@Override
@@ -44,6 +44,9 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 
 	@Override
 	protected void renderList(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		context.fill(getRowLeft() - 4, getY(), getRowLeft() + getRowWidth() + 4, getY() + getHeight() + 4, 255 / 2 << 24);
+		
+		enableScissor(context);
 		int i = getEntryCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -61,6 +64,12 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 				e.render(context, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
+		context.disableScissor();
+	}
+	
+	@Override
+	protected void enableScissor(DrawContext context) {
+		context.enableScissor(getX(), getY(), getRight(), getBottom());
 	}
 	
 	@Override

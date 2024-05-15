@@ -53,10 +53,9 @@ public class DisplayNoteScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
 		context.drawCenteredTextWithShadow(textRenderer, title.getString(), width / 2 + 60, 15, -1);
 		displayNote(context);
-
-		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	public void displayNote(DrawContext context) {

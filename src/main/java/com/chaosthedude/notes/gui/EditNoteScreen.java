@@ -92,9 +92,9 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
 		context.drawCenteredTextWithShadow(textRenderer, title.getString(), width / 2 + 60, 15, 0xffffff);
 		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-		super.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
