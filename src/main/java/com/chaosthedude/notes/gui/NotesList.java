@@ -38,11 +38,9 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	
 	@Override
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		renderList(guiGraphics, mouseX, mouseY, partialTicks);
-	}
-
-	@Override
-	protected void renderList(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		guiGraphics.fill(getRowLeft() - 4, getY(), getRowLeft() + getRowWidth() + 4, getY() + getHeight() + 4, 255 / 2 << 24);
+		
+		enableScissor(guiGraphics);
 		int i = getItemCount();
 		for (int j = 0; j < i; ++j) {
 			int k = getRowTop(j);
@@ -60,6 +58,12 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 				e.render(guiGraphics, j, k, j2, k1, j1, mouseX, mouseY, this.isMouseOver((double) mouseX, (double) mouseY) && Objects.equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
 			}
 		}
+		guiGraphics.disableScissor();
+	}
+	
+	@Override
+	protected void enableScissor(GuiGraphics guiGraphics) {
+		guiGraphics.enableScissor(getX(), getY(), getRight(), getBottom());
 	}
 	
 	@Override

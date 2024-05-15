@@ -34,9 +34,8 @@ public class SelectNoteScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		selectionList.render(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(font, I18n.get("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		guiGraphics.drawCenteredString(font, I18n.get("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
 	}
 
 	@Override

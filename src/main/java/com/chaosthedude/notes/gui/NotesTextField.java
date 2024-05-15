@@ -149,18 +149,18 @@ public class NotesTextField extends AbstractWidget {
 	
 	@Override
 	public boolean charTyped(char typedChar, int p_charTyped_2_) {
-	      if (isFocused()) {
-	         if (SharedConstants.isAllowedChatCharacter(typedChar)) {
-	            if (this.isEnabled) {
-	               insert(Character.toString(typedChar));
-	               updateVisibleLines();
-	            }
+		if (isFocused()) {
+    	  if (isAllowedCharacter(typedChar)) {
+        	 if (this.isEnabled) {
+            	insert(Character.toString(typedChar));
+               updateVisibleLines();
+            }
 
-	            return true;
-	         }
-	      }
-	      return false;
-	   }
+            return true;
+         }
+      }
+      return false;
+	}
 
 	@Override
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -343,6 +343,10 @@ public class NotesTextField extends AbstractWidget {
 
 	public boolean isKeyComboCtrlBack(int keyCode) {
 		return keyCode == GLFW.GLFW_KEY_BACKSPACE && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
+	}
+	
+	public boolean isAllowedCharacter(char c) {
+		return c != 167 && c >= ' ' && c != 127;
 	}
 
 	public void insert(String newText) {

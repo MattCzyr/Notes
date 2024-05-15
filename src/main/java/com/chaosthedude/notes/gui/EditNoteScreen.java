@@ -94,9 +94,9 @@ public class EditNoteScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffff);
 		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 
 	private void setupButtons() {
