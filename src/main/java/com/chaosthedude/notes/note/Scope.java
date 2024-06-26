@@ -7,6 +7,7 @@ import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.storage.LevelResource;
 
 public class Scope {
 
@@ -132,8 +133,7 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			String[] result = StringUtils.filterFileName(mc.getSingleplayerServer().getServerDirectory().getName()).split("~");
-			return StringUtils.filterFileName(result[result.length - 1]);
+			return StringUtils.filterFileName(mc.getSingleplayerServer().getWorldPath(LevelResource.ICON_FILE).getParent().getFileName().toString());
 		}
 
 		return null;
