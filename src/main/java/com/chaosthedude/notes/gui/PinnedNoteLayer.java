@@ -6,6 +6,7 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.util.RenderUtils;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
@@ -20,7 +21,7 @@ public class PinnedNoteLayer implements LayeredDraw.Layer {
 private static final Minecraft CLIENT = Minecraft.getInstance();
 	
 	@Override
-	public void render(GuiGraphics guiGraphics, float partialTick) {
+	public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		if (!CLIENT.options.hideGui && (CLIENT.screen == null || CLIENT.screen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
