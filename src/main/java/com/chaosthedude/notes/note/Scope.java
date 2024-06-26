@@ -7,6 +7,7 @@ import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.WorldSavePath;
 
 public class Scope {
 
@@ -132,8 +133,7 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			String[] result = StringUtils.filterFileName(CLIENT.getServer().getRunDirectory().getName()).split("~");
-			return StringUtils.filterFileName(result[result.length - 1]);
+			return StringUtils.filterFileName(CLIENT.getServer().getSavePath(WorldSavePath.ICON_PNG).getParent().getFileName().toString());
 		}
 
 		return null;
