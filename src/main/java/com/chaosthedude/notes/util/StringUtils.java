@@ -119,7 +119,7 @@ public final class StringUtils {
 	}
 	
 	private static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
-		return level.registryAccess().registry(Registries.BIOME);
+		return level.registryAccess().lookup(Registries.BIOME);
 	}
 
 	private static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
