@@ -73,7 +73,7 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 	
 	@Override
-	protected int getRowBottom(int index) {
+	public int getRowBottom(int index) {
 		return getRowTop(index) + itemHeight;
 	}
 

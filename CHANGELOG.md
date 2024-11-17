@@ -1,17 +1,20 @@
 ## Version 3.0.1
-### NeoForge 1.21.1, 1.21
+### NeoForge 1.21.3, 1.21.1, 1.21
+- Updated to NeoForge 1.21.3
 - Updated to NeoForge 1.21.1
 - Updated to NeoForge 1.21
 - Fixed bug that caused local notes to be saved globally
 
 ## Version 2.1.1
-### Fabric 1.21.1, 1.21
+### Fabric 1.21.3, 1.21.1, 1.21
+- Updated to Fabric 1.21.3
 - Updated to Fabric 1.21.1
 - Updated to Fabric 1.21
 - Fixed bug that caused local notes to be saved globally
 
 ## Version 1.3.1
-### Forge 1.21.1, 1.21
+### Forge 1.21.3, 1.21.1, 1.21
+- Updated to Forge 1.21.3
 - Updated to Forge 1.21.1
 - Updated to Forge 1.21
 - Fixed bug that caused local notes to be saved globally
