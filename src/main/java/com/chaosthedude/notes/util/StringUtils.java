@@ -119,7 +119,7 @@ public final class StringUtils {
 	}
 	
 	private static Optional<? extends Registry<Biome>> getBiomeRegistry(Level level) {
-		return level.registryAccess().registry(ForgeRegistries.Keys.BIOMES);
+		return level.registryAccess().lookup(ForgeRegistries.Keys.BIOMES);
 	}
 
 	private static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
