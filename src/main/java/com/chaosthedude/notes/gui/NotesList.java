@@ -23,8 +23,8 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	}
 	
 	@Override
-	protected int getDefaultScrollbarX() {
-		return super.getDefaultScrollbarX() + 20;
+	protected int getScrollbarX() {
+		return super.getScrollbarX() + 20;
 	}
 
 	@Override
