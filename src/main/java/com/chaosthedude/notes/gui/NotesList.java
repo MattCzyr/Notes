@@ -22,8 +22,8 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 	
 	@Override
-	protected int getScrollbarPosition() {
-		return super.getScrollbarPosition() + 20;
+	protected int scrollBarX() {
+		return super.scrollBarX() + 20;
 	}
 
 	@Override
