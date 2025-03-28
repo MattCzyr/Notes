@@ -1,0 +1,43 @@
+{
+    "_comment": "메모장 - 언어 파일",
+    "_comment": "대한민국/조선민주주의인민공화국 - 한국어/조선어",
+
+    "_comment": "제목",
+    "notes.newNote": "새 메모를 생성하세요",
+    "notes.editNote": "메모 편집창",
+    "notes.selectNote": "메모를 고르세요",
+
+    "_comment": "버튼",
+    "notes.biome": "생물 군계(바이옴)",
+    "notes.chunk": "청크",
+    "notes.coordinates": "좌표",
+    "notes.copy": "복사하기",
+    "notes.delete": "삭제하기",
+    "notes.edit": "편집하기",
+    "notes.global": "모든 세계에 표시",
+    "notes.insert": "삽입하기",
+    "notes.new": "생성하기",
+    "notes.off": "비활성화",
+    "notes.on": "활성화",
+    "notes.pin": "고정하기",
+    "notes.pinned": "고정됨",
+    "notes.save": "저장하기",
+    "notes.select": "선택하기",
+    "notes.unpin": "고정해제",
+
+    "_comment": "범위",
+    "notes.scope.local": "세계 내",
+    "notes.scope.global": "모든 세계",
+    "notes.scope.remote": "서버",
+
+    "_comment": "범주",
+    "key.category.notes": "메모장",
+
+    "_comment": "단축키",
+    "key.openNotes": "메모장 열기",
+
+    "_comment": "문자열",
+    "notes.confirmDelete": "이 메모를 삭제할까요?",
+    "notes.lastModified": "최근 수정일자: ",
+    "notes.saveAs": "%s로 저장됩니다."
+}
