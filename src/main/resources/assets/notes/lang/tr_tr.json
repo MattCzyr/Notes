@@ -1,0 +1,43 @@
+{
+    "_comment": "Nots - Language File",
+    "_comment": "TÜRKİYE - TURKISH",
+
+    "_comment": "TITLES",
+    "notes.newNot": "Yeni Not",
+    "notes.editNot": "Notu Düzenle",
+    "notes.selectNot": "Notu Seç",
+
+    "_comment": "BUTTONS",
+    "notes.biome": "Biyom",
+    "notes.chunk": "Yığın",
+    "notes.coordinates": "Koordinatlar",
+    "notes.copy": "Kopyala",
+    "notes.delete": "Sil",
+    "notes.edit": "Düzenle",
+    "notes.global": "Genel",
+    "notes.insert": "Ekle",
+    "notes.new": "Yeni",
+    "notes.off": "Kapalı",
+    "notes.on": "Açık",
+    "notes.pin": "Sabitle",
+    "notes.pinned": "Sabitlendi",
+    "notes.save": "Kaydet",
+    "notes.select": "Seç",
+    "notes.unpin": "Sabitlemeyi Kaldır",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Yerel",
+    "notes.scope.global": "Genel",
+    "notes.scope.remote": "Uzaktan",
+
+    "_comment": "CATEGORIES",
+    "key.category.notes": "Notlar",
+
+    "_comment": "KEYBINDS",
+    "key.openNots": "Notları Aç",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Bu notu silmek istediğine emin misin?",
+    "notes.lastModified": "Son Değişiklik",
+    "notes.saveAs": "%s olarak kaydedilecek"
+}
