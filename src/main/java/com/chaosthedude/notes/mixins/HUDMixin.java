@@ -61,7 +61,7 @@ public class HUDMixin {
 				context.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 
 				// Render note
-				RenderUtils.renderSplitString(context, lines, renderX, renderY, 0xffffff);
+				RenderUtils.renderSplitString(context, lines, renderX, renderY, 0xffffffff);
 			}
 		}
 	}

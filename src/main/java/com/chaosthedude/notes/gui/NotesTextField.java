@@ -12,6 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -40,8 +41,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private boolean isEnabled = true;
 	private int cursorPos;
 	private int selectionPos;
-	private int enabledColor = 14737632;
-	private int disabledColor = 7368816;
+	private int enabledColor = 0xffe0e0e0;
+	private int disabledColor = 0xff707070;
 
 	public NotesTextField(TextRenderer fontRenderer, int x, int y, int width, int height, int margin) {
 		super(x, y, width, height, Text.literal(""));
@@ -639,7 +640,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			startX = getX() + getWidth();
 		}
 
-		context.fill(RenderLayer.getGuiTextHighlight(), startX, startY, endX, endY, -16776961);
+		context.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, startX, startY, endX, endY, -16776961);
 	}
 
 	private void renderSelectionBox(DrawContext context, int y, int renderY, String line) {
@@ -684,7 +685,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			context.drawTextWithShadow(fontRenderer, line, getX() + margin, renderY, 14737632);
+			context.drawTextWithShadow(fontRenderer, line, getX() + margin, renderY, 0xffe0e0e0);
 			renderSelectionBox(context, y, renderY, line);
 
 			renderY += fontRenderer.fontHeight;

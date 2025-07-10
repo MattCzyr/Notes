@@ -3,7 +3,6 @@ package com.chaosthedude.notes.gui;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.NotesConfig;
 import com.chaosthedude.notes.note.Note;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -35,15 +34,14 @@ public class NotesListEntry extends AlwaysSelectedEntryListWidget.Entry<NotesLis
 
 	@Override
 	public void render(DrawContext context, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffff, false);
-		context.drawText(client.textRenderer, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0x808080, false);
+		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff, false);
+		context.drawText(client.textRenderer, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0xff808080, false);
 		if (note.isPinned()) {
-			context.drawText(client.textRenderer, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffff, false);
+			context.drawText(client.textRenderer, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffffff, false);
 		}
-		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffff, false);
-		context.drawText(client.textRenderer, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0x808080, false);
-		context.drawText(client.textRenderer, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0x808080, false);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff, false);
+		context.drawText(client.textRenderer, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0xff808080, false);
+		context.drawText(client.textRenderer, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0xff808080, false);
 	}
 	
 	@Override

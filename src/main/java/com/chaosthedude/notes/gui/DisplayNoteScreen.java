@@ -60,7 +60,7 @@ public class DisplayNoteScreen extends Screen {
 
 	public void displayNote(DrawContext context) {
 		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
-		RenderUtils.renderSplitString(context, lines, 160, 40, 0xFFFFFF);
+		RenderUtils.renderSplitString(context, lines, 160, 40, 0xffffffff);
 	}
 
 	private void setupButtons() {

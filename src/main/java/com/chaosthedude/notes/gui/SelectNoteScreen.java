@@ -35,7 +35,7 @@ public class SelectNoteScreen extends Screen {
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		super.render(context, mouseX, mouseY, partialTicks);
-		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffff);
+		context.drawCenteredTextWithShadow(textRenderer, I18n.translate("notes.selectNote"), width / 2 + 60, 15, 0xffffffff);
 	}
 
 	@Override
