@@ -9,14 +9,11 @@ import com.chaosthedude.notes.util.RenderUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-@OnlyIn(Dist.CLIENT)
-public class PinnedNoteLayer implements LayeredDraw.Layer {
+public class PinnedNoteLayer implements GuiLayer {
 	
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	
@@ -51,7 +48,7 @@ public class PinnedNoteLayer implements LayeredDraw.Layer {
 				guiGraphics.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 				
 				// Render note
-				RenderUtils.renderSplitString(guiGraphics, lines, renderX, renderY, 0xffffff);
+				RenderUtils.renderSplitString(guiGraphics, lines, renderX, renderY, 0xffffffff);
 			}
 		}
 	}

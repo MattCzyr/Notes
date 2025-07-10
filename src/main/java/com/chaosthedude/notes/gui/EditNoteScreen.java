@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class EditNoteScreen extends Screen {
 
 	private final Screen parentScreen;
@@ -95,8 +94,8 @@ public class EditNoteScreen extends Screen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffff);
-		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0x808080);
+		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffffff);
+		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0xff808080);
 	}
 
 	private void setupButtons() {

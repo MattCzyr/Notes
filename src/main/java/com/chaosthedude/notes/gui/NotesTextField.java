@@ -15,13 +15,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class NotesTextField extends AbstractWidget {
 
 	private static final Minecraft mc = Minecraft.getInstance();
@@ -38,8 +35,8 @@ public class NotesTextField extends AbstractWidget {
 	private boolean isEnabled = true;
 	private int cursorPos;
 	private int selectionPos;
-	private int enabledColor = 14737632;
-	private int disabledColor = 7368816;
+	private int enabledColor = 0xffe0e0e0;
+	private int disabledColor = 0xff707070;
 
 	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
 		super(x, y, width, height, Component.literal(""));
@@ -637,7 +634,7 @@ public class NotesTextField extends AbstractWidget {
 			startX = getX() + getWidth();
 		}
 
-		guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
+		guiGraphics.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, startX, startY, endX, endY, -16776961);
 	}
 
 	private void renderSelectionBox(GuiGraphics guiGraphics, int y, int renderY, String line) {
@@ -682,7 +679,7 @@ public class NotesTextField extends AbstractWidget {
 		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			guiGraphics.drawString(fontRenderer, line, getX() + margin, renderY, 14737632, true);
+			guiGraphics.drawString(fontRenderer, line, getX() + margin, renderY, 0xffe0e0e0, true);
 			renderSelectionBox(guiGraphics, y, renderY, line);
 
 			renderY += fontRenderer.lineHeight;

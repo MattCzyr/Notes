@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;

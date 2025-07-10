@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class DisplayNoteScreen extends Screen {
 
 	private final Screen parentScreen;
@@ -60,7 +59,7 @@ public class DisplayNoteScreen extends Screen {
 
 	public void displayNote(GuiGraphics guiGraphics) {
 		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
-		RenderUtils.renderSplitString(guiGraphics, lines, 160, 40, 0xFFFFFF);
+		RenderUtils.renderSplitString(guiGraphics, lines, 160, 40, 0xffffffff);
 	}
 
 	private void setupButtons() {

@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -17,10 +16,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
@@ -39,15 +35,14 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		guiGraphics.drawString(mc.font, note.getScope().format(), par3 + 4 + mc.font.width(note.getTitle()), par2 + 1, 0x808080);
+		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, note.getScope().format(), par3 + 4 + mc.font.width(note.getTitle()), par2 + 1, 0xff808080);
 		if (note.isPinned()) {
-			guiGraphics.drawString(mc.font, I18n.get("notes.pinned"), par3 + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, par2 + 1, 0xffffff);
+			guiGraphics.drawString(mc.font, I18n.get("notes.pinned"), par3 + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, par2 + 1, 0xffffffff);
 		}
-		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffff);
-		guiGraphics.drawString(mc.font, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.font.lineHeight + 3, 0x808080);
-		guiGraphics.drawString(mc.font, note.getLastModifiedString(), par3 + 1, par2 + mc.font.lineHeight + 14, 0x808080);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.font.lineHeight + 3, 0xff808080);
+		guiGraphics.drawString(mc.font, note.getLastModifiedString(), par3 + 1, par2 + mc.font.lineHeight + 14, 0xff808080);
 	}
 	
 	@Override
