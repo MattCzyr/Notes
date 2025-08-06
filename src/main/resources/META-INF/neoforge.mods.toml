@@ -3,7 +3,7 @@ license="CC BY-NC-SA 4.0"
 
 [[mods]]
     modId="notes"
-    version="1.21.7-3.0.1-neoforge"
+    version="1.21.8-3.0.1-neoforge"
     displayName="Notes"
     displayURL="https://www.curseforge.com/minecraft/mc-mods/notes"
     authors="ChaosTheDude"
