@@ -14,7 +14,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -48,63 +50,63 @@ public class NotesTextField extends AbstractWidget {
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
-
+	
 	@Override
-	public boolean keyPressed(int keyCode, int par2, int par3) {
-		if (Screen.isCopy(keyCode)) {
+	public boolean keyPressed(KeyEvent event) {
+		if (event.isCopy()) {
 			mc.keyboardHandler.setClipboard(getSelectedText());
-		} else if (Screen.isCut(keyCode)) {
+		} else if (event.isCut()) {
 			if (getSelectionDifference() != 0) {
 				mc.keyboardHandler.setClipboard(getSelectedText());
 				deleteSelectedText();
 			}
-		} else if (Screen.isPaste(keyCode)) {
+		} else if (event.isPaste()) {
 			insert(mc.keyboardHandler.getClipboard());
-		} else if (isKeyComboCtrlBack(keyCode)) {
+		} else if (isKeyComboCtrlBack(event)) {
 			deletePrevWord();
 		} else {
-			if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+			if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deletePrev();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_DELETE) {
+			} else if (event.key() == GLFW.GLFW_KEY_DELETE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deleteNext();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_TAB) {
+			} else if (event.key() == GLFW.GLFW_KEY_TAB) {
 				insert("    ");
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+			} else if (event.key() == GLFW.GLFW_KEY_KP_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_ENTER) {
+			} else if (event.key() == GLFW.GLFW_KEY_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_HOME) {
-				updateSelectionPos();
+			} else if (event.key() == GLFW.GLFW_KEY_HOME) {
+				updateSelectionPos(event);
 				setCursorPos(0);
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_END) {
-				updateSelectionPos();
+			} else if (event.key() == GLFW.GLFW_KEY_END) {
+				updateSelectionPos(event);
 				setCursorPos(text.length());
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_UP) {
-				updateSelectionPos();
+			} else if (event.key() == GLFW.GLFW_KEY_UP) {
+				updateSelectionPos(event);
 				moveUp();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_DOWN) {
-				updateSelectionPos();
+			} else if (event.key() == GLFW.GLFW_KEY_DOWN) {
+				updateSelectionPos(event);
 				moveDown();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_LEFT) {
+			} else if (event.key() == GLFW.GLFW_KEY_LEFT) {
 				boolean moveLeft = true;
-				if (Screen.hasShiftDown()) {
+				if (event.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -120,9 +122,9 @@ public class NotesTextField extends AbstractWidget {
 					moveLeft();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
+			} else if (event.key() == GLFW.GLFW_KEY_RIGHT) {
 				boolean moveRight = true;
-				if (Screen.hasShiftDown()) {
+				if (event.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -144,11 +146,11 @@ public class NotesTextField extends AbstractWidget {
 	}
 	
 	@Override
-	public boolean charTyped(char typedChar, int p_charTyped_2_) {
+	public boolean charTyped(CharacterEvent event) {
 	      if (isFocused()) {
-	         if (isAllowedCharacter(typedChar)) {
+	         if (event.isAllowedChatCharacter()) {
 	            if (this.isEnabled) {
-	               insert(Character.toString(typedChar));
+	               insert(event.codepointAsString());
 	               updateVisibleLines();
 	            }
 
@@ -169,49 +171,45 @@ public class NotesTextField extends AbstractWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		final boolean isWithinBounds = isWithinBounds(event.x(), event.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			if (mouseButton == 0) {
-				final int relativeMouseX = (int) mouseX - getX() - margin;
-				final int relativeMouseY = (int) mouseY - getY() - margin;
-				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) event.x() - getX() - margin;
+			final int relativeMouseY = (int) event.y() - getY() - margin;
+			final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
-				setCursorPos(countCharacters(y) + x);
-				return true;
-			}
+			setCursorPos(countCharacters(y) + x);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int state) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+	public boolean mouseReleased(MouseButtonEvent event) {
+		final boolean isWithinBounds = isWithinBounds(event.x(), event.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			if (state == 0) {
-				final int relativeMouseX = (int) mouseX - getX() - margin;
-				final int relativeMouseY = (int) mouseY - getY() - margin;
-				final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) event.x() - getX() - margin;
+			final int relativeMouseY = (int) event.y() - getY() - margin;
+			final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
-				final int pos = Mth.clamp(countCharacters(y) + x, 0, text.length());
-				if (pos != cursorPos) {
-					selectionPos = cursorPos;
-					setCursorPos(pos);
-				} else {
-					selectionPos = -1;
-				}
-				return true;
+			final int pos = Mth.clamp(countCharacters(y) + x, 0, text.length());
+			if (pos != cursorPos) {
+				selectionPos = cursorPos;
+				setCursorPos(pos);
+			} else {
+				selectionPos = -1;
 			}
+			return true;
 		}
 		return false;
 	}
@@ -337,12 +335,8 @@ public class NotesTextField extends AbstractWidget {
 		return toLines().size() > getVisibleLineCount();
 	}
 
-	public boolean isKeyComboCtrlBack(int keyCode) {
-		return keyCode == GLFW.GLFW_KEY_BACKSPACE && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
-	}
-	
-	public boolean isAllowedCharacter(char c) {
-		return c != 167 && c >= ' ' && c != 127;
+	public boolean isKeyComboCtrlBack(KeyEvent event) {
+		return event.key() == GLFW.GLFW_KEY_BACKSPACE && event.hasControlDown() && !event.hasShiftDown() && !event.hasAltDown();
 	}
 
 	public void insert(String newText) {
@@ -563,8 +557,8 @@ public class NotesTextField extends AbstractWidget {
 		}
 	}
 
-	private void updateSelectionPos() {
-		if (Screen.hasShiftDown()) {
+	private void updateSelectionPos(KeyEvent event) {
+		if (event.hasShiftDown()) {
 			if (selectionPos < 0) {
 				selectionPos = cursorPos;
 			}

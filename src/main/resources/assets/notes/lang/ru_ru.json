@@ -31,7 +31,7 @@
     "notes.scope.remote": "Удаленно",
 
     "_comment": "CONTROLS - CATEGORIES",
-    "key.category.notes": "Заметки",
+    "key.category.notes.keys": "Заметки",
 
     "_comment": "CONTROLS - KEYBINDS",
     "key.openNotes": "Открыть заметки",

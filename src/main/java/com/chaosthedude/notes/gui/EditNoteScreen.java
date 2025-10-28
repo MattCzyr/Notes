@@ -10,10 +10,10 @@ import com.chaosthedude.notes.util.StringUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class EditNoteScreen extends Screen {
 
@@ -58,8 +58,8 @@ public class EditNoteScreen extends Screen {
 	}
 	
 	@Override
-	public boolean mouseClicked(double x, double y, int button) {
-		boolean ret = super.mouseClicked(x, y, button);
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		boolean ret = super.mouseClicked(event, doubleClick);
 		if (setTextFieldFocused) {
 			// Change focus back to the text field after clicking the biome, coords, or chunk button
 			noteTextField.setFocused(true);
@@ -70,15 +70,8 @@ public class EditNoteScreen extends Screen {
 	}
 	
 	@Override
-	public boolean keyPressed(int keyCode, int par2, int par3) {
-		boolean ret = super.keyPressed(keyCode, par2, par3);
-		updateNote();
-		return ret;
-	}
-	
-	@Override
-	public boolean keyReleased(int keyCode, int par2, int par3) {
-		boolean ret = super.keyReleased(keyCode, par2, par3);
+	public boolean keyPressed(KeyEvent event) {
+		boolean ret = super.keyPressed(event);
 		updateNote();
 		return ret;
 	}

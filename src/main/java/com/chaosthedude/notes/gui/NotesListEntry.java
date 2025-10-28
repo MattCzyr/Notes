@@ -7,10 +7,10 @@ import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.ConfigHandler;
 import com.chaosthedude.notes.note.Note;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,6 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	private final SelectNoteScreen parentScreen;
 	private final Note note;
 	private final NotesList notesList;
-	private long lastClickTime;
 
 	public NotesListEntry(NotesList notesList, Note note) {
 		this.notesList = notesList;
@@ -32,31 +31,26 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 		parentScreen = notesList.getParentScreen();
 		mc = Minecraft.getInstance();
 	}
-
+	
 	@Override
-	public void render(GuiGraphics guiGraphics, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff);
-		guiGraphics.drawString(mc.font, note.getScope().format(), par3 + 4 + mc.font.width(note.getTitle()), par2 + 1, 0xff808080);
+	public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+		guiGraphics.drawString(mc.font, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, note.getScope().format(), getX() + 4 + mc.font.width(note.getTitle()), getY() + 1, 0xff808080);
 		if (note.isPinned()) {
-			guiGraphics.drawString(mc.font, I18n.get("notes.pinned"), par3 + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, par2 + 1, 0xffffffff);
+			guiGraphics.drawString(mc.font, I18n.get("notes.pinned"), getX() + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, getY() + 1, 0xffffffff);
 		}
-		guiGraphics.drawString(mc.font, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff);
-		guiGraphics.drawString(mc.font, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + mc.font.lineHeight + 3, 0xff808080);
-		guiGraphics.drawString(mc.font, note.getLastModifiedString(), par3 + 1, par2 + mc.font.lineHeight + 14, 0xff808080);
+		guiGraphics.drawString(mc.font, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff);
+		guiGraphics.drawString(mc.font, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), getX() + 1, getY() + mc.font.lineHeight + 3, 0xff808080);
+		guiGraphics.drawString(mc.font, note.getLastModifiedString(), getX() + 1, getY() + mc.font.lineHeight + 14, 0xff808080);
 	}
 	
 	@Override
-	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int button) {
-		if (button == 0) {
-			notesList.selectNote(this);
-			if (Util.getMillis() - lastClickTime < 250L) {
-				loadNote();
-				return true;
-			}
-
-			lastClickTime = Util.getMillis();
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		notesList.selectNote(this);
+		if (doubleClick) {
+			loadNote();
 		}
-		return false;
+		return true;
 	}
 
 	public void editNote() {

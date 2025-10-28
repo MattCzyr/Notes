@@ -18,13 +18,15 @@ public class NotesEvents {
 	
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	
-	public  static final KeyMapping OPEN_NOTES = new KeyMapping("key.openNotes", GLFW.GLFW_KEY_N, "key.category.notes");
+	public static final KeyMapping.Category NOTES_CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(Notes.MODID, "keys"));
+	public  static final KeyMapping OPEN_NOTES = new KeyMapping("key.openNotes", GLFW.GLFW_KEY_N, NOTES_CATEGORY);
 
 	public static void registerOverlay(RegisterGuiLayersEvent event) {
 		event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, ResourceLocation.fromNamespaceAndPath(Notes.MODID, "pinned_note"), new PinnedNoteLayer());
 	}
 
     public static void registerKeybinds(RegisterKeyMappingsEvent event) {
+    	event.registerCategory(NOTES_CATEGORY);
         event.register(OPEN_NOTES);
     }
 

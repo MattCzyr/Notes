@@ -31,7 +31,7 @@
     "notes.scope.remote": "서버",
 
     "_comment": "범주",
-    "key.category.notes": "메모장",
+    "key.category.notes.keys": "메모장",
 
     "_comment": "단축키",
     "key.openNotes": "메모장 열기",

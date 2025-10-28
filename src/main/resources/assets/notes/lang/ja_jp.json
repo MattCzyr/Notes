@@ -31,7 +31,7 @@
     "notes.scope.remote": "リモート",
 
     "_comment": "CATEGORIES",
-    "key.category.notes": "ノート",
+    "key.category.notes.keys": "ノート",
 
     "_comment": "KEYBINDS",
     "key.openNotes": "ノートを開く",

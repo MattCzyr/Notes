@@ -24,7 +24,7 @@ public class Notes {
 	public static Note pinnedNote;
 	
 	public Notes(ModContainer modContainer) {
-		if (FMLEnvironment.dist == Dist.CLIENT) {
+		if (FMLEnvironment.getDist() == Dist.CLIENT) {
 			modContainer.getEventBus().addListener(NotesEvents::registerKeybinds);
 			modContainer.getEventBus().addListener(NotesEvents::registerOverlay);
 			NeoForge.EVENT_BUS.addListener(NotesEvents::onClientTick);
