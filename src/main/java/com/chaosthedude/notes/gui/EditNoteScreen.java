@@ -7,9 +7,11 @@ import com.chaosthedude.notes.util.StringUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 
@@ -57,8 +59,8 @@ public class EditNoteScreen extends Screen {
 	}
 	
 	@Override
-	public boolean mouseClicked(double x, double y, int button) {
-		boolean ret = super.mouseClicked(x, y, button);
+	public boolean mouseClicked(Click click, boolean doubleClick) {
+		boolean ret = super.mouseClicked(click, doubleClick);
 		if (setTextFieldFocused) {
 			// Change focus back to the text field after clicking the biome, coords, or chunk button
 			noteTextField.setFocused(true);
@@ -69,15 +71,8 @@ public class EditNoteScreen extends Screen {
 	}
 	
 	@Override
-	public boolean keyPressed(int keyCode, int par2, int par3) {
-		boolean ret = super.keyPressed(keyCode, par2, par3);
-		updateNote();
-		return ret;
-	}
-	
-	@Override
-	public boolean keyReleased(int keyCode, int par2, int par3) {
-		boolean ret = super.keyReleased(keyCode, par2, par3);
+	public boolean keyPressed(KeyInput input) {
+		boolean ret = super.keyPressed(input);
 		updateNote();
 		return ret;
 	}

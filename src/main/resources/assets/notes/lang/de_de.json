@@ -31,7 +31,7 @@
     "notes.scope.remote": "Remote",
 
     "_comment": "CONTROLS - CATEGORIES",
-    "key.category.notes": "Notizen",
+    "key.category.notes.keys": "Notizen",
 
     "_comment": "CONTROLS - KEYBINDS",
     "key.openNotes": "Notizen öffnen",

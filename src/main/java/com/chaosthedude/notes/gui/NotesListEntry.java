@@ -7,6 +7,7 @@ import com.chaosthedude.notes.note.Note;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -23,7 +24,6 @@ public class NotesListEntry extends AlwaysSelectedEntryListWidget.Entry<NotesLis
 	private final SelectNoteScreen parentScreen;
 	private final Note note;
 	private final NotesList notesList;
-	private long lastClickTime;
 
 	public NotesListEntry(NotesList notesList, Note note) {
 		this.notesList = notesList;
@@ -31,31 +31,26 @@ public class NotesListEntry extends AlwaysSelectedEntryListWidget.Entry<NotesLis
 		parentScreen = notesList.getParentScreen();
 		client = MinecraftClient.getInstance();
 	}
-
+	
 	@Override
-	public void render(DrawContext context, int par1, int par2, int par3, int par4, int par5, int par6, int par7, boolean par8, float par9) {
-		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff, false);
-		context.drawText(client.textRenderer, note.getScope().format(), par3 + 4 + client.textRenderer.getWidth(note.getTitle()), par2 + 1, 0xff808080, false);
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+		context.drawText(client.textRenderer, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff, false);
+		context.drawText(client.textRenderer, note.getScope().format(), getX() + 4 + client.textRenderer.getWidth(note.getTitle()), getY() + 1, 0xff808080, false);
 		if (note.isPinned()) {
-			context.drawText(client.textRenderer, I18n.translate("notes.pinned"), par3 + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, par2 + 1, 0xffffffff, false);
+			context.drawText(client.textRenderer, I18n.translate("notes.pinned"), getX() + 4 + client.textRenderer.getWidth(note.getTitle()) + client.textRenderer.getWidth(note.getScope().format()) + 4, getY() + 1, 0xffffffff, false);
 		}
-		context.drawText(client.textRenderer, note.getTitle(), par3 + 1, par2 + 1, 0xffffffff, false);
-		context.drawText(client.textRenderer, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), par3 + 1, par2 + client.textRenderer.fontHeight + 3, 0xff808080, false);
-		context.drawText(client.textRenderer, note.getLastModifiedString(), par3 + 1, par2 + client.textRenderer.fontHeight + 14, 0xff808080, false);
+		context.drawText(client.textRenderer, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff, false);
+		context.drawText(client.textRenderer, note.getPreview(MathHelper.floor(notesList.getRowWidth() * 0.9)), getX() + 1, getY() + client.textRenderer.fontHeight + 3, 0xff808080, false);
+		context.drawText(client.textRenderer, note.getLastModifiedString(), getX() + 1, getY() + client.textRenderer.fontHeight + 14, 0xff808080, false);
 	}
 	
 	@Override
-	public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int button) {
-		if (button == 0) {
-			notesList.selectNote(this);
-			if (Util.getMeasuringTimeMs() - lastClickTime < 250L) {
-				loadNote();
-				return true;
-			}
-
-			lastClickTime = Util.getMeasuringTimeMs();
+	public boolean mouseClicked(Click click, boolean doubleClick) {
+		notesList.selectNote(this);
+		if (doubleClick) {
+			loadNote();
 		}
-		return false;
+		return true;
 	}
 
 	public void editNote() {

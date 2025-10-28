@@ -12,6 +12,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.util.Identifier;
 
 public class Notes implements ClientModInitializer {
 
@@ -27,7 +28,7 @@ public class Notes implements ClientModInitializer {
 	public void onInitializeClient() {
 		NotesConfig.load();
 		
-		openNotes = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.openNotes", GLFW.GLFW_KEY_N, "key.category.notes"));
+		openNotes = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.openNotes", GLFW.GLFW_KEY_N, new KeyBinding.Category(Identifier.of(MODID, "keys"))));
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 		    while (openNotes.wasPressed()) {

@@ -13,13 +13,15 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -54,63 +56,63 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
-
+	
 	@Override
-	public boolean keyPressed(int keyCode, int par2, int par3) {
-		if (Screen.isCopy(keyCode)) {
+	public boolean keyPressed(KeyInput input) {
+		if (input.isCopy()) {
 			CLIENT.keyboard.setClipboard(getSelectedText());
-		} else if (Screen.isCut(keyCode)) {
+		} else if (input.isCut()) {
 			if (getSelectionDifference() != 0) {
 				CLIENT.keyboard.setClipboard(getSelectedText());
 				deleteSelectedText();
 			}
-		} else if (Screen.isPaste(keyCode)) {
+		} else if (input.isPaste()) {
 			insert(CLIENT.keyboard.getClipboard());
-		} else if (isKeyComboCtrlBack(keyCode)) {
+		} else if (isKeyComboCtrlBack(input)) {
 			deletePrevWord();
 		} else {
-			if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+			if (input.getKeycode() == GLFW.GLFW_KEY_BACKSPACE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deletePrev();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_DELETE) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_DELETE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deleteNext();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_TAB) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_TAB) {
 				insert("    ");
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_KP_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_ENTER) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_HOME) {
-				updateSelectionPos();
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_HOME) {
+				updateSelectionPos(input);
 				setCursorPos(0);
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_END) {
-				updateSelectionPos();
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_END) {
+				updateSelectionPos(input);
 				setCursorPos(text.length());
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_UP) {
-				updateSelectionPos();
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_UP) {
+				updateSelectionPos(input);
 				moveUp();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_DOWN) {
-				updateSelectionPos();
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_DOWN) {
+				updateSelectionPos(input);
 				moveDown();
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_LEFT) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_LEFT) {
 				boolean moveLeft = true;
-				if (Screen.hasShiftDown()) {
+				if (input.hasShift()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -126,9 +128,9 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 					moveLeft();
 				}
 				return true;
-			} else if (keyCode == GLFW.GLFW_KEY_RIGHT) {
+			} else if (input.getKeycode() == GLFW.GLFW_KEY_RIGHT) {
 				boolean moveRight = true;
-				if (Screen.hasShiftDown()) {
+				if (input.hasShift()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -150,11 +152,11 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 	
 	@Override
-	public boolean charTyped(char typedChar, int p_charTyped_2_) {
-	      if (isFocused()) {
-	         if (isAllowedCharacter(typedChar)) {
+	public boolean charTyped(CharInput input) {
+		if (isFocused()) {
+	         if (input.isValidChar()) {
 	            if (this.isEnabled) {
-	               insert(Character.toString(typedChar));
+	               insert(input.asString());
 	               updateVisibleLines();
 	            }
 
@@ -162,7 +164,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	         }
 	      }
 	      return false;
-	   }
+	}
 
 	@Override
 	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
@@ -173,51 +175,47 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		renderCursor(context);
 		renderScrollBar(context);
 	}
-
+	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+	public boolean mouseClicked(Click click, boolean doubled) {
+		final boolean isWithinBounds = isWithinBounds(click.x(), click.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			if (mouseButton == 0) {
-				final int relativeMouseX = (int) mouseX - getX() - margin;
-				final int relativeMouseY = (int) mouseY - getY() - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) click.x() - getX() - margin;
+			final int relativeMouseY = (int) click.y() - getY() - margin;
+			final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
 
-				setCursorPos(countCharacters(y) + x);
-				return true;
-			}
+			setCursorPos(countCharacters(y) + x);
+			return true;
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int state) {
-		final boolean isWithinBounds = isWithinBounds(mouseX, mouseY);
+	public boolean mouseReleased(Click click) {
+		final boolean isWithinBounds = isWithinBounds(click.x(), click.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			if (state == 0) {
-				final int relativeMouseX = (int) mouseX - getX() - margin;
-				final int relativeMouseY = (int) mouseY - getY() - margin;
-				final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-				final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) click.x() - getX() - margin;
+			final int relativeMouseY = (int) click.y() - getY() - margin;
+			final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
 
-				final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
-				if (pos != cursorPos) {
-					selectionPos = cursorPos;
-					setCursorPos(pos);
-				} else {
-					selectionPos = -1;
-				}
-				return true;
+			final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+			if (pos != cursorPos) {
+				selectionPos = cursorPos;
+				setCursorPos(pos);
+			} else {
+				selectionPos = -1;
 			}
+			return true;
 		}
 		return false;
 	}
@@ -343,12 +341,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		return toLines().size() > getVisibleLineCount();
 	}
 
-	public boolean isKeyComboCtrlBack(int keyCode) {
-		return keyCode == GLFW.GLFW_KEY_BACKSPACE && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
-	}
-	
-	public boolean isAllowedCharacter(char c) {
-		return c != 167 && c >= ' ' && c != 127;
+	public boolean isKeyComboCtrlBack(KeyInput input) {
+		return input.getKeycode() == GLFW.GLFW_KEY_BACKSPACE && input.hasCtrl() && !input.hasShift() && !input.hasAlt();
 	}
 
 	public void insert(String newText) {
@@ -569,8 +563,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		}
 	}
 
-	private void updateSelectionPos() {
-		if (Screen.hasShiftDown()) {
+	private void updateSelectionPos(KeyInput input) {
+		if (input.hasShift()) {
 			if (selectionPos < 0) {
 				selectionPos = cursorPos;
 			}

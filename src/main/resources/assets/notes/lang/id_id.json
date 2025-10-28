@@ -31,7 +31,7 @@
     "notes.scope.remote": "Remote",
 
     "_comment": "CATEGORIES",
-    "key.category.notes": "Semua Catatan",
+    "key.category.notes.keys": "Semua Catatan",
 
     "_comment": "KEYBINDS",
     "key.openNotes": "Buka Semua Catatan",

@@ -31,11 +31,6 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 	public int getRowWidth() {
 		return super.getRowWidth() + 50;
 	}
-
-	@Override
-	protected boolean isSelectedEntry(int index) {
-		return index >= 0 && index < children().size() ? children().get(index).equals(getSelectedOrNull()) : false;
-	}
 	
 	@Override
 	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
@@ -47,21 +42,13 @@ public class NotesList extends EntryListWidget<NotesListEntry> {
 		context.fill(getRowLeft() - 4, getY(), getRowLeft() + getRowWidth() + 4, getY() + getHeight() + 4, 255 / 2 << 24);
 		
 		enableScissor(context);
-		int i = getEntryCount();
-		for (int j = 0; j < i; ++j) {
-			int k = getRowTop(j);
-			int l = getRowBottom(j);
-			if (l >= getY() && k <= getBottom()) {
-				int j1 = this.itemHeight - 4;
-				NotesListEntry e = this.getEntry(j);
-				int k1 = getRowWidth();
-				if (isSelectedEntry(j)) {
-					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
-					context.fill(insideLeft - 4, k - 4, insideLeft + getRowWidth() + 4, k + itemHeight, 255 / 2 << 24);
+		for (int j = 0; j < getEntryCount(); ++j) {
+			if (getRowBottom(j) >= getY() && getRowTop(j) <= getBottom()) {
+				NotesListEntry e = children().get(j);
+				if (e == getSelectedOrNull()) {
+					context.fill(getRowLeft() - 4, getRowTop(j) - 4, getRowLeft() + getRowWidth() + 4, getRowTop(j) + itemHeight, 255 / 2 << 24);
 				}
-
-				int j2 = this.getRowLeft();
-				e.render(context, j, k, j2, k1, j1, mouseX, mouseY, isMouseOver((double) mouseX, (double) mouseY) && Objects .equals(getEntryAtPosition((double) mouseX, (double) mouseY), e), partialTicks);
+				e.render(context, mouseX, mouseY, e == getHoveredEntry(), partialTicks);
 			}
 		}
 		context.disableScissor();

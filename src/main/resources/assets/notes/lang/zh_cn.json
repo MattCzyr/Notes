@@ -31,7 +31,7 @@
     "notes.scope.remote": "远程",
 
     "_comment": "CONTROLS - CATEGORIES",
-    "key.category.notes": "Notes",
+    "key.category.notes.keys": "Notes",
 
     "_comment": "CONTROLS - KEYBINDS",
     "key.openNotes": "打开便笺",
