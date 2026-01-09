@@ -24,3 +24,8 @@ runs
 
 # Files from Forge MDK
 forge*changelog.txt
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride

@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
@@ -99,7 +99,7 @@ public final class StringUtils {
 	}
 
 	public static String fixBiomeName(Level world, Biome biome) {
-		Optional<ResourceLocation> optionalKey = getKeyForBiome(world, biome);
+		Optional<Identifier> optionalKey = getKeyForBiome(world, biome);
 		if (optionalKey.isPresent()) {
 			final String original = I18n.get(Util.makeDescriptionId("biome", optionalKey.get()));
 			String fixed = "";
@@ -122,7 +122,7 @@ public final class StringUtils {
 		return level.registryAccess().lookup(Registries.BIOME);
 	}
 
-	private static Optional<ResourceLocation> getKeyForBiome(Level level, Biome biome) {
+	private static Optional<Identifier> getKeyForBiome(Level level, Biome biome) {
 		return getBiomeRegistry(level).isPresent() ? Optional.of(getBiomeRegistry(level).get().getKey(biome)) : Optional.empty();
 	}
 

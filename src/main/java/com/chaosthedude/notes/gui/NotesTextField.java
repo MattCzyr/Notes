@@ -8,7 +8,6 @@ import org.lwjgl.glfw.GLFW;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,6 +19,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
 public class NotesTextField extends AbstractWidget {
 
