@@ -8,28 +8,22 @@ import org.lwjgl.glfw.GLFW;
 import com.chaosthedude.notes.util.StringUtils;
 import com.chaosthedude.notes.util.WrappedString;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
 
-@Environment(EnvType.CLIENT)
-public class NotesTextField extends ClickableWidget implements Drawable, Element {
+public class NotesTextField extends AbstractWidget {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	private int margin;
 	private String text;
@@ -37,7 +31,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private int bottomVisibleLine;
 	private int maxVisibleLines;
 	private int wrapWidth;
-	private final TextRenderer fontRenderer;
+	private final Font fontRenderer;
 	private long focusedTime;
 	private boolean canLoseFocus = true;
 	private boolean isEnabled = true;
@@ -46,73 +40,73 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	private int enabledColor = 0xffe0e0e0;
 	private int disabledColor = 0xff707070;
 
-	public NotesTextField(TextRenderer fontRenderer, int x, int y, int width, int height, int margin) {
-		super(x, y, width, height, Text.literal(""));
+	public NotesTextField(Font fontRenderer, int x, int y, int width, int height, int margin) {
+		super(x, y, width, height, Component.literal(""));
 		this.fontRenderer = fontRenderer;
 		this.margin = margin;
 
 		text = "";
-		maxVisibleLines = MathHelper.floor((height - (margin * 2)) / fontRenderer.fontHeight) - 1;
+		maxVisibleLines = Mth.floor((height - (margin * 2)) / fontRenderer.lineHeight) - 1;
 		wrapWidth = width - (margin * 2);
 		selectionPos = -1;
 	}
 	
 	@Override
-	public boolean keyPressed(KeyInput input) {
-		if (input.isCopy()) {
-			CLIENT.keyboard.setClipboard(getSelectedText());
-		} else if (input.isCut()) {
+	public boolean keyPressed(KeyEvent event) {
+		if (event.isCopy()) {
+			mc.keyboardHandler.setClipboard(getSelectedText());
+		} else if (event.isCut()) {
 			if (getSelectionDifference() != 0) {
-				CLIENT.keyboard.setClipboard(getSelectedText());
+				mc.keyboardHandler.setClipboard(getSelectedText());
 				deleteSelectedText();
 			}
-		} else if (input.isPaste()) {
-			insert(CLIENT.keyboard.getClipboard());
-		} else if (isKeyComboCtrlBack(input)) {
+		} else if (event.isPaste()) {
+			insert(mc.keyboardHandler.getClipboard());
+		} else if (isKeyComboCtrlBack(event)) {
 			deletePrevWord();
 		} else {
-			if (input.getKeycode() == GLFW.GLFW_KEY_BACKSPACE) {
+			if (event.key() == GLFW.GLFW_KEY_BACKSPACE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deletePrev();
 				}
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_DELETE) {
+			} else if (event.key() == GLFW.GLFW_KEY_DELETE) {
 				if (getSelectionDifference() != 0) {
 					deleteSelectedText();
 				} else {
 					deleteNext();
 				}
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_TAB) {
+			} else if (event.key() == GLFW.GLFW_KEY_TAB) {
 				insert("    ");
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_KP_ENTER) {
+			} else if (event.key() == GLFW.GLFW_KEY_KP_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_ENTER) {
+			} else if (event.key() == GLFW.GLFW_KEY_ENTER) {
 				insertNewLine();
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_HOME) {
-				updateSelectionPos(input);
+			} else if (event.key() == GLFW.GLFW_KEY_HOME) {
+				updateSelectionPos(event);
 				setCursorPos(0);
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_END) {
-				updateSelectionPos(input);
+			} else if (event.key() == GLFW.GLFW_KEY_END) {
+				updateSelectionPos(event);
 				setCursorPos(text.length());
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_UP) {
-				updateSelectionPos(input);
+			} else if (event.key() == GLFW.GLFW_KEY_UP) {
+				updateSelectionPos(event);
 				moveUp();
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_DOWN) {
-				updateSelectionPos(input);
+			} else if (event.key() == GLFW.GLFW_KEY_DOWN) {
+				updateSelectionPos(event);
 				moveDown();
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_LEFT) {
+			} else if (event.key() == GLFW.GLFW_KEY_LEFT) {
 				boolean moveLeft = true;
-				if (input.hasShift()) {
+				if (event.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -128,9 +122,9 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 					moveLeft();
 				}
 				return true;
-			} else if (input.getKeycode() == GLFW.GLFW_KEY_RIGHT) {
+			} else if (event.key() == GLFW.GLFW_KEY_RIGHT) {
 				boolean moveRight = true;
-				if (input.hasShift()) {
+				if (event.hasShiftDown()) {
 					if (selectionPos < 0) {
 						selectionPos = cursorPos;
 					}
@@ -152,11 +146,11 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 	
 	@Override
-	public boolean charTyped(CharInput input) {
-		if (isFocused()) {
-	         if (input.isValidChar()) {
+	public boolean charTyped(CharacterEvent event) {
+	      if (isFocused()) {
+	         if (event.isAllowedChatCharacter()) {
 	            if (this.isEnabled) {
-	               insert(input.asString());
+	               insert(event.codepointAsString());
 	               updateVisibleLines();
 	            }
 
@@ -164,51 +158,51 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	         }
 	      }
 	      return false;
-	}
+	   }
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		final int color = (int) (255.0F * 0.55f);
-		context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+		guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 
-		renderVisibleText(context);
-		renderCursor(context);
-		renderScrollBar(context);
+		renderVisibleText(guiGraphics);
+		renderCursor(guiGraphics);
+		renderScrollBar(guiGraphics);
 	}
-	
+
 	@Override
-	public boolean mouseClicked(Click click, boolean doubled) {
-		final boolean isWithinBounds = isWithinBounds(click.x(), click.y());
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		final boolean isWithinBounds = isWithinBounds(event.x(), event.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			final int relativeMouseX = (int) click.x() - getX() - margin;
-			final int relativeMouseY = (int) click.y() - getY() - margin;
-			final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-			final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) event.x() - getX() - margin;
+			final int relativeMouseY = (int) event.y() - getY() - margin;
+			final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
 			setCursorPos(countCharacters(y) + x);
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
-	public boolean mouseReleased(Click click) {
-		final boolean isWithinBounds = isWithinBounds(click.x(), click.y());
+	public boolean mouseReleased(MouseButtonEvent event) {
+		final boolean isWithinBounds = isWithinBounds(event.x(), event.y());
 		if (canLoseFocus) {
 			setFocused(isWithinBounds);
 		}
 
 		if (isFocused() && isWithinBounds) {
-			final int relativeMouseX = (int) click.x() - getX() - margin;
-			final int relativeMouseY = (int) click.y() - getY() - margin;
-			final int y = MathHelper.clamp((relativeMouseY / fontRenderer.fontHeight) + topVisibleLine, 0, getFinalLineIndex());
-			final int x = fontRenderer.trimToWidth(getLine(y), relativeMouseX, false).length();
+			final int relativeMouseX = (int) event.x() - getX() - margin;
+			final int relativeMouseY = (int) event.y() - getY() - margin;
+			final int y = Mth.clamp((relativeMouseY / fontRenderer.lineHeight) + topVisibleLine, 0, getFinalLineIndex());
+			final int x = fontRenderer.plainSubstrByWidth(getLine(y), relativeMouseX, false).length();
 
-			final int pos = MathHelper.clamp(countCharacters(y) + x, 0, text.length());
+			final int pos = Mth.clamp(countCharacters(y) + x, 0, text.length());
 			if (pos != cursorPos) {
 				selectionPos = cursorPos;
 				setCursorPos(pos);
@@ -235,7 +229,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	@Override
 	public void setFocused(boolean focused) {
 		if (focused && !isFocused()) {
-			focusedTime = Util.getMeasuringTimeMs();
+			focusedTime = Util.getMillis();
 		}
 		super.setFocused(focused);
 	}
@@ -300,7 +294,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 
 	public int getCursorWidth(int pos) {
 		final String line = getCurrentLine();
-		return fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
+		return fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
 	}
 
 	public int getCursorWidth() {
@@ -341,8 +335,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		return toLines().size() > getVisibleLineCount();
 	}
 
-	public boolean isKeyComboCtrlBack(KeyInput input) {
-		return input.getKeycode() == GLFW.GLFW_KEY_BACKSPACE && input.hasCtrl() && !input.hasShift() && !input.hasAlt();
+	public boolean isKeyComboCtrlBack(KeyEvent event) {
+		return event.key() == GLFW.GLFW_KEY_BACKSPACE && event.hasControlDown() && !event.hasShiftDown() && !event.hasAltDown();
 	}
 
 	public void insert(String newText) {
@@ -523,7 +517,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 	}
 
 	private void setCursorPos(int pos) {
-		cursorPos = MathHelper.clamp(pos, 0, text.length());
+		cursorPos = Mth.clamp(pos, 0, text.length());
 		if (getCursorY() > bottomVisibleLine) {
 			incrementVisibleLines();
 		} else if (getCursorY() < topVisibleLine) {
@@ -563,8 +557,8 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		}
 	}
 
-	private void updateSelectionPos(KeyInput input) {
-		if (input.hasShift()) {
+	private void updateSelectionPos(KeyEvent event) {
+		if (event.hasShiftDown()) {
 			if (selectionPos < 0) {
 				selectionPos = cursorPos;
 			}
@@ -613,7 +607,7 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 		return "";
 	}
 
-	private void drawSelectionBox(DrawContext context, int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -634,10 +628,10 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 			startX = getX() + getWidth();
 		}
 
-		context.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, startX, startY, endX, endY, -16776961);
+		guiGraphics.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, startX, startY, endX, endY, -16776961);
 	}
 
-	private void renderSelectionBox(DrawContext context, int y, int renderY, String line) {
+	private void renderSelectionBox(GuiGraphics guiGraphics, int y, int renderY, String line) {
 		if (hasSelectionOnLine(y)) {
 			final String absoluteLine = getLine(y);
 			int count = 0;
@@ -668,54 +662,54 @@ public class NotesTextField extends ClickableWidget implements Drawable, Element
 				selectionPos = -1;
 			} else {
 				final String selection = absoluteLine.substring(start, end);
-				final int startX = getX() + margin + fontRenderer.getWidth(absoluteLine.substring(0, start));
-				final int endX = startX + fontRenderer.getWidth(selection);
-				drawSelectionBox(context, startX, renderY, endX, renderY + fontRenderer.fontHeight);
+				final int startX = getX() + margin + fontRenderer.width(absoluteLine.substring(0, start));
+				final int endX = startX + fontRenderer.width(selection);
+				drawSelectionBox(guiGraphics, startX, renderY, endX, renderY + fontRenderer.lineHeight);
 			}
 		}
 	}
 
-	private void renderVisibleText(DrawContext context) {
+	private void renderVisibleText(GuiGraphics guiGraphics) {
 		int renderY = getY() + margin;
 		int y = topVisibleLine;
 		for (String line : getVisibleLines()) {
-			context.drawTextWithShadow(fontRenderer, line, getX() + margin, renderY, 0xffe0e0e0);
-			renderSelectionBox(context, y, renderY, line);
+			guiGraphics.drawString(fontRenderer, line, getX() + margin, renderY, 0xffe0e0e0, true);
+			renderSelectionBox(guiGraphics, y, renderY, line);
 
-			renderY += fontRenderer.fontHeight;
+			renderY += fontRenderer.lineHeight;
 			y++;
 		}
 	}
 
-	private void renderCursor(DrawContext context) {
-		final boolean shouldDisplayCursor = isFocused() && (Util.getMeasuringTimeMs() - focusedTime) / 300L % 2L == 0L && cursorIsValid();
+	private void renderCursor(GuiGraphics guiGraphics) {
+		final boolean shouldDisplayCursor = isFocused() && (Util.getMillis() - focusedTime) / 300L % 2L == 0L && cursorIsValid();
 		if (shouldDisplayCursor) {
 			final String line = getCurrentLine();
-			final int renderCursorX = getX() + margin + fontRenderer.getWidth(line.substring(0, MathHelper.clamp(getCursorX(), 0, line.length())));
-			final int renderCursorY = getY() + margin + (getRenderSafeCursorY() * fontRenderer.fontHeight);
+			final int renderCursorX = getX() + margin + fontRenderer.width(line.substring(0, Mth.clamp(getCursorX(), 0, line.length())));
+			final int renderCursorY = getY() + margin + (getRenderSafeCursorY() * fontRenderer.lineHeight);
 
-			context.fill(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.fontHeight + 1, -3092272);
+			guiGraphics.fill(renderCursorX, renderCursorY - 1, renderCursorX + 1, renderCursorY + fontRenderer.lineHeight + 1, -3092272);
 		}
 	}
 
-	private void renderScrollBar(DrawContext context) {
+	private void renderScrollBar(GuiGraphics guiGraphics) {
 		if (needsScrollBar()) {
 			final List<String> lines = toLines();
 			final int effectiveHeight = getHeight() - (margin / 2);
-			final int scrollBarHeight = MathHelper.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
-			int scrollBarTop = getY() + (margin / 4) + MathHelper.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
+			final int scrollBarHeight = Mth.floor(effectiveHeight * ((double) getVisibleLineCount() / lines.size()));
+			int scrollBarTop = getY() + (margin / 4) + Mth.floor(((double) topVisibleLine / lines.size()) * effectiveHeight);
 
 			final int diff = (scrollBarTop + scrollBarHeight) - (getY() + getHeight());
 			if (diff > 0) {
 				scrollBarTop -= diff;
 			}
 
-			context.fill(getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
+			guiGraphics.fill(getX() + getWidth() - (margin * 3 / 4), scrollBarTop, getX() + getWidth() - (margin / 4), scrollBarTop + scrollBarHeight, -3092272);
 		}
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+	protected void updateWidgetNarration(NarrationElementOutput output) {
 	}
 
 }

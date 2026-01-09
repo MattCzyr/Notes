@@ -11,8 +11,8 @@ import com.chaosthedude.notes.note.Note;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
 
 public class Notes implements ClientModInitializer {
 
@@ -22,17 +22,17 @@ public class Notes implements ClientModInitializer {
 
 	public static Note pinnedNote;
 
-	private static KeyBinding openNotes;
+	private static KeyMapping openNotes;
 
 	@Override
 	public void onInitializeClient() {
 		NotesConfig.load();
 		
-		openNotes = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.openNotes", GLFW.GLFW_KEY_N, new KeyBinding.Category(Identifier.of(MODID, "keys"))));
+		openNotes = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.openNotes", GLFW.GLFW_KEY_N, new KeyMapping.Category(Identifier.fromNamespaceAndPath(MODID, "keys"))));
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-		    while (openNotes.wasPressed()) {
-		    	client.setScreen(new SelectNoteScreen(client.currentScreen));
+		    while (openNotes.isDown()) {
+		    	client.setScreen(new SelectNoteScreen(client.screen));
 		    }
 		});
 	}

@@ -5,13 +5,13 @@ import java.io.File;
 import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.storage.LevelResource;
 
 public class Scope {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static final Scope GLOBAL = new Scope("notes.scope.global", "global") {
 		@Override
@@ -63,7 +63,7 @@ public class Scope {
 	}
 
 	public String localize() {
-		return I18n.translate(unlocName);
+		return I18n.get(unlocName);
 	}
 
 	public String format() {
@@ -116,16 +116,16 @@ public class Scope {
 	}
 
 	public static boolean isLocal() {
-		return CLIENT.isIntegratedServerRunning();
+		return mc.isLocalServer();
 	}
 
 	public static boolean isRemote() {
-		return CLIENT.getCurrentServerEntry() != null;
+		return mc.getCurrentServer() != null;
 	}
 
 	public static String getServerIP() {
 		if (isRemote()) {
-			return StringUtils.filterFileName(CLIENT.getCurrentServerEntry().address);
+			return StringUtils.filterFileName(mc.getCurrentServer().ip);
 		}
 
 		return null;
@@ -133,7 +133,7 @@ public class Scope {
 
 	public static String getWorldName() {
 		if (isLocal()) {
-			return StringUtils.filterFileName(CLIENT.getServer().getSavePath(WorldSavePath.ICON_PNG).getParent().getFileName().toString());
+			return StringUtils.filterFileName(mc.getSingleplayerServer().getWorldPath(LevelResource.ICON_FILE).getParent().getFileName().toString());
 		}
 
 		return null;

@@ -3,18 +3,18 @@ package com.chaosthedude.notes.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Style;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 
 public class RenderUtils {
 
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	private static final Minecraft CLIENT = Minecraft.getInstance();
 
 	public static List<String> splitStringToWidth(String str, int maxWidth) {
 		List<String> splitStrings = new ArrayList<String>();
-		for (StringVisitable text : CLIENT.textRenderer.getTextHandler().wrapLines(str, maxWidth, Style.EMPTY)) {
+		for (FormattedText text : CLIENT.font.getSplitter().splitLines(str, maxWidth, Style.EMPTY)) {
 			splitStrings.add(text.getString());
 		}
 		return splitStrings;
@@ -26,7 +26,7 @@ public class RenderUtils {
 		int height = 0;
 		for (String line : widthSplitStrings) {
 			// Check if we have room for this line before adding it
-			height += CLIENT.textRenderer.fontHeight;
+			height += CLIENT.font.lineHeight;
 			if (height > maxHeight) {
 				break;
 			}
@@ -39,17 +39,17 @@ public class RenderUtils {
 		return splitStringToHeight(splitStringToWidth(str, maxWidth), maxHeight);
 	}
 
-	public static void renderSplitString(DrawContext context, List<String> splitString, int x, int y, int color) {
+	public static void renderSplitString(GuiGraphics guiGraphics, List<String> splitString, int x, int y, int color) {
 		for (String s : splitString) {
-			context.drawTextWithShadow(CLIENT.textRenderer, s, x, y, color);
-			y += CLIENT.textRenderer.fontHeight;
+			guiGraphics.drawString(CLIENT.font, s, x, y, color, true);
+			y += CLIENT.font.lineHeight;
 		}
 	}
 
 	public static int getSplitStringWidth(List<String> splitString, int wrapWidth) {
 		int width = 0;
 		for (String line : splitString) {
-			final int stringWidth = CLIENT.textRenderer.getWidth(line);
+			final int stringWidth = CLIENT.font.width(line);
 			if (stringWidth > width) {
 				width = stringWidth;
 			}
@@ -59,7 +59,7 @@ public class RenderUtils {
 	}
 
 	public static int getSplitStringHeight(List<String> splitString, int wrapWidth) {
-		return CLIENT.textRenderer.fontHeight * splitString.size();
+		return CLIENT.font.lineHeight * splitString.size();
 	}
 
 	// Returns the X position at which text with the given width should start rendering, assuming padding of 5 on each side
@@ -72,7 +72,7 @@ public class RenderUtils {
 		}
 
 		// Right side
-		return CLIENT.getWindow().getScaledWidth() - noteWidth - 5;
+		return CLIENT.getWindow().getGuiScaledWidth() - noteWidth - 5;
 	}
 
 	// Returns the Y position at which text with the given height should start rendering, assuming padding of 5 on each side
@@ -83,16 +83,16 @@ public class RenderUtils {
 			return 5;
 		} else if (positionLower.equals("bottom_left") || positionLower.equals("bottom_right")) {
 			// Bottom
-			return CLIENT.getWindow().getScaledHeight() - noteHeight - 5;
+			return CLIENT.getWindow().getGuiScaledHeight() - noteHeight - 5;
 		}
 
 		// Center
-		return (CLIENT.getWindow().getScaledHeight() / 2) - (noteHeight / 2);
+		return (CLIENT.getWindow().getGuiScaledHeight() / 2) - (noteHeight / 2);
 	}
 
 	// Chops off characters as necessary and adds ellipses (...) to the end
 	public static String addEllipses(String str, int maxWidth) {
-		return CLIENT.textRenderer.trimToWidth(str, Math.max(0, maxWidth - CLIENT.textRenderer.getWidth("..."))) + "...";
+		return CLIENT.font.plainSubstrByWidth(str, Math.max(0, maxWidth - CLIENT.font.width("..."))) + "...";
 	}
 
 }

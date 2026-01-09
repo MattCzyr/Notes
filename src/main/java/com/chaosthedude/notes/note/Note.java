@@ -21,15 +21,15 @@ import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
 
 public class Note {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(NotesConfig.dateFormat);
-	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
-	private static final TextRenderer TEXT_RENDERER = CLIENT.textRenderer;
+	private static final DateFormat dateFormat = new SimpleDateFormat(NotesConfig.dateFormat);
+	private static final Minecraft mc = Minecraft.getInstance();
+	private static final Font font = mc.font;
 
 	private String title;
 	private String rawText;
@@ -117,8 +117,8 @@ public class Note {
 		if (preview.indexOf('\n') >= 0) {
 			preview = preview.substring(0, preview.indexOf('\n'));
 		}
-
-		if (TEXT_RENDERER.getWidth(preview) > width) {
+		
+		if (font.width(preview) > width) {
 			preview = RenderUtils.addEllipses(preview, width);
 		}
 
@@ -130,7 +130,7 @@ public class Note {
 	}
 
 	public String getLastModifiedString() {
-		return I18n.translate("notes.lastModified") + ": " + DATE_FORMAT.format(getLastModified());
+		return I18n.get("notes.lastModified") + ": " + dateFormat.format(getLastModified());
 	}
 
 	public String getUncollidingSaveName(String name) {
@@ -148,7 +148,7 @@ public class Note {
 
 	public String getSaveName() {
 		String saveDirName = title.trim();
-		for (char c : SharedConstants.INVALID_CHARS_LEVEL_NAME) {
+		for (char c : SharedConstants.ILLEGAL_FILE_CHARACTERS) {
 			saveDirName = saveDirName.replace(c, '_');
 		}
 

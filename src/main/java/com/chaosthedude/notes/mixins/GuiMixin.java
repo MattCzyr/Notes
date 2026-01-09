@@ -15,29 +15,29 @@ import com.chaosthedude.notes.util.RenderUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
-@Mixin(InGameHud.class)
-public class HUDMixin {
-		
+@Mixin(Gui.class)
+public class GuiMixin {
+	
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 
-	@Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At(value = "TAIL"))
-	private void renderPinnedNote(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
-		if (!client.options.hudHidden && (client.currentScreen == null || client.currentScreen instanceof ChatScreen)) {
+	@Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V", at = @At(value = "TAIL"))
+	private void renderPinnedNote(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
+		if (!minecraft.options.hideGui && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				Notes.pinnedNote.update();
 				
-				final int maxWidth = MathHelper.floor(client.getWindow().getScaledWidth() * NotesConfig.pinnedWidthScale);
-				final int maxHeight = MathHelper.floor(client.getWindow().getScaledHeight() * NotesConfig.pinnedHeightScale);
+				final int maxWidth = Mth.floor(minecraft.getWindow().getGuiScaledWidth() * NotesConfig.pinnedWidthScale);
+				final int maxHeight = Mth.floor(minecraft.getWindow().getGuiScaledHeight() * NotesConfig.pinnedHeightScale);
 	
 				final String text = Notes.pinnedNote.getFilteredText();
 				final List<String> widthSplitLines = RenderUtils.splitStringToWidth(text, maxWidth);
@@ -55,13 +55,13 @@ public class HUDMixin {
 				final int renderX = RenderUtils.getPinnedNoteX(NotesConfig.pinnedNotePosition, renderWidth);
 				final int renderY = RenderUtils.getPinnedNoteY(NotesConfig.pinnedNotePosition, renderHeight);
 	
-				final int opacity = (int) (255.0F * client.options.getTextBackgroundOpacity().getValue());
+				final int opacity = (int) (255.0F * minecraft.options.textBackgroundOpacity().get());
 	
 				// Render opaque background with padding of 5 on each side
-				context.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
+				guiGraphics.fill(renderX - 5, renderY - 5, renderX + renderWidth + 5, renderY + renderHeight + 5, opacity << 24);
 
 				// Render note
-				RenderUtils.renderSplitString(context, lines, renderX, renderY, 0xffffffff);
+				RenderUtils.renderSplitString(guiGraphics, lines, renderX, renderY, 0xffffffff);
 			}
 		}
 	}
