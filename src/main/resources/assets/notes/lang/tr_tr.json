@@ -3,9 +3,9 @@
     "_comment": "TÜRKİYE - TURKISH",
 
     "_comment": "TITLES",
-    "notes.newNot": "Yeni Not",
-    "notes.editNot": "Notu Düzenle",
-    "notes.selectNot": "Notu Seç",
+    "notes.newNote": "Yeni Not",
+    "notes.editNote": "Notu Düzenle",
+    "notes.selectNote": "Notu Seç",
 
     "_comment": "BUTTONS",
     "notes.biome": "Biyom",
@@ -34,7 +34,7 @@
     "key.category.notes": "Notlar",
 
     "_comment": "KEYBINDS",
-    "key.openNots": "Notları Aç",
+    "key.openNotes": "Notları Aç",
 
     "_comment": "STRINGS",
     "notes.confirmDelete": "Bu notu silmek istediğine emin misin?",
