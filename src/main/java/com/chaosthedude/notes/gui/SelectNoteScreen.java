@@ -79,7 +79,10 @@ public class SelectNoteScreen extends Screen {
 		}));
 		pinButton = addRenderableWidget(new NotesButton(10, 175, 110, 20, Component.translatable("notes.pin"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
-			notesEntry.togglePin();
+			if (notesEntry != null) {
+				notesEntry.togglePin();
+				selectionList.refreshList();
+			}
 		}));
 		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
 			minecraft.setScreen(prevScreen);
