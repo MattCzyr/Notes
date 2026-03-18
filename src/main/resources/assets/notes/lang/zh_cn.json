@@ -24,6 +24,7 @@
     "notes.save": "保存",
     "notes.select": "选择",
     "notes.unpin": "取消展示",
+    "notes.view": "查看",
 
     "_comment": "SCOPE",
     "notes.scope.local": "本地",

@@ -24,6 +24,7 @@
     "notes.save": "Sauvegarder",
     "notes.select": "Sélectionner",
     "notes.unpin": "Détacher",
+    "notes.view": "Voir",
 
     "_comment": "SCOPE",
     "notes.scope.local": "Local",

@@ -24,6 +24,7 @@
     "notes.save": "Spara",
     "notes.select": "Välj",
     "notes.unpin": "Ta bort nål",
+    "notes.view": "Visa",
 
     "_comment": "SCOPE",
     "notes.scope.local": "lokal",

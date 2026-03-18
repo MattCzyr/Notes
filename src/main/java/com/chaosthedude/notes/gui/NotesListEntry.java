@@ -1,8 +1,5 @@
 package com.chaosthedude.notes.gui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.config.NotesConfig;
 import com.chaosthedude.notes.note.Note;
@@ -11,15 +8,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 
 public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat();
 	private final Minecraft mc;
 	private final SelectNoteScreen parentScreen;
 	private final Note note;
@@ -31,19 +25,18 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 		parentScreen = notesList.getParentScreen();
 		mc = Minecraft.getInstance();
 	}
-	
+
 	@Override
 	public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-		guiGraphics.drawString(mc.font, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff);
-		guiGraphics.drawString(mc.font, note.getScope().format(), getX() + 4 + mc.font.width(note.getTitle()), getY() + 1, 0xff808080);
-		if (note.isPinned()) {
-			guiGraphics.drawString(mc.font, I18n.get("notes.pinned"), getX() + 4 + mc.font.width(note.getTitle()) + mc.font.width(note.getScope().format()) + 4, getY() + 1, 0xffffffff);
-		}
-		guiGraphics.drawString(mc.font, note.getTitle(), getX() + 1, getY() + 1, 0xffffffff);
-		guiGraphics.drawString(mc.font, note.getPreview(Mth.floor(notesList.getRowWidth() * 0.9)), getX() + 1, getY() + mc.font.lineHeight + 3, 0xff808080);
-		guiGraphics.drawString(mc.font, note.getLastModifiedString(), getX() + 1, getY() + mc.font.lineHeight + 14, 0xff808080);
+		Component titleComponent = Component.literal(note.getTitle());
+		Component scopeComponent = Component.literal(" (").withColor(0xff808080).append(Component.translatable(note.getScope().getUnlocalizedName()).withColor(0xff808080).append(Component.literal(") ").withColor(0xff808080)));
+		Component pinnedComponent = note.isPinned() ? Component.translatable("notes.pinned") : Component.empty();
+
+		guiGraphics.drawString(mc.font, Component.empty().append(titleComponent).append(scopeComponent).append(pinnedComponent), getX() + 5, getY() + 5, 0xffffffff);
+		guiGraphics.drawString(mc.font, note.getPreview(notesList.getRowWidth() - 10), getX() + 5, getY() + 5 + (mc.font.lineHeight + 2), 0xff808080);
+		guiGraphics.drawString(mc.font, note.getLastModifiedString(), getX() + 5, getY() + 5 + ((mc.font.lineHeight + 2) * 2), 0xff808080);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		notesList.selectNote(this);
@@ -67,7 +60,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	public void loadNote() {
 		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		if (NotesConfig.useInGameViewer || !note.tryOpenExternal()) {
-			mc.setScreen(new DisplayNoteScreen(parentScreen, note));
+			mc.setScreen(new ViewNoteScreen(parentScreen, note));
 		}
 	}
 
@@ -83,7 +76,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	public boolean isPinned() {
 		return note.equals(Notes.pinnedNote);
 	}
-	
+
 	public Note getNote() {
 		return note;
 	}

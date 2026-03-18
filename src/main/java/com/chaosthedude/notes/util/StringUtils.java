@@ -21,10 +21,6 @@ public final class StringUtils {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	private static final Font FONT = CLIENT.font;
 
-	public static String insertStringAt(String insert, String insertTo, int pos) {
-		return insertTo.substring(0, pos) + insert + insertTo.substring(pos, insertTo.length());
-	}
-
 	public static List<String> wrapToWidth(String str, int wrapWidth) {
 		final List<String> strings = new ArrayList<String>();
 		String temp = "";
@@ -45,32 +41,6 @@ public final class StringUtils {
 		return strings;
 	}
 
-	public static List<WrappedString> wrapToWidthWithIndication(String str, int wrapWidth) {
-		final List<WrappedString> strings = new ArrayList<WrappedString>();
-		String temp = "";
-		boolean wrapped = false;
-		for (int i = 0; i < str.length(); i++) {
-			final char c = str.charAt(i);
-			if (c == '\n') {
-				strings.add(new WrappedString(temp, wrapped));
-				temp = "";
-				wrapped = false;
-			} else if (FONT.width(temp + String.valueOf(c)) >= wrapWidth) {
-				strings.add(new WrappedString(temp, wrapped));
-				temp = "";
-				wrapped = true;
-			}
-
-			if (c != '\n') {
-				temp = temp + String.valueOf(c);
-			}
-		}
-
-		strings.add(new WrappedString(temp, wrapped));
-
-		return strings;
-	}
-
 	public static String filter(String s) {
 		String filtered = s.replace(String.valueOf('\t'), "    ");
 		for (char c : FILTER_CHARS) {
@@ -87,15 +57,6 @@ public final class StringUtils {
 		}
 
 		return filtered;
-	}
-	
-
-	public static String trimStringNewline(String text) {
-		while (text != null && text.endsWith("\n")) {
-			text = text.substring(0, text.length() - 1);
-		}
-
-		return text;
 	}
 
 	public static String fixBiomeName(Level level, Biome biome) {

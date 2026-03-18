@@ -24,6 +24,7 @@
     "notes.save": "保存",
     "notes.select": "選択",
     "notes.unpin": "解除",
+    "notes.view": "表示",
 
     "_comment": "SCOPE",
     "notes.scope.local": "ローカル",

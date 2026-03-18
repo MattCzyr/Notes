@@ -24,6 +24,7 @@
     "notes.save": "저장하기",
     "notes.select": "선택하기",
     "notes.unpin": "고정해제",
+    "notes.view": "보기",
 
     "_comment": "범위",
     "notes.scope.local": "세계 내",

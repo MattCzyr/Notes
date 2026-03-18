@@ -5,25 +5,26 @@
     "_comment": "GUI - TITLES",
     "notes.newNote": "Neue Notiz",
     "notes.editNote": "Notiz bearbeiten",
-    "notes.selectNote": "Notiz auswählen",
+    "notes.selectNote": "Notiz auswï¿½hlen",
 
     "_comment": "GUI - BUTTONS",
     "notes.biome": "Biom",
     "notes.chunk": "Chunk",
     "notes.coordinates": "Koordinaten",
     "notes.copy": "Kopieren",
-    "notes.delete": "Löschen",
+    "notes.delete": "Lï¿½schen",
     "notes.edit": "Bearbeiten",
     "notes.global": "Global",
-    "notes.insert": "Einfügen",
+    "notes.insert": "Einfï¿½gen",
     "notes.new": "Neu",
     "notes.off": "Aus",
     "notes.on": "Ein",
     "notes.pin": "Anheften",
     "notes.pinned": "Gepinnt",
     "notes.save": "Speichern",
-    "notes.select": "Auswählen",
+    "notes.select": "Auswï¿½hlen",
     "notes.unpin": "Entfernen",
+    "notes.view": "Ansehen",
 
     "_comment": "SCOPE",
     "notes.scope.local": "Lokal",
@@ -34,10 +35,10 @@
     "key.category.notes.keys": "Notizen",
 
     "_comment": "CONTROLS - KEYBINDS",
-    "key.openNotes": "Notizen öffnen",
+    "key.openNotes": "Notizen ï¿½ffnen",
 
     "_comment": "STRINGS",
-    "notes.confirmDelete": "Diesen Eintrag löschen?",
+    "notes.confirmDelete": "Diesen Eintrag lï¿½schen?",
     "notes.lastModified": "Zuletzt bearbeitet",
     "notes.saveAs": "Wird gespeichert als %s"
 }

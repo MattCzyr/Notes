@@ -9,7 +9,7 @@ public class SelectNoteScreen extends Screen {
 
 	private Screen prevScreen;
 	private NotesButton newButton;
-	private NotesButton selectButton;
+	private NotesButton viewButton;
 	private NotesButton editButton;
 	private NotesButton copyButton;
 	private NotesButton deleteButton;
@@ -25,7 +25,7 @@ public class SelectNoteScreen extends Screen {
 	@Override
 	public void init() {
 		setupButtons();
-		selectionList = new NotesList(this, minecraft, width + 110, height, 40, 36);
+		selectionList = new NotesList(this, minecraft, width + 110, height - 50, 40, 40);
 		addRenderableWidget(selectionList);
 	}
 
@@ -44,7 +44,7 @@ public class SelectNoteScreen extends Screen {
 
 	public void selectNote(NotesListEntry entry) {
 		final boolean enable = entry != null;
-		selectButton.active = enable;
+		viewButton.active = enable;
 		deleteButton.active = enable;
 		editButton.active = enable;
 		copyButton.active = enable;
@@ -55,7 +55,7 @@ public class SelectNoteScreen extends Screen {
 		newButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.new"), (onPress) -> {
 			minecraft.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
 		}));
-		selectButton = addRenderableWidget(new NotesButton(10, 75, 110, 20, Component.translatable("notes.select"), (onPress) -> {
+		viewButton = addRenderableWidget(new NotesButton(10, 75, 110, 20, Component.translatable("notes.view"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
 			if (notesEntry != null) {
 				notesEntry.loadNote();
@@ -85,7 +85,7 @@ public class SelectNoteScreen extends Screen {
 			minecraft.setScreen(prevScreen);
 		}));
 
-		selectButton.active = false;
+		viewButton.active = false;
 		deleteButton.active = false;
 		editButton.active = false;
 		copyButton.active = false;

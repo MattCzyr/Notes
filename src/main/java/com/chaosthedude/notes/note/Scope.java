@@ -6,7 +6,6 @@ import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class Scope {
@@ -62,12 +61,8 @@ public class Scope {
 		this.saveDir = saveDir;
 	}
 
-	public String localize() {
-		return I18n.get(unlocName);
-	}
-
-	public String format() {
-		return "(" + localize() + ")";
+	public String getUnlocalizedName() {
+		return unlocName;
 	}
 
 	public File getCurrentSaveDirectory() {
