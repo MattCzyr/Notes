@@ -66,8 +66,14 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	public void refreshList() {
 		clearEntries();
 		for (Note note : Note.getCurrentNotes()) {
-			addEntry(new NotesListEntry(this, note));
+			NotesListEntry entry = new NotesListEntry(this, note);
+			if (note.isPinned()) {
+				addEntryToTop(entry);
+			} else {
+				addEntry(entry);
+			}
 		}
+		setScrollAmount(0);
 	}
 
 	public void selectNote(NotesListEntry entry) {
