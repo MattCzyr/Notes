@@ -1,59 +1,66 @@
 package com.chaosthedude.notes.gui;
 
 import com.chaosthedude.notes.note.Note;
+import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.util.Mth;
 
 public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
-	private int itemHeight;
 
 	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int y, int itemHeight) {
 		super(mc, width, height, y, itemHeight);
 		this.parentScreen = notesScreen;
-		this.itemHeight = itemHeight;
 		refreshList();
 	}
 	
 	@Override
 	protected int scrollBarX() {
-		return super.scrollBarX() + 20;
+		return getRowLeft() + getRowWidth();
 	}
 
 	@Override
 	public int getRowWidth() {
-		return super.getRowWidth() + 50;
+		return 270;
 	}
 	
 	@Override
-	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		guiGraphics.fill(getRowLeft() - 4, getY(), getRowLeft() + getRowWidth() + 4, getY() + getHeight() + 4, 255 / 2 << 24);
-		
-		enableScissor(guiGraphics);
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        enableScissor(guiGraphics);
+        renderListBackground(guiGraphics);
+        renderListItems(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.disableScissor();
+        renderScrollbar(guiGraphics, mouseX, mouseY);
+    }
+	
+	@Override
+	protected void renderListBackground(GuiGraphics guiGraphics) {
 		for (int i = 0; i < getItemCount(); ++i) {
 			if (getRowBottom(i) >= getY() && getRowTop(i) <= getBottom()) {
-				NotesListEntry e = children().get(i);
-				if (e == getSelected()) {
-					final int insideLeft = getX() + width / 2 - getRowWidth() / 2 + 2;
-					guiGraphics.fill(insideLeft - 4, getRowTop(i) - 4, insideLeft + getRowWidth() + 4, getRowTop(i) + itemHeight, 255 / 2 << 24);
-				}
-				e.renderContent(guiGraphics, mouseX, mouseY, e == getHovered(), partialTicks);
+				NotesListEntry entry = children().get(i);
+				int fillColor = RenderUtils.getBackgroundColor(true, entry == getSelected());
+				guiGraphics.fill(getRowLeft(), getRowTop(i), getRowLeft() + getRowWidth(), getRowTop(i) + defaultEntryHeight, fillColor);
 			}
 		}
-		guiGraphics.disableScissor();
 	}
 	
 	@Override
-	protected void enableScissor(GuiGraphics guiGraphics) {
-		guiGraphics.enableScissor(getX(), getY(), getRight(), getBottom());
+	protected void renderSelection(GuiGraphics guiGraphics, NotesListEntry entry, int backgroundColor) {
+		// Selection is rendered in renderListBackground()
 	}
 	
 	@Override
-	public int getRowBottom(int index) {
-		return getRowTop(index) + itemHeight;
+	protected void renderScrollbar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		if (scrollbarVisible()) {
+			int backgroundFillColor = RenderUtils.getBackgroundColor(false, false);
+			int scrollbarFillColor = RenderUtils.getBackgroundColor(true, true);
+			guiGraphics.fill(scrollBarX(), getY(), scrollBarX() + 6, getBottom(), backgroundFillColor);
+			guiGraphics.fill(scrollBarX(), scrollBarY(), scrollBarX() + 6, scrollBarY() + scrollerHeight(), scrollbarFillColor);
+		}
 	}
 
 	public void refreshList() {

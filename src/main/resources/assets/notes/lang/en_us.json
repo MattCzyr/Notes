@@ -24,6 +24,7 @@
     "notes.save": "Save",
     "notes.select": "Select",
     "notes.unpin": "Unpin",
+    "notes.view": "View",
 
     "_comment": "SCOPE",
     "notes.scope.local": "Local",

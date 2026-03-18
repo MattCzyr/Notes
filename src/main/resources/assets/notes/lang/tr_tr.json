@@ -24,6 +24,7 @@
     "notes.save": "Kaydet",
     "notes.select": "Seç",
     "notes.unpin": "Sabitlemeyi Kaldır",
+    "notes.view": "Görüntüle",
 
     "_comment": "SCOPE",
     "notes.scope.local": "Yerel",

@@ -10,6 +10,7 @@ import com.chaosthedude.notes.util.StringUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
@@ -27,6 +28,7 @@ public class EditNoteScreen extends Screen {
 	private NotesTitleField noteTitleField;
 	private NotesTextField noteTextField;
 	private String saveDirName;
+	private boolean newNote;
 	private Note note;
 	private Scope scope;
 	private boolean pinned;
@@ -37,8 +39,10 @@ public class EditNoteScreen extends Screen {
 		this.parentScreen = parentScreen;
 		if (note != null) {
 			this.note = note;
+			newNote = false;
 		} else {
 			this.note = new Note("New Note", "", Scope.getCurrentScope());
+			newNote = true;
 		}
 
 		scope = Scope.getCurrentScope();
@@ -62,7 +66,6 @@ public class EditNoteScreen extends Screen {
 		boolean ret = super.mouseClicked(event, doubleClick);
 		if (setTextFieldFocused) {
 			// Change focus back to the text field after clicking the biome, coords, or chunk button
-			noteTextField.setFocused(true);
 			setFocused(noteTextField);
 			setTextFieldFocused = false;
 		}
@@ -72,6 +75,13 @@ public class EditNoteScreen extends Screen {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		boolean ret = super.keyPressed(event);
+		updateNote();
+		return ret;
+	}
+	
+	@Override
+	public boolean charTyped(CharacterEvent event) {
+		boolean ret = super.charTyped(event);
 		updateNote();
 		return ret;
 	}
@@ -88,14 +98,14 @@ public class EditNoteScreen extends Screen {
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffffff);
-		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0xff808080);
+		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0xffaaaaaa);
 	}
 
 	private void setupButtons() {
 		saveButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.save"), (onPress) -> {
 			updateNote();
 			note.save();
-			minecraft.setScreen(new DisplayNoteScreen(parentScreen, note));
+			minecraft.setScreen(new ViewNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
 			}
@@ -134,31 +144,34 @@ public class EditNoteScreen extends Screen {
 	private void setupTextFields() {
 		noteTitleField = addRenderableWidget(new NotesTitleField(font, 130, 40, width - 140, 20, Component.literal("")));
 		noteTitleField.setValue(note.getTitle());
-		addRenderableWidget(noteTitleField);
-		noteTitleField.setFocused(true);
-		setFocused(noteTitleField);
-
-		noteTextField = addRenderableWidget(new NotesTextField(font, 130, 85, width - 140, height - 95, 5));
-		noteTextField.setText(note.getFilteredText());
-		addRenderableWidget(noteTextField);
+		if (newNote) {
+			setFocused(noteTitleField);
+		}
+		
+		noteTextField = addRenderableWidget(new NotesTextField(font, 130, 85, width - 140, height - 95));
+		noteTextField.setValue(note.getFilteredText());
+		noteTextField.setScrollAmount(0);
+		if (!newNote) {
+			setFocused(noteTextField);
+		}
 	}
 
 	private void updateNote() {
 		note.setTitle(noteTitleField.getValue());
-		note.setText(noteTextField.getText());
+		note.setText(noteTextField.getValue());
 		note.setScope(scope);
 	}
 
 	private void insertBiome() {
-		noteTextField.insert(StringUtils.fixBiomeName(minecraft.level, minecraft.level.getBiome(minecraft.player.blockPosition()).value()));
+		noteTextField.insertText(StringUtils.fixBiomeName(minecraft.level, minecraft.level.getBiome(minecraft.player.blockPosition()).value()));
 	}
 
 	private void insertChunk() {
-		noteTextField.insert((int) minecraft.player.chunkPosition().x + ", " + (int) minecraft.player.chunkPosition().z);
+		noteTextField.insertText((int) minecraft.player.chunkPosition().x + ", " + (int) minecraft.player.chunkPosition().z);
 	}
 
 	private void insertCoords() {
-		noteTextField.insert((int) minecraft.player.getBlockX() + ", " + (int) minecraft.player.getBlockY() + ", " + (int) minecraft.player.getBlockZ());
+		noteTextField.insertText((int) minecraft.player.getBlockX() + ", " + (int) minecraft.player.getBlockY() + ", " + (int) minecraft.player.getBlockZ());
 	}
 
 }

@@ -24,6 +24,7 @@
     "notes.save": "Сохранить",
     "notes.select": "Выбрать",
     "notes.unpin": "Открепить",
+    "notes.view": "Просмотреть",
 
     "_comment": "SCOPE",
     "notes.scope.local": "Локально",

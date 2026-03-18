@@ -62,12 +62,8 @@ public class Scope {
 		this.saveDir = saveDir;
 	}
 
-	public String localize() {
-		return I18n.get(unlocName);
-	}
-
-	public String format() {
-		return "(" + localize() + ")";
+	public String getUnlocalizedName() {
+		return unlocName;
 	}
 
 	public File getCurrentSaveDirectory() {

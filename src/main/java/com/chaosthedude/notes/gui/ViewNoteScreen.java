@@ -12,10 +12,8 @@ import com.chaosthedude.notes.util.StringUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class DisplayNoteScreen extends Screen {
+public class ViewNoteScreen extends Screen {
 
 	private final Screen parentScreen;
 	private NotesButton doneButton;
@@ -28,7 +26,7 @@ public class DisplayNoteScreen extends Screen {
 	private int page;
 	private List<String> pages;
 
-	public DisplayNoteScreen(Screen parentScreen, Note note) {
+	public ViewNoteScreen(Screen parentScreen, Note note) {
 		super(Component.literal(note.getTitle()));
 		this.parentScreen = parentScreen;
 		this.note = note;
@@ -64,7 +62,7 @@ public class DisplayNoteScreen extends Screen {
 
 	private void setupButtons() {
 		editButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
-			minecraft.setScreen(new EditNoteScreen(DisplayNoteScreen.this.parentScreen, note));
+			minecraft.setScreen(new EditNoteScreen(ViewNoteScreen.this.parentScreen, note));
 		}));
 		deleteButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
 			deleteNote();
@@ -138,7 +136,7 @@ public class DisplayNoteScreen extends Screen {
 				note.delete();
 			}
 
-			DisplayNoteScreen.this.minecraft.setScreen(parentScreen);
+			ViewNoteScreen.this.minecraft.setScreen(parentScreen);
 		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
 	}
 
