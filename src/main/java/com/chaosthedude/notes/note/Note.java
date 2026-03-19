@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,9 +29,8 @@ import net.minecraft.client.resources.language.I18n;
 
 public class Note {
 
-	private static final DateFormat dateFormat = new SimpleDateFormat(NotesConfig.dateFormat);
-	private static final Minecraft mc = Minecraft.getInstance();
-	private static final Font font = mc.font;
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(NotesConfig.dateFormat);
+	private static final Font FONT = Minecraft.getInstance().font;
 
 	private String title;
 	private String rawText;
@@ -118,7 +119,7 @@ public class Note {
 			preview = preview.substring(0, preview.indexOf('\n'));
 		}
 		
-		if (font.width(preview) > width) {
+		if (FONT.width(preview) > width) {
 			preview = RenderUtils.addEllipses(preview, width);
 		}
 
@@ -130,7 +131,8 @@ public class Note {
 	}
 
 	public String getLastModifiedString() {
-		return I18n.get("notes.lastModified") + ": " + dateFormat.format(getLastModified());
+		ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(getLastModified()), ZoneId.systemDefault());
+		return I18n.get("notes.lastModified") + ": " + DATE_FORMATTER.format(zonedDateTime);
 	}
 
 	public String getUncollidingSaveName(String name) {
