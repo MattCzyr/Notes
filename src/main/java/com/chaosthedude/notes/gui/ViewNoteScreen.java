@@ -9,7 +9,7 @@ import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.RenderUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -49,13 +49,13 @@ public class ViewNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, -1);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		guiGraphics.centeredText(font, title.getString(), width / 2 + 60, 15, -1);
 		displayNote(guiGraphics);
 	}
 
-	public void displayNote(GuiGraphics guiGraphics) {
+	public void displayNote(GuiGraphicsExtractor guiGraphics) {
 		List<String> lines = RenderUtils.splitStringToWidth(pages.get(page), width - 200);
 		RenderUtils.renderSplitString(guiGraphics, lines, 160, 40, 0xffffffff);
 	}

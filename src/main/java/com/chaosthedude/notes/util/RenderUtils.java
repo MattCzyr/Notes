@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 
@@ -39,9 +39,9 @@ public class RenderUtils {
 		return splitStringToHeight(splitStringToWidth(str, maxWidth), maxHeight);
 	}
 
-	public static void renderSplitString(GuiGraphics guiGraphics, List<String> splitString, int x, int y, int color) {
+	public static void renderSplitString(GuiGraphicsExtractor guiGraphics, List<String> splitString, int x, int y, int color) {
 		for (String s : splitString) {
-			guiGraphics.drawString(CLIENT.font, s, x, y, color, true);
+			guiGraphics.text(CLIENT.font, s, x, y, color, true);
 			y += CLIENT.font.lineHeight;
 		}
 	}

@@ -3,7 +3,7 @@ package com.chaosthedude.notes.gui;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
@@ -19,7 +19,7 @@ public class NotesTitleField extends EditBox {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		if (isVisible()) {
 			int fillColor = RenderUtils.getBackgroundColor(isActive(), false);
 			guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), fillColor);
@@ -27,7 +27,7 @@ public class NotesTitleField extends EditBox {
 
 		// Disable bordered to skip rendering the default background
 		bordered = false;
-		super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+		super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 		bordered = true;
 	}
 

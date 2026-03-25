@@ -4,9 +4,8 @@ import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.util.Mth;
 
 public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
@@ -29,16 +28,16 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 
 	@Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         enableScissor(guiGraphics);
-        renderListBackground(guiGraphics);
-        renderListItems(guiGraphics, mouseX, mouseY, partialTicks);
+        extractListBackground(guiGraphics);
+        extractListItems(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.disableScissor();
-        renderScrollbar(guiGraphics, mouseX, mouseY);
+        extractScrollbar(guiGraphics, mouseX, mouseY);
     }
 
 	@Override
-	protected void renderListBackground(GuiGraphics guiGraphics) {
+	protected void extractListBackground(GuiGraphicsExtractor guiGraphics) {
 		for (int i = 0; i < getItemCount(); ++i) {
 			if (getRowBottom(i) >= getY() && getRowTop(i) <= getBottom()) {
 				NotesListEntry entry = children().get(i);
@@ -49,13 +48,13 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 	}
 
 	@Override
-	protected void renderSelection(GuiGraphics guiGraphics, NotesListEntry entry, int backgroundColor) {
+	protected void extractSelection(GuiGraphicsExtractor guiGraphics, NotesListEntry entry, int backgroundColor) {
 		// Selection is rendered in renderListBackground()
 	}
 
 	@Override
-	protected void renderScrollbar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (scrollbarVisible()) {
+	protected void extractScrollbar(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+		if (scrollable()) {
 			int backgroundFillColor = RenderUtils.getBackgroundColor(false, false);
 			int scrollbarFillColor = RenderUtils.getBackgroundColor(true, true);
 			guiGraphics.fill(scrollBarX(), getY(), scrollBarX() + 6, getBottom(), backgroundFillColor);
