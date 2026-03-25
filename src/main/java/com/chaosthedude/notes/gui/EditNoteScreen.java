@@ -7,7 +7,7 @@ import com.chaosthedude.notes.note.Note;
 import com.chaosthedude.notes.note.Scope;
 import com.chaosthedude.notes.util.StringUtils;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
@@ -95,10 +95,10 @@ public class EditNoteScreen extends Screen {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.drawCenteredString(font, title.getString(), width / 2 + 60, 15, 0xffffffff);
-		guiGraphics.drawCenteredString(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0xffaaaaaa);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+		guiGraphics.centeredText(font, title.getString(), width / 2 + 60, 15, 0xffffffff);
+		guiGraphics.centeredText(font, I18n.get("notes.saveAs", note.getUncollidingSaveName(note.getTitle())), width / 2 + 55, 65, 0xffaaaaaa);
 	}
 
 	private void setupButtons() {
@@ -167,7 +167,7 @@ public class EditNoteScreen extends Screen {
 	}
 
 	private void insertChunk() {
-		noteTextField.insertText((int) minecraft.player.chunkPosition().x + ", " + (int) minecraft.player.chunkPosition().z);
+		noteTextField.insertText((int) minecraft.player.chunkPosition().x() + ", " + (int) minecraft.player.chunkPosition().z());
 	}
 
 	private void insertCoords() {

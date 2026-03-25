@@ -3,7 +3,7 @@ package com.chaosthedude.notes.gui;
 import com.chaosthedude.notes.util.RenderUtils;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.network.chat.Component;
 
@@ -14,14 +14,14 @@ public class NotesTextField extends MultiLineEditBox {
 	}
 
 	@Override
-	protected void renderBackground(GuiGraphics guiGraphics) {
+	protected void extractBackground(GuiGraphicsExtractor guiGraphics) {
 		int fillColor = RenderUtils.getBackgroundColor(isActive(), false);
 		guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), fillColor);
 	}
 	
 	@Override
-	protected void renderScrollbar(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (scrollbarVisible()) {
+	protected void extractScrollbar(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        if (scrollable()) {
         	int backgroundFillColor = RenderUtils.getBackgroundColor(false, false);
 			int scrollbarFillColor = RenderUtils.getBackgroundColor(true, true);
 			guiGraphics.fill(scrollBarX(), getY(), scrollBarX() + 6, getBottom(), backgroundFillColor);

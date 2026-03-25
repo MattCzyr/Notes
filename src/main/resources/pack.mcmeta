@@ -1,6 +1,7 @@
 {
     "pack": {
-        "pack_format": 75,
-        "description": "Notes resources"
+        "description": "Notes resources",
+        "min_format": 101,
+        "max_format": 101
     }
 }
