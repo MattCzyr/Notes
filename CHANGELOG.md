@@ -1,11 +1,13 @@
 ## Version 3.1.0
 ### NeoForge 26.1
+- Updated to NeoForge 26.1
 - Fixed various issues with the note edit box
 - Pinned notes will now always stay at the top of the notes list
 - Added Turkish translations
 
 ## Version 2.2.0
 ### Fabric 26.1
+- Updated to Fabric 26.1
 - Fixed various issues with the note edit box
 - Pinned notes will now always stay at the top of the notes list
 - Added Turkish translations
