@@ -11,9 +11,10 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	private final SelectNoteScreen parentScreen;
 
-	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int width, int height, int y, int itemHeight) {
+	public NotesList(SelectNoteScreen notesScreen, Minecraft mc, int x, int y, int width, int height, int itemHeight) {
 		super(mc, width, height, y, itemHeight);
 		this.parentScreen = notesScreen;
+        setX(x);
 		refreshList();
 	}
 
@@ -24,7 +25,7 @@ public class NotesList extends ObjectSelectionList<NotesListEntry> {
 
 	@Override
 	public int getRowWidth() {
-		return 270;
+		return getWidth();
 	}
 
 	@Override

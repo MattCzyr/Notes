@@ -25,14 +25,13 @@ public class SelectNoteScreen extends Screen {
 	@Override
 	public void init() {
 		setupButtons();
-		selectionList = new NotesList(this, minecraft, width + 110, height - 50, 40, 40);
-		addRenderableWidget(selectionList);
+		selectionList = addRenderableWidget(new NotesList(this, minecraft, 130, 40, width - 140, height - 50, 40));
 	}
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-		guiGraphics.centeredText(font, I18n.get("notes.selectNote"), width / 2 + 60, 15, 0xffffffff);
+		guiGraphics.centeredText(font, I18n.get("notes.selectNote"), 130 + ((width - 140) / 2), 15, 0xffffffff);
 	}
 
 	@Override
