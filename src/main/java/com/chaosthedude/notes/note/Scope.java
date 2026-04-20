@@ -6,6 +6,7 @@ import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.world.level.storage.LevelResource;
 
 public class Scope {
@@ -13,10 +14,6 @@ public class Scope {
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	public static final Scope GLOBAL = new Scope("notes.scope.global", "global") {
-		@Override
-		public boolean isActive() {
-			return true;
-		}
 	};
 
 	public static final Scope LOCAL = new Scope("notes.scope.local", "local") {
@@ -29,27 +26,17 @@ public class Scope {
 
 			return saveDirFile;
 		}
-
-		@Override
-		public boolean isActive() {
-			return isLocal();
-		}
 	};
 
 	public static final Scope REMOTE = new Scope("notes.scope.remote", "remote") {
 		@Override
 		public File getCurrentSaveDirectory() {
-			final File saveDirFile = new File(getRootSaveDirectory(), getServerIP());
+			final File saveDirFile = new File(getRootSaveDirectory(), getServerID());
 			if (!saveDirFile.exists()) {
 				saveDirFile.mkdirs();
 			}
 
 			return saveDirFile;
-		}
-
-		@Override
-		public boolean isActive() {
-			return isLocal();
 		}
 	};
 
@@ -76,10 +63,6 @@ public class Scope {
 		}
 
 		return saveDirFile;
-	}
-
-	public boolean isActive() {
-		return false;
 	}
 
 	public static Scope getCurrentScope() {
@@ -118,9 +101,17 @@ public class Scope {
 		return mc.getCurrentServer() != null;
 	}
 
-	public static String getServerIP() {
+	public static String getServerID() {
 		if (isRemote()) {
-			return StringUtils.filterFileName(mc.getCurrentServer().ip);
+			final ServerData server = mc.getCurrentServer();
+			if (server.type() == ServerData.Type.REALM) {
+				// Realms can rotate IPs, so use server name instead of IP
+				return StringUtils.filterFileName(server.name);
+			} else if (server.type() == ServerData.Type.LAN) {
+				// LAN ports are random, so use fixed name
+				return "LAN";
+			}
+			return StringUtils.filterFileName(server.ip);
 		}
 
 		return null;
