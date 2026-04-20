@@ -21,8 +21,6 @@ public class PinnedNoteLayer implements GuiLayer {
 	public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		if (!CLIENT.options.hideGui && (CLIENT.screen == null || CLIENT.screen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
-				Notes.pinnedNote.update();
-
 				final int maxWidth = Mth.floor(CLIENT.getWindow().getGuiScaledWidth() * ConfigHandler.CLIENT.pinnedWidthScale.get());
 				final int maxHeight = Mth.floor(CLIENT.getWindow().getGuiScaledHeight() * ConfigHandler.CLIENT.pinnedHeightScale.get());
 				
