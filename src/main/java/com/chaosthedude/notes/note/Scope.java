@@ -6,6 +6,7 @@ import com.chaosthedude.notes.util.FileUtils;
 import com.chaosthedude.notes.util.StringUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.storage.LevelResource;
 
@@ -40,7 +41,7 @@ public class Scope {
 	public static final Scope REMOTE = new Scope("notes.scope.remote", "remote") {
 		@Override
 		public File getCurrentSaveDirectory() {
-			final File saveDirFile = new File(getRootSaveDirectory(), getServerIP());
+			final File saveDirFile = new File(getRootSaveDirectory(), getServerNameOrIP());
 			if (!saveDirFile.exists()) {
 				saveDirFile.mkdirs();
 			}
@@ -119,9 +120,14 @@ public class Scope {
 		return mc.getCurrentServer() != null;
 	}
 
-	public static String getServerIP() {
+	public static String getServerNameOrIP() {
 		if (isRemote()) {
-			return StringUtils.filterFileName(mc.getCurrentServer().ip);
+			final ServerData server = mc.getCurrentServer();
+			if (server.isRealm()) {
+				// Realms can rotate IPs, so use server name instead of IP
+				return StringUtils.filterFileName(server.name);
+			}
+			return StringUtils.filterFileName(server.ip);
 		}
 
 		return null;
