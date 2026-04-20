@@ -34,8 +34,6 @@ public class GuiMixin {
 	private void renderPinnedNote(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
 		if (!minecraft.options.hideGui && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
-				Notes.pinnedNote.update();
-				
 				final int maxWidth = Mth.floor(minecraft.getWindow().getGuiScaledWidth() * NotesConfig.pinnedWidthScale);
 				final int maxHeight = Mth.floor(minecraft.getWindow().getGuiScaledHeight() * NotesConfig.pinnedHeightScale);
 	

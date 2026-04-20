@@ -43,7 +43,7 @@ public class EditNoteScreen extends Screen {
 			newNote = true;
 		}
 
-		scope = Scope.getCurrentScope();
+		scope = this.note.getScope();
 		pinned = this.note.isPinned();
 		setTextFieldFocused = false;
 	}
@@ -73,14 +73,14 @@ public class EditNoteScreen extends Screen {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		boolean ret = super.keyPressed(event);
-		updateNote();
+		updateNoteText();
 		return ret;
 	}
 
 	@Override
 	public boolean charTyped(CharacterEvent event) {
 		boolean ret = super.charTyped(event);
-		updateNote();
+		updateNoteText();
 		return ret;
 	}
 
@@ -101,14 +101,15 @@ public class EditNoteScreen extends Screen {
 
 	private void setupButtons() {
 		saveButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.save"), (onPress) -> {
-			updateNote();
+			updateNoteText();
+			note.setScope(scope);
 			note.save();
 			minecraft.setScreen(new ViewNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
 			}
 		}));
-		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.global").append(Component.literal(": ").append(note.getScope() == Scope.GLOBAL ? Component.translatable("notes.on") : Component.translatable("notes.off"))), (onPress) -> {
+		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.global").append(Component.literal(": ").append(scope == Scope.GLOBAL ? Component.translatable("notes.on") : Component.translatable("notes.off"))), (onPress) -> {
 			if (scope == Scope.GLOBAL) {
 				scope = Scope.getCurrentScope();
 			} else {
@@ -116,7 +117,6 @@ public class EditNoteScreen extends Screen {
 			}
 
 			globalButton.setMessage(Component.literal(I18n.get("notes.global") + (scope == Scope.GLOBAL ? ": " + I18n.get("notes.on") : ": " + I18n.get("notes.off"))));
-			updateNote();
 		}));
 		insertBiomeButton = addRenderableWidget(new NotesButton(10, 100, 110, 20, Component.translatable("notes.biome"), (onPress) -> {
 			insertBiome();
@@ -154,10 +154,9 @@ public class EditNoteScreen extends Screen {
 		}
 	}
 
-	private void updateNote() {
+	private void updateNoteText() {
 		note.setTitle(noteTitleField.getValue());
 		note.setText(noteTextField.getValue());
-		note.setScope(scope);
 	}
 
 	private void insertBiome() {
