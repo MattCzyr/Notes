@@ -104,12 +104,9 @@ public class Scope {
 	public static String getServerID() {
 		if (isRemote()) {
 			final ServerData server = mc.getCurrentServer();
-			if (server.type() == ServerData.Type.REALM) {
-				// Realms can rotate IPs, so use server name instead of IP
+			if (server.type() == ServerData.Type.REALM || server.type() == ServerData.Type.LAN) {
+				// Realms can rotate IPs, and LAN ports are random, so use server name instead of IP
 				return StringUtils.filterFileName(server.name);
-			} else if (server.type() == ServerData.Type.LAN) {
-				// LAN ports are random, so use fixed name
-				return "LAN";
 			}
 			return StringUtils.filterFileName(server.ip);
 		}
