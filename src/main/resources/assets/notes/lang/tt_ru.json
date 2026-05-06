@@ -1,0 +1,48 @@
+{
+    "_comment": "Notes - Language File",
+    "_comment": "TATARSTAN (RUSSIA) - TATAR",
+
+    "_comment": "TITLES",
+    "notes.newNote": "Яңа язма",
+    "notes.editNote": "Язманы үзгәртү",
+    "notes.selectNote": "Язманы сайлау",
+
+    "_comment": "BUTTONS",
+    "notes.biome": "Биом",
+    "notes.chunk": "Чанк",
+    "notes.coordinates": "Координатлар",
+    "notes.copy": "Күчереп алу",
+    "notes.delete": "Бетерү",
+    "notes.edit": "Үзгәртү",
+    "notes.global": "Глобаль",
+    "notes.insert": "Кую",
+    "notes.new": "Яңа",
+    "notes.off": "Сүнек",
+    "notes.on": "Кушык",
+    "notes.pin": "Беркетү",
+    "notes.pinned": "Беркетелгән",
+    "notes.save": "Саклау",
+    "notes.select": "Сайлау",
+    "notes.unpin": "Ычкындыру",
+    "notes.view": "Карау",
+
+    "_comment": "SCOPE",
+    "notes.scope.local": "Локаль",
+    "notes.scope.global": "Глобаль",
+    "notes.scope.remote": "Ерак",
+
+    "_comment": "CATEGORIES",
+    "key.category.notes.keys": "Notes",
+
+    "_comment": "KEYBINDS",
+    "key.openNotes": "Язмаларны ачу",
+
+    "_comment": "STRINGS",
+    "notes.confirmDelete": "Бу язманы бетерергәме?",
+    "notes.lastModified": "Соңгы үзгәртелгән",
+    "notes.saveAs": "%s дип сакланаячак",
+
+    "_comment": "MODMENU METADATA",
+    "modmenu.summaryTranslation.notes": "Уендагы клиент тарафыннан блокнот.",
+    "modmenu.descriptionTranslation.notes": "Клиент тарафыннан уендагы тулы функциональ блокнотны өсти торган. "
+}
