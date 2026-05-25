@@ -106,6 +106,7 @@ public class EditNoteScreen extends Screen {
 			minecraft.setScreen(new ViewNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
+				Notes.savePinnedNote();
 			}
 		}));
 		globalButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.global").append(Component.literal(": ").append(note.getScope() == Scope.GLOBAL ? Component.translatable("notes.on") : Component.translatable("notes.off"))), (onPress) -> {

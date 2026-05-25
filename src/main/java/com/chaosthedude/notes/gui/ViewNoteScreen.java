@@ -123,9 +123,11 @@ public class ViewNoteScreen extends Screen {
 	private void togglePin() {
 		if (isPinned()) {
 			Notes.pinnedNote = null;
+			Notes.savePinnedNote();
 			pinButton.setMessage(Component.translatable("notes.pin"));
 		} else {
 			Notes.pinnedNote = note;
+			Notes.savePinnedNote();
 			pinButton.setMessage(Component.translatable("notes.unpin"));
 		}
 	}
