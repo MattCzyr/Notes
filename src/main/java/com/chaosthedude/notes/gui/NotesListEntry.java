@@ -67,8 +67,10 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	public void togglePin() {
 		if (isPinned()) {
 			Notes.pinnedNote = null;
+			Notes.savePinnedNote();
 		} else {
 			Notes.pinnedNote = note;
+			Notes.savePinnedNote();
 			mc.setScreen(null);
 		}
 	}

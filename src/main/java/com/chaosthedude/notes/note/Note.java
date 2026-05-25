@@ -207,6 +207,7 @@ public class Note {
 	public void delete() {
 		if (isPinned()) {
 			Notes.pinnedNote = null;
+			Notes.savePinnedNote();
 		}
 
 		saveFile.delete();
