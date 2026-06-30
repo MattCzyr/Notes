@@ -52,7 +52,7 @@ public class SelectNoteScreen extends Screen {
 
 	private void setupButtons() {
 		newButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.new"), (onPress) -> {
-			minecraft.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
+			minecraft.gui.setScreen(new EditNoteScreen(SelectNoteScreen.this, null));
 		}));
 		viewButton = addRenderableWidget(new NotesButton(10, 75, 110, 20, Component.translatable("notes.view"), (onPress) -> {
 			NotesListEntry notesEntry = SelectNoteScreen.this.selectionList.getSelected();
@@ -84,7 +84,7 @@ public class SelectNoteScreen extends Screen {
 			}
 		}));
 		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
-			minecraft.setScreen(prevScreen);
+			minecraft.gui.setScreen(prevScreen);
 		}));
 
 		viewButton.active = false;

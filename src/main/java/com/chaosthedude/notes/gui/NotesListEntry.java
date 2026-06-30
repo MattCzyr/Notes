@@ -48,7 +48,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 
 	public void editNote() {
 		if (ConfigHandler.CLIENT.useInGameEditor.get() || !note.tryOpenExternal()) {
-			mc.setScreen(new EditNoteScreen(parentScreen, note));
+			mc.gui.setScreen(new EditNoteScreen(parentScreen, note));
 		}
 	}
 
@@ -60,7 +60,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	public void loadNote() {
 		mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		if (ConfigHandler.CLIENT.useInGameViewer.get() || !note.tryOpenExternal()) {
-			mc.setScreen(new ViewNoteScreen(parentScreen, note));
+			mc.gui.setScreen(new ViewNoteScreen(parentScreen, note));
 		}
 	}
 
@@ -69,7 +69,7 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 			Notes.pinnedNote = null;
 		} else {
 			Notes.pinnedNote = note;
-			mc.setScreen(null);
+			mc.gui.setScreen(null);
 		}
 	}
 
@@ -82,12 +82,12 @@ public class NotesListEntry extends ObjectSelectionList.Entry<NotesListEntry> {
 	}
 
 	public void deleteNote() {
-		mc.setScreen(new NotesConfirmScreen((result) -> {
+		mc.gui.setScreen(new NotesConfirmScreen((result) -> {
 			if (result) {
 				note.delete();
 			}
 
-			NotesListEntry.this.mc.setScreen(NotesListEntry.this.parentScreen);
+			NotesListEntry.this.mc.gui.setScreen(NotesListEntry.this.parentScreen);
 		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
 	}
 

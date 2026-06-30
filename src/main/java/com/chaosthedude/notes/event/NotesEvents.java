@@ -32,7 +32,7 @@ public class NotesEvents {
 
 	public static void onClientTick(ClientTickEvent.Pre event) {
 		if (OPEN_NOTES.isDown()) {
-			CLIENT.setScreen(new SelectNoteScreen(CLIENT.screen));
+			CLIENT.gui.setScreen(new SelectNoteScreen(CLIENT.gui.screen()));
 		}
 	}
 

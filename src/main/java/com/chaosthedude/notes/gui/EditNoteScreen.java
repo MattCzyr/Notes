@@ -106,7 +106,7 @@ public class EditNoteScreen extends Screen {
 			updateNoteText();
 			note.setScope(scope);
 			note.save();
-			minecraft.setScreen(new ViewNoteScreen(parentScreen, note));
+			minecraft.gui.setScreen(new ViewNoteScreen(parentScreen, note));
 			if (pinned) {
 				Notes.pinnedNote = note;
 			}
@@ -133,7 +133,7 @@ public class EditNoteScreen extends Screen {
 			setTextFieldFocused = true;
 		}));
 		cancelButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.cancel"), (onPress) -> {
-			minecraft.setScreen(parentScreen);
+			minecraft.gui.setScreen(parentScreen);
 		}));
 
 		insertBiomeButton.active = false;
