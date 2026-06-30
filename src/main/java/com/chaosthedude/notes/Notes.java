@@ -32,7 +32,7 @@ public class Notes implements ClientModInitializer {
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 		    while (openNotes.isDown()) {
-		    	client.setScreen(new SelectNoteScreen(client.screen));
+		    	client.gui.setScreen(new SelectNoteScreen(client.gui.screen()));
 		    }
 		});
 	}

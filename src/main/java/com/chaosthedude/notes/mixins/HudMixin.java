@@ -3,6 +3,7 @@ package com.chaosthedude.notes.mixins;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,13 +19,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
-@Mixin(Gui.class)
-public class GuiMixin {
+@Mixin(Hud.class)
+public class HudMixin {
 	
 	@Shadow
 	@Final
@@ -32,7 +32,7 @@ public class GuiMixin {
 
 	@Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At(value = "TAIL"))
 	private void renderPinnedNote(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
-		if (!minecraft.options.hideGui && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
+		if (!minecraft.gui.hud.isHidden() && (minecraft.gui.screen() == null || minecraft.gui.screen() instanceof ChatScreen)) {
 			if (Notes.pinnedNote != null && Notes.pinnedNote.isValidScope()) {
 				final int maxWidth = Mth.floor(minecraft.getWindow().getGuiScaledWidth() * NotesConfig.pinnedWidthScale);
 				final int maxHeight = Mth.floor(minecraft.getWindow().getGuiScaledHeight() * NotesConfig.pinnedHeightScale);

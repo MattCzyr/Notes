@@ -1,3 +1,17 @@
+## Version 3.2.0
+### NeoForge 26.2
+- Updated to NeoForge 26.2
+- Fixed global notes changing to local after saving
+- Fixed local notes on LAN or realms servers sometimes not persisting between sessions
+- Added Tatar translations
+
+## Version 2.3.0
+### Fabric 26.2
+- Updated to Fabric 26.2
+- Fixed global notes changing to local after saving
+- Fixed local notes on LAN or realms servers sometimes not persisting between sessions
+- Added Tatar translations
+
 ## Version 3.1.0
 ### NeoForge 26.1
 - Updated to NeoForge 26.1
@@ -13,7 +27,8 @@
 - Added Turkish translations
 
 ## Version 3.0.1
-### NeoForge 1.21.10, 1.21.8, 1.21.7, 1.21.6, 1.21.5, 1.21.4, 1.21.3, 1.21.1, 1.21
+### NeoForge 1.21.11, 1.21.10, 1.21.8, 1.21.7, 1.21.6, 1.21.5, 1.21.4, 1.21.3, 1.21.1, 1.21
+- Updated to NeoForge 1.21.11
 - Updated to NeoForge 1.21.10
 - Updated to NeoForge 1.21.8
 - Updated to NeoForge 1.21.7
@@ -26,7 +41,8 @@
 - Fixed bug that caused local notes to be saved globally
 
 ## Version 2.1.1
-### Fabric 1.21.10, 1.21.8, 1.21.7, 1.21.6, 1.21.5, 1.21.4, 1.21.3, 1.21.1, 1.21
+### Fabric 1.21.11, 1.21.10, 1.21.8, 1.21.7, 1.21.6, 1.21.5, 1.21.4, 1.21.3, 1.21.1, 1.21
+- Updated to Fabric 1.21.11
 - Updated to Fabric 1.21.10
 - Updated to Fabric 1.21.8
 - Updated to Fabric 1.21.7

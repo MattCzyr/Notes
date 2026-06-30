@@ -62,7 +62,7 @@ public class ViewNoteScreen extends Screen {
 
 	private void setupButtons() {
 		editButton = addRenderableWidget(new NotesButton(10, 40, 110, 20, Component.translatable("notes.edit"), (onPress) -> {
-			minecraft.setScreen(new EditNoteScreen(ViewNoteScreen.this.parentScreen, note));
+			minecraft.gui.setScreen(new EditNoteScreen(ViewNoteScreen.this.parentScreen, note));
 		}));
 		deleteButton = addRenderableWidget(new NotesButton(10, 65, 110, 20, Component.translatable("notes.delete"), (onPress) -> {
 			deleteNote();
@@ -70,11 +70,11 @@ public class ViewNoteScreen extends Screen {
 		pinButton = addRenderableWidget(new NotesButton(10, 90, 110, 20, isPinned() ? Component.translatable("notes.unpin") : Component.translatable("notes.pin"), (onPress) -> {
 			togglePin();
 			if (isPinned()) {
-				minecraft.setScreen(null);
+				minecraft.gui.setScreen(null);
 			}
 		}));
 		doneButton = addRenderableWidget(new NotesButton(10, height - 30, 110, 20, Component.translatable("gui.done"), (onPress) -> {
-			minecraft.setScreen(parentScreen);
+			minecraft.gui.setScreen(parentScreen);
 		}));
 
 		prevButton = addRenderableWidget(new NotesButton(130, height - 30, 20, 20, Component.translatable("<"), (onPress) -> {
@@ -131,12 +131,12 @@ public class ViewNoteScreen extends Screen {
 	}
 
 	private void deleteNote() {
-		minecraft.setScreen(new NotesConfirmScreen((result) -> {
+		minecraft.gui.setScreen(new NotesConfirmScreen((result) -> {
 			if (result) {
 				note.delete();
 			}
 
-			ViewNoteScreen.this.minecraft.setScreen(parentScreen);
+			ViewNoteScreen.this.minecraft.gui.setScreen(parentScreen);
 		}, Component.translatable("notes.confirmDelete"), Component.literal(note.getTitle())));
 	}
 

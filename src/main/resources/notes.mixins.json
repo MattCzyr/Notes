@@ -3,7 +3,7 @@
   "package": "com.chaosthedude.notes.mixins",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "GuiMixin"
+    "HudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
