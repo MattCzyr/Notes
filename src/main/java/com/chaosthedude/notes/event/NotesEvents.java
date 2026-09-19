@@ -1,6 +1,6 @@
 package com.chaosthedude.notes.event;
 
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import com.chaosthedude.notes.Notes;
 import com.chaosthedude.notes.gui.PinnedNoteLayer;
@@ -19,7 +19,7 @@ public class NotesEvents {
 	private static final Minecraft CLIENT = Minecraft.getInstance();
 	
 	public static final KeyMapping.Category NOTES_CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(Notes.MODID, "keys"));
-	public  static final KeyMapping OPEN_NOTES = new KeyMapping("key.openNotes", GLFW.GLFW_KEY_N, NOTES_CATEGORY);
+	public  static final KeyMapping OPEN_NOTES = new KeyMapping("key.openNotes", InputConstants.KEY_N, NOTES_CATEGORY);
 
 	public static void registerOverlay(RegisterGuiLayersEvent event) {
 		event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Identifier.fromNamespaceAndPath(Notes.MODID, "pinned_note"), new PinnedNoteLayer());
