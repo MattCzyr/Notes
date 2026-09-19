@@ -1,5 +1,6 @@
 package com.chaosthedude.notes;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +24,11 @@ public class Notes implements ClientModInitializer {
 
 	private static KeyMapping openNotes;
 
-	private static final int KEY_N = 17; // InputConstants keyboard key code for 'n'
-
 	@Override
 	public void onInitializeClient() {
 		NotesConfig.load();
 		
-		openNotes = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.openNotes", KEY_N, new KeyMapping.Category(Identifier.fromNamespaceAndPath(MODID, "keys"))));
+		openNotes = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.openNotes", InputConstants.KEY_N, new KeyMapping.Category(Identifier.fromNamespaceAndPath(MODID, "keys"))));
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 		    while (openNotes.isDown()) {
